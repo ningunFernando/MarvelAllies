@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
+
+    <!-- Create Items for the Bottom Navbar -->
+
     <item
         android:id="@+id/news"
         android:icon="@drawable/speaker"

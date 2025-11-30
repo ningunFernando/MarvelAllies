@@ -17,14 +17,14 @@ class MainActivity : AppCompatActivity() {
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        replaceFragment(News())
+        ReplaceFragment(News())
 
         binding.bottomNavigationView.setOnItemSelectedListener{
             when(it.itemId){
-                R.id.news -> replaceFragment(News())
-                R.id.characters -> replaceFragment(Characters())
-                R.id.players -> replaceFragment(Players())
-                R.id.profile -> replaceFragment(Profile())
+                R.id.news -> ReplaceFragment(News())
+                R.id.characters -> ReplaceFragment(Characters())
+                R.id.players -> ReplaceFragment(Players())
+                R.id.profile -> ReplaceFragment(Profile())
 
                 else -> {
 
@@ -35,7 +35,7 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    private fun replaceFragment(fragment: Fragment){
+    private fun ReplaceFragment(fragment: Fragment){
 
         val fragmentManager = supportFragmentManager
         val fragmentTransaction = fragmentManager.beginTransaction()
