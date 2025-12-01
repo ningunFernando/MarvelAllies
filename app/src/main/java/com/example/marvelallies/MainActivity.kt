@@ -3,43 +3,53 @@ package com.example.marvelallies
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import com.example.marvelallies.databinding.ActivityMainBinding
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
+import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var binding : ActivityMainBinding
+    private lateinit var bottomNavBarViww : BottomNavigationView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
 
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-        ReplaceFragment(News())
-
-        binding.bottomNavigationView.setOnItemSelectedListener{
-            when(it.itemId){
-                R.id.news -> ReplaceFragment(News())
-                R.id.characters -> ReplaceFragment(Characters())
-                R.id.players -> ReplaceFragment(Players())
-                R.id.profile -> ReplaceFragment(Profile())
-
-                else -> {
-
-                }
-            }
-            true
+        bottomNavBarViww = findViewById(R.id.bottomNavigationView)
+        bottomNavBarViww.setOnItemSelectedListener{ item->
+            handleNavigationItemSelected(item.itemId)
         }
 
+        LoadFragment(News())
+
+
+
+
+    }
+    private fun LoadFragment(fragment: Fragment){
+        supportFragmentManager.beginTransaction().replace(R.id.frameLayout, fragment).commit()
     }
 
-    private fun ReplaceFragment(fragment: Fragment){
-
-        val fragmentManager = supportFragmentManager
-        val fragmentTransaction = fragmentManager.beginTransaction()
-        fragmentTransaction.replace(R.id.frameLayout,fragment)
-        fragmentTransaction.commit()
-    }
+   private fun handleNavigationItemSelected(itemId: Int): Boolean{
+       return  when (itemId){
+           R.id.news ->{
+               LoadFragment(News())
+               true
+           }
+           R.id.characters -> {
+               LoadFragment(Characters())
+               true
+           }
+           R.id.players ->{
+               LoadFragment(Players())
+               true
+           }
+           R.id.profile ->{
+               LoadFragment(Profile())
+               true
+           }
+           else -> false
+       }
+   }
 }
