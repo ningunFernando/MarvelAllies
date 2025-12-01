@@ -20,10 +20,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="#282C3F"
-        app:itemTextColor="#FFFFFF"
+        app:itemIconSize="40dp"
 
         app:itemIconTint="#FFFFFF"
 
+        app:itemTextColor="#FFFFFF"
         app:labelVisibilityMode="labeled"
         app:menu="@menu/bottom_nav" />
 </LinearLayout>
