@@ -11,9 +11,9 @@ import android.view.ViewGroup
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.math.BigInteger
-import java.security.MessageDigest
 
+//De momento la API esta aqui, lo correcto seria crear la instancia en el main, para cuando carguen
+//y hacer el fetch cada que se necesite y donde se necesite
 class Characters : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -21,18 +21,15 @@ class Characters : Fragment() {
 
 
         MarvelAPIInstance.apiService.getCharacters()
-            .enqueue(object : Callback<List<MarvelCharacter>> {
-                override fun onResponse(
-                    call: Call<List<MarvelCharacter>>,
-                    response: Response<List<MarvelCharacter>>
-                ) {
+            .enqueue(object : Callback<List<MarvelCharacter>> { //Obtenemos la estructura del Marvel Characters
+                override fun onResponse( call: Call<List<MarvelCharacter>>, response: Response<List<MarvelCharacter>> ) {
                     if (response.isSuccessful) {
                         val characters = response.body()
-                        characters?.forEach { character ->
-                            Log.d("Character", "Name: ${character.name}, Role: ${character.role}")
+                        characters?.forEach { character -> //Vamos 1 por 1, para poder obtener su informaicon
+                            Log.d("Character", "Name: ${character.name}, Role: ${character.role}") //De momento solo de debugea y sacamos el nombre y rol
                         }
                     } else {
-                        Log.e("ApiError", "Response: ${response.code()} - ${response.message()}")
+                        Log.e("ApiError", "Response: ${response.code()} - ${response.message()}") // Debug en caso que falle algo
                     }
                 }
 
@@ -41,11 +38,6 @@ class Characters : Fragment() {
                 }
             })
 
-    }
-
-    private fun md5(input : String): String{
-        val md = MessageDigest.getInstance("MD5")
-        return BigInteger(1, md.digest(input.toByteArray())).toString(16).padStart(32, '0')
     }
 
     override fun onCreateView(

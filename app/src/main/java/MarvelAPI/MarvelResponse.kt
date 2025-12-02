@@ -1,3 +1,6 @@
+//Aqui podremos agrego toda las data class que podemos ir necesitando, para player stats, heroes stats, etc.
+
+//Hero Data
 data class MarvelCharacter(
     val id: Int,
     val image: String,
@@ -12,3 +15,5 @@ data class Ability(
     val cooldown: Int,
     val description: String
 )
+
+//Player Stats
