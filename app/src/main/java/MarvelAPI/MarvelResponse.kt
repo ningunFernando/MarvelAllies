@@ -1,25 +1,14 @@
-package MarvelAPI
-
-data class MarvelResponse(
-    val status : String,
-    val data: MarvelData
-)
-
-data class MarvelData(
-    val heroes : List<MarvelCharacter>
-)
-
 data class MarvelCharacter(
-    val id : Int,
-    val image : String,
-    val name : String,
-    val alias : String,
-    val role : String,
-    val abilities : Abilities
+    val id: Int,
+    val image: String,
+    val name: String,
+    val alias: String,
+    val role: String,
+    val abilities: List<Ability>
 )
 
-data class Abilities(
-    val ability_name : String,
-    val cooldown : Int,
-    val description : String
+data class Ability(
+    val ability_name: String,
+    val cooldown: Int,
+    val description: String
 )
