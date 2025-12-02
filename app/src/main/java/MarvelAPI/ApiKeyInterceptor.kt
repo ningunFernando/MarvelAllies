@@ -9,11 +9,13 @@ import okhttp3.Response
 
 
 //Este fue hecho con sugerencia y ayuda de Chat GPT
-class ApiKeyInterceptor : Interceptor {
-    private val _privateKey = "16179dd8cec63563b9b26996bd9b2218b90341914ecfda3dc2c64ae7505bb30b" //https://marvelrivalsapi.com/dashboard/settings
+class ApiKeyInterceptor : Interceptor
+{
+    //https://marvelrivalsapi.com/dashboard/settings
+    private val _privateKey = "16179dd8cec63563b9b26996bd9b2218b90341914ecfda3dc2c64ae7505bb30b"
 
-    override fun intercept(chain: Interceptor.Chain): Response {
-
+    override fun intercept(chain: Interceptor.Chain): Response
+    {
         val request = chain.request().newBuilder()
             .addHeader("x-api-key", _privateKey) //Asi lo pide la API
             .build()

@@ -5,7 +5,8 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 //Para crear la instancia y pueda ser llamada donde sea
-object MarvelAPIInstance {
+object MarvelAPIInstance
+{
     private const val _BASE_URL = "https://marvelrivalsapi.com/api/" //link de la API
 
     private val client = OkHttpClient.Builder()
