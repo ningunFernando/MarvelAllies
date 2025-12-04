@@ -27,10 +27,6 @@ android {
         }
     }
 
-    buildFeatures{
-        //add the viewbinding to make the bottom navbar work
-        viewBinding = true
-    }
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
