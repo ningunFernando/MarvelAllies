@@ -1,59 +1,60 @@
 package com.example.marvelallies
 
+import MarvelAPI.MarvelAPIInstance
+import MarvelCharacter
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [Characters.newInstance] factory method to
- * create an instance of this fragment.
- */
-class Characters : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
-
-    override fun onCreate(savedInstanceState: Bundle?) {
+//De momento la API esta aqui, lo correcto seria crear la instancia en el main, para cuando carguen
+//y hacer el fetch cada que se necesite y donde se necesite
+class Characters : Fragment()
+{
+    override fun onCreate(savedInstanceState: Bundle?)
+    {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
+
+
+        MarvelAPIInstance.apiService.getCharacters()
+            .enqueue(object : Callback<List<MarvelCharacter>>
+            { //Obtenemos la estructura del Marvel Characters
+                override fun onResponse( call: Call<List<MarvelCharacter>>, response: Response<List<MarvelCharacter>> )
+                {
+                    if (response.isSuccessful)
+                    {
+                        val characters = response.body()
+                        characters?.forEach { character -> //Vamos 1 por 1, para poder obtener su informaicon
+                            Log.d("Character", "Name: ${character.name}, Role: ${character.role}") //De momento solo de debugea y sacamos el nombre y rol
+                        }
+                    }
+                    else
+                    {
+                        Log.e("ApiError", "Response: ${response.code()} - ${response.message()}") // Debug en caso que falle algo
+                    }
+                }
+
+                override fun onFailure(call: Call<List<MarvelCharacter>>, t: Throwable)
+                {
+                    Log.e("ApiError", t.message ?: "Unknown error")
+                }
+            })
+
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View?
+    {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_characters, container, false)
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment Characters.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            Characters().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
-    }
+
 }
