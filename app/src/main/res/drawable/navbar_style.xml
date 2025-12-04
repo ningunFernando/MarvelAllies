@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+   <!-- al ser seleccionado cambio el fondo a amarillo y la forma a rectangulo-->
+    <item android:state_checked="true">
+        <shape android:shape="rectangle">
+            <solid android:color="#FFCC00"/>
+        </shape>
+    </item>
+
+</selector>

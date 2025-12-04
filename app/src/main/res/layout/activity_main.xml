@@ -21,10 +21,18 @@
         android:layout_height="match_parent"
         android:layout_weight="0.9"
         android:background="#282C3F"
-
         app:itemIconSize="40dp"
         app:itemIconTint="#FFFFFF"
         app:itemTextColor="#FFFFFF"
+        app:itemBackground="@drawable/navbar_style"
+        app:shapeAppearance="@color/transparent"
+        app:itemActiveIndicatorStyle="@color/transparent"
         app:labelVisibilityMode="labeled"
         app:menu="@menu/bottom_nav" />
+
+
+
+
+
+
 </LinearLayout>
