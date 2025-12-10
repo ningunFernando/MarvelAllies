@@ -3,7 +3,7 @@
 //Hero Data
 data class MarvelCharacter(
     val id: Int,
-    val image: String,
+    val imageUrl: String,
     val name: String,
     val alias: String,
     val role: String,

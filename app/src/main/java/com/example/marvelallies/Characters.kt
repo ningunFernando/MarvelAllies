@@ -30,7 +30,7 @@ class Characters : Fragment()
                     {
                         val characters = response.body()
                         characters?.forEach { character -> //Vamos 1 por 1, para poder obtener su informaicon
-                            Log.d("Character", "Name: ${character.name}, Role: ${character.role}") //De momento solo de debugea y sacamos el nombre y rol
+                            Log.d("Character", "Name: ${character.name}, Role: ${character.role}, Image: ${character.imageUrl}") //De momento solo de debugea y sacamos el nombre y rol
                         }
                     }
                     else
