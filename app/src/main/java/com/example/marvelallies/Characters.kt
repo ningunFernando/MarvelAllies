@@ -8,53 +8,72 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.viewpager2.widget.ViewPager2
+import models.CharactersBanner
+import models.CharactersItem
+import models.CharactersPagerAdapter
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-//De momento la API esta aqui, lo correcto seria crear la instancia en el main, para cuando carguen
-//y hacer el fetch cada que se necesite y donde se necesite
-class Characters : Fragment()
-{
-    override fun onCreate(savedInstanceState: Bundle?)
-    {
-        super.onCreate(savedInstanceState)
 
+class Characters : Fragment() {
 
-        MarvelAPIInstance.apiService.getCharacters()
-            .enqueue(object : Callback<List<MarvelCharacter>>
-            { //Obtenemos la estructura del Marvel Characters
-                override fun onResponse( call: Call<List<MarvelCharacter>>, response: Response<List<MarvelCharacter>> )
-                {
-                    if (response.isSuccessful)
-                    {
-                        val characters = response.body()
-                        characters?.forEach { character -> //Vamos 1 por 1, para poder obtener su informaicon
-                            Log.d("Character", "Name: ${character.name}, Role: ${character.role}, Image: ${character.imageUrl}") //De momento solo de debugea y sacamos el nombre y rol
-                        }
-                    }
-                    else
-                    {
-                        Log.e("ApiError", "Response: ${response.code()} - ${response.message()}") // Debug en caso que falle algo
-                    }
-                }
-
-                override fun onFailure(call: Call<List<MarvelCharacter>>, t: Throwable)
-                {
-                    Log.e("ApiError", t.message ?: "Unknown error")
-                }
-            })
-
-    }
+    private lateinit var viewPager: ViewPager2
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View?
-    {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_characters, container, false)
+    ): View? {
+        val view = inflater.inflate(R.layout.fragment_characters, container, false)
+        viewPager = view.findViewById(R.id.viewPager)
+        return view
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        loadCharactersFromAPI()
+    }
 
+    private fun loadCharactersFromAPI() {
+        MarvelAPIInstance.apiService.getCharacters()
+            .enqueue(object : Callback<List<MarvelCharacter>> {
+
+                override fun onResponse(
+                    call: Call<List<MarvelCharacter>>,
+                    response: Response<List<MarvelCharacter>>
+                ) {
+                    if (!response.isSuccessful) {
+                        Log.e("API", "Error: ${response.code()}")
+                        return
+                    }
+
+                    val apiCharacters = response.body() ?: emptyList()
+
+                    val pages = groupIntoPages(apiCharacters)
+
+                    viewPager.adapter = CharactersPagerAdapter(pages)
+                }
+
+                override fun onFailure(call: Call<List<MarvelCharacter>>, t: Throwable) {
+                    Log.e("API", "Error: ${t.message}")
+                }
+            })
+    }
+
+    private fun groupIntoPages(apiCharacters: List<MarvelCharacter>): List<CharactersBanner> {
+        val chunked = apiCharacters.chunked(9)
+
+        return chunked.map { chunk ->
+            CharactersBanner(
+                characters = chunk.map {
+                    CharactersItem(
+                        name = it.name,
+                        imageUrl = it.imageUrl
+                    )
+                }
+            )
+        }
+    }
 }
+

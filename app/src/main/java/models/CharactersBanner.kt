@@ -1,3 +1,12 @@
 package models
 
-data class CharactersBanner(val name: String, val imageUrl: String, val imageId: Int )
+data class CharactersBanner(
+    val characters: List<CharactersItem>
+)
+data class CharactersItem(
+    val name: String,
+    val imageUrl: String
+)
+
+
+
