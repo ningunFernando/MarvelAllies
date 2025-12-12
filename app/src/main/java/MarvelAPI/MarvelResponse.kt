@@ -12,7 +12,8 @@ data class Hero(
     val team: List<String>?,
     val difficulty: String?,
     val bio: String?,
-    val abilities: List<abilities>
+    val abilities: List<abilities>,
+    val costumes: List<costumes>
 )
 
 data class abilities(
@@ -26,5 +27,10 @@ data class abilities(
     val transformation_id: String
 )
 
+//Skins
+data class costumes(
+    val name: String,
+    val icon: String
+)
 
 //Player Stats

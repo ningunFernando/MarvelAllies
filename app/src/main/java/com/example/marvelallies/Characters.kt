@@ -45,6 +45,10 @@ class Characters : Fragment()
                                 Log.d("AbilityDebug", "Description: ${ability.description}")
                                 Log.d("AbilityDebug", "Transformation ID: ${ability.transformation_id}")
                             }
+                            hero.costumes.forEach{ costumes ->
+                                Log.d("costumes name", "name: ${costumes.name}")
+                                Log.d("costumes icon", "icon: ${costumes.icon}")
+                            }
                             Log.d("Separador", "--------------------------------")
                         }
 
