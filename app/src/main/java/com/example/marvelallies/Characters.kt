@@ -38,9 +38,14 @@ class Characters : Fragment()
                             Log.d("Hero", "Bio: ${hero.bio}")
 
                             hero.abilities.forEach { ability ->
-                                Log.d("Ability", "Name: ${ability.ability_name}")
-                                Log.d("Ability", "Description: ${ability.description}")
+                                Log.d("AbilityDebug", "Ability ID: ${ability.id}")
+                                Log.d("AbilityDebug", "Name: ${ability.name}")
+                                Log.d("AbilityDebug", "Type: ${ability.type}")
+                                Log.d("AbilityDebug", "Is Collab: ${ability.isCollab}")
+                                Log.d("AbilityDebug", "Description: ${ability.description}")
+                                Log.d("AbilityDebug", "Transformation ID: ${ability.transformation_id}")
                             }
+                            Log.d("Separador", "--------------------------------")
                         }
 
                     } else {

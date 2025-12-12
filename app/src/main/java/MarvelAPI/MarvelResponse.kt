@@ -12,12 +12,18 @@ data class Hero(
     val team: List<String>?,
     val difficulty: String?,
     val bio: String?,
-    val abilities: List<Ability>
+    val abilities: List<abilities>
 )
 
-data class Ability(
-    val ability_name: String,
-    val description: String
+data class abilities(
+
+    val id: Int,
+    val icon: String,
+    val name: String,
+    val type : String,
+    val isCollab: Boolean,
+    val description: String,
+    val transformation_id: String
 )
 
 
