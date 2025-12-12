@@ -11,8 +11,9 @@
     app:layout_anchorGravity="center">
 
     <LinearLayout
+        android:id="@+id/CharacterLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:foregroundGravity="center"
         android:gravity="center"
@@ -23,20 +24,13 @@
         <ImageView
             android:id="@+id/characterImage"
             android:layout_width="120dp"
-            android:layout_height="120dp"
+            android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:layout_marginTop="0dp"
+            android:layout_weight="0.9"
             android:scaleType="centerCrop"
             tools:srcCompat="@tools:sample/avatars" />
 
-        <TextView
-            android:id="@+id/characterName"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/BackGroundBlue"
-            android:fontFamily="@font/roboto_medium"
-            android:gravity="center"
-            android:text="Jeff the land shark"
-            android:textColor="#FFFFFF" />
     </LinearLayout>
 
 

@@ -16,4 +16,10 @@ data class Ability(
     val description: String
 )
 
+//Heroes costume
+data class CharacterCostume (
+
+    val icon: String,
+
+)
 //Player Stats

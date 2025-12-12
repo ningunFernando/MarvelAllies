@@ -8,11 +8,11 @@
     android:orientation="horizontal">
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/gridRecycler"
+        android:id="@+id/gridRecyclerView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
 
         android:layout_gravity="center"
-        android:layout_marginStart="100dp"
+        android:layout_marginStart="0dp"
         android:foregroundGravity="center" />
 </LinearLayout>
