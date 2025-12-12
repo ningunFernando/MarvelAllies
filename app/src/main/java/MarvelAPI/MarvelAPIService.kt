@@ -1,6 +1,6 @@
 package MarvelAPI
 
-import MarvelCharacter
+import Hero
 import retrofit2.Call
 import retrofit2.http.GET
 
@@ -12,6 +12,6 @@ interface MarvelAPIService
     hero ladeaboard, player stats, etc.
      */
 
-    @GET("v1/heroes")
-    fun getCharacters(): Call<List<MarvelCharacter>>
+    @GET("heroes")
+    fun getAllHeroes(): Call<List<Hero>>
 }

@@ -1,25 +1,36 @@
 //Aqui podremos agrego toda las data class que podemos ir necesitando, para player stats, heroes stats, etc.
 
 //Hero Data
-data class MarvelCharacter(
-    val id: Int,
-    val imageUrl: String,
+
+data class Hero(
+    val id: String,
     val name: String,
-    val alias: String,
+    val real_name: String?,
+    val imageUrl: String,
     val role: String,
-    val abilities: List<Ability>
+    val attack_type: String?,
+    val team: List<String>?,
+    val difficulty: String?,
+    val bio: String?,
+    val abilities: List<abilities>,
+    val costumes: List<costumes>
 )
 
-data class Ability(
-    val ability_name: String,
-    val cooldown: Int,
-    val description: String
-)
+data class abilities(
 
-//Heroes costume
-data class CharacterCostume (
-
+    val id: Int,
     val icon: String,
-
+    val name: String,
+    val type : String,
+    val isCollab: Boolean,
+    val description: String,
+    val transformation_id: String
 )
+
+//Skins
+data class costumes(
+    val name: String,
+    val icon: String
+)
+
 //Player Stats
