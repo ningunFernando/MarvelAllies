@@ -1,37 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/carrusel"
     android:layout_width="wrap_content"
-    android:layout_height="200dp"
+    android:layout_height="150dp"
     android:layout_gravity="center"
+    android:layout_margin="20dp"
     android:gravity="center"
     android:orientation="vertical"
     app:layout_anchorGravity="center">
 
-    <LinearLayout
-        android:id="@+id/CharacterLayout"
+    <ImageView
+        android:id="@+id/characterImage"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:foregroundGravity="center"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:padding="4dp">
+
+        android:layout_weight="0"
+        android:scaleType="fitXY"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:srcCompat="@tools:sample/avatars" />
 
 
-        <ImageView
-            android:id="@+id/characterImage"
-            android:layout_width="120dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="0dp"
-            android:layout_weight="0.9"
-            android:scaleType="centerCrop"
-            tools:srcCompat="@tools:sample/avatars" />
-
-    </LinearLayout>
-
-
-</LinearLayout>
+</FrameLayout>

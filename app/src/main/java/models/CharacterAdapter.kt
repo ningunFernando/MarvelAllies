@@ -38,7 +38,6 @@ class CharacterAdapter(
 
     class GridViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val image: ImageView = itemView.findViewById(R.id.characterImage)
-        private val layoutItem: LinearLayout = itemView.findViewById(R.id.CharacterLayout)
 
 
         fun bind(character: CharactersItem, listener: (CharactersItem) -> Unit) {
@@ -58,11 +57,11 @@ class CharacterAdapter(
                 .load("https://marvelrivalsapi.com/"+character.imageUrl)
                 //Si no pone una de placeholder
                 .placeholder(R.drawable.frame_1)
-                .centerCrop()
+                .fitCenter()
                 //En la imagen del item
                 .into(image)
 
-            layoutItem.setOnClickListener {
+            image.setOnClickListener {
                 listener(character) // Llama al callback
             }
 

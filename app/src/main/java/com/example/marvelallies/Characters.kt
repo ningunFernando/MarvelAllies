@@ -1,7 +1,7 @@
 package com.example.marvelallies
 
 import MarvelAPI.MarvelAPIInstance
-import MarvelCharacter
+import Hero
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -40,11 +40,11 @@ class Characters : Fragment() {
 
     private fun loadCharactersFromAPI() {
         //llamar a la API
-        MarvelAPIInstance.apiService.getCharacters().enqueue(object : Callback<List<MarvelCharacter>> {
+        MarvelAPIInstance.apiService.getAllHeroes().enqueue(object : Callback<List<Hero>> {
 
                 override fun onResponse(
-                    call: Call<List<MarvelCharacter>>,
-                    response: Response<List<MarvelCharacter>>
+                    call: Call<List<Hero>>,
+                    response: Response<List<Hero>>
                 ) {
                     if (!response.isSuccessful) {
                         //mensaje error
@@ -66,7 +66,7 @@ class Characters : Fragment() {
 
                 }
 
-                override fun onFailure(call: Call<List<MarvelCharacter>>, t: Throwable) {
+                override fun onFailure(call: Call<List<Hero>>, t: Throwable) {
                     Log.e("API", "Error: ${t.message}")
                 }
             })
@@ -85,7 +85,7 @@ class Characters : Fragment() {
         fragmentTransaction.commit()
     }
 
-    private fun groupIntoPages(apiCharacters: List<MarvelCharacter>): List<CharactersBanner> {
+    private fun groupIntoPages(apiCharacters: List<Hero>): List<CharactersBanner> {
         //Divide a los personajes en lista de 9
         val chunked = apiCharacters.chunked(9)
 
