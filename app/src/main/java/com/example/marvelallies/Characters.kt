@@ -1,7 +1,7 @@
 package com.example.marvelallies
 
+import Hero
 import MarvelAPI.MarvelAPIInstance
-import MarvelCharacter
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -20,31 +20,47 @@ class Characters : Fragment()
     {
         super.onCreate(savedInstanceState)
 
+        MarvelAPIInstance.apiService.getAllHeroes()
+            .enqueue(object : Callback<List<Hero>> {
+                override fun onResponse(call: Call<List<Hero>>, response: Response<List<Hero>>) {
+                    if (response.isSuccessful) {
+                        val heroes = response.body() ?: emptyList()
 
-        MarvelAPIInstance.apiService.getCharacters()
-            .enqueue(object : Callback<List<MarvelCharacter>>
-            { //Obtenemos la estructura del Marvel Characters
-                override fun onResponse( call: Call<List<MarvelCharacter>>, response: Response<List<MarvelCharacter>> )
-                {
-                    if (response.isSuccessful)
-                    {
-                        val characters = response.body()
-                        characters?.forEach { character -> //Vamos 1 por 1, para poder obtener su informaicon
-                            Log.d("Character", "Name: ${character.name}, Role: ${character.role}") //De momento solo de debugea y sacamos el nombre y rol
+                        heroes.forEach { hero ->
+                            Log.d("Hero", "ID: ${hero.id}")
+                            Log.d("Hero", "Name: ${hero.name}")
+                            Log.d("Hero", "Real Name: ${hero.real_name}")
+                            Log.d("Hero", "Image URL: ${hero.imageUrl}")
+                            Log.d("Hero", "Role: ${hero.role}")
+                            Log.d("Hero", "Attack Type: ${hero.attack_type}")
+                            Log.d("Hero", "Team: ${hero.team?.joinToString(", ") ?: "No team"}")
+                            Log.d("Hero", "Difficulty: ${hero.difficulty}")
+                            Log.d("Hero", "Bio: ${hero.bio}")
+
+                            hero.abilities.forEach { ability ->
+                                Log.d("AbilityDebug", "Ability ID: ${ability.id}")
+                                Log.d("AbilityDebug", "Name: ${ability.name}")
+                                Log.d("AbilityDebug", "Type: ${ability.type}")
+                                Log.d("AbilityDebug", "Is Collab: ${ability.isCollab}")
+                                Log.d("AbilityDebug", "Description: ${ability.description}")
+                                Log.d("AbilityDebug", "Transformation ID: ${ability.transformation_id}")
+                            }
+                            hero.costumes.forEach{ costumes ->
+                                Log.d("costumes name", "name: ${costumes.name}")
+                                Log.d("costumes icon", "icon: ${costumes.icon}")
+                            }
+                            Log.d("Separador", "--------------------------------")
                         }
-                    }
-                    else
-                    {
-                        Log.e("ApiError", "Response: ${response.code()} - ${response.message()}") // Debug en caso que falle algo
+
+                    } else {
+                        Log.e("ApiError", "Response: ${response.code()} - ${response.message()}")
                     }
                 }
 
-                override fun onFailure(call: Call<List<MarvelCharacter>>, t: Throwable)
-                {
+                override fun onFailure(call: Call<List<Hero>>, t: Throwable) {
                     Log.e("ApiError", t.message ?: "Unknown error")
                 }
             })
-
     }
 
     override fun onCreateView(
