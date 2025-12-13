@@ -1,5 +1,4 @@
 package com.example.marvelallies
-
 import MarvelAPI.MarvelAPIInstance
 import Hero
 import android.os.Bundle

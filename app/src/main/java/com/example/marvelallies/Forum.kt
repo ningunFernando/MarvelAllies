@@ -25,14 +25,14 @@ class Forum : Fragment() {
         // Aquí usas la vista inflada para encontrar el botón
         back = view.findViewById(R.id.Back)
         back.setOnClickListener {
-            ReplaceFragment()
+            replaceFragment()
         }
 
         return view
     }
 
 
-    private fun ReplaceFragment(){
+    private fun replaceFragment(){
 
         val fragmentTransaction = parentFragmentManager.beginTransaction()
         fragmentTransaction.replace(R.id.frameLayout, News())
