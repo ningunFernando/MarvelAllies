@@ -5,7 +5,6 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.ImageButton
 
 
@@ -24,19 +23,15 @@ class Forum : Fragment() {
         val view = inflater.inflate(R.layout.fragment_forum, container, false)
 
         // Aquí usas la vista inflada para encontrar el botón
-        back = view.findViewById(R.id.imageButton2)
+        back = view.findViewById(R.id.Back)
         back.setOnClickListener {
-            ActiveNews()
+            ReplaceFragment()
         }
 
         return view
     }
 
-    private fun ActiveNews()
-    {
-        ReplaceFragment()
 
-    }
     private fun ReplaceFragment(){
 
         val fragmentTransaction = parentFragmentManager.beginTransaction()

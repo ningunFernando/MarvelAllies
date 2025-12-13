@@ -7,6 +7,7 @@
     android:orientation="vertical"
     tools:context=".CharacterDetails">
 
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="65dp"
@@ -14,13 +15,14 @@
         android:orientation="horizontal">
 
         <ImageButton
-            android:id="@+id/imageButton2"
+            android:id="@+id/Back"
             android:layout_width="1dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@color/cardview_shadow_end_color"
-            android:scaleType="centerInside"
+            android:contentDescription="back"
 
+            android:scaleType="centerInside"
             android:src="@drawable/back" />
 
         <TextView
@@ -36,53 +38,75 @@
 
     </LinearLayout>
 
-    <Space
-        android:layout_width="match_parent"
-        android:layout_height="105dp"
-        android:layout_marginBottom="0dp"
-        android:layout_weight="0"
-        android:paddingBottom="0dp" />
-
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="0dp"
-        android:orientation="vertical">
+        android:clipToPadding="true"
+        android:fillViewport="true">
 
-        <TextView
-            android:id="@+id/textView3"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:fontFamily="@font/roboto_medium"
-            android:foregroundGravity="center"
-            android:gravity="center_horizontal"
-            android:text="Name"
-            android:textSize="34sp" />
+            android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/textView2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/roboto_medium"
-            android:gravity="center_horizontal"
-            android:text="The pinnacle of artificial lifeforms, Ultron is programmed to learn
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/RecyclerSkin"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="0dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/Name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:fontFamily="@font/roboto_medium"
+                    android:foregroundGravity="center"
+                    android:gravity="center_horizontal"
+                    android:text="Name"
+                    android:textSize="34sp" />
+
+                <TextView
+                    android:id="@+id/Bio"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_margin="20dp"
+                    android:fontFamily="@font/roboto_medium"
+                    android:gravity="center_horizontal"
+                    android:text="The pinnacle of artificial lifeforms, Ultron is programmed to learn
 and adapt in ways far beyond human capability. He can summon an
  army of automated drones that obey his every command, raising his
-chances of victory exponentially." />
+chances of victory exponentially."
+                    android:textSize="20sp" />
 
-        <TextView
-            android:id="@+id/textView4"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:background="@color/LightYellow"
-            android:fontFamily="@font/roboto_medium"
-            android:foregroundGravity="center"
-            android:gravity="center_horizontal"
-            android:text="Abilities"
-            android:textSize="34sp" />
+                <TextView
+                    android:id="@+id/textView4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:background="@color/LightYellow"
+                    android:fontFamily="@font/roboto_medium"
+                    android:foregroundGravity="center"
+                    android:gravity="center_horizontal"
+                    android:text="Abilities"
+                    android:textSize="34sp" />
 
-    </LinearLayout>
+            </LinearLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/RecyclerAbilities"
+                android:layout_width="match_parent"
+                android:layout_height="700dp"
+
+                />
+        </LinearLayout>
+    </ScrollView>
 
 </LinearLayout>

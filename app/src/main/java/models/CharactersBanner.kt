@@ -7,10 +7,12 @@ data class CharactersBanner(
 
 //datos que se van a tomar de cada Item
 data class CharactersItem(
+    val query: String,
     val name: String,
-    val imageUrl: String
+    val imageUrl: String,
 
-)
+    )
+
 
 
 

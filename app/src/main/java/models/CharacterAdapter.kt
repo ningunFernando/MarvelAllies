@@ -4,23 +4,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.marvelallies.R
 
 class CharacterAdapter(
     private val items: List<CharactersItem>,
+    //valor que se va a pasar hacia el fragment principal cuando se detecte un click, con la ayuda de chatgtp descubri el Unit
     private val onItemClickListener: (CharactersItem) -> Unit
 ) : RecyclerView.Adapter<CharacterAdapter.GridViewHolder>() {
 
-    inner class ItemHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        //val characterLayout: LinearLayout = itemView.findViewById(R.id.CharacterLayout)
-        fun SetListener(){
-
-        }
-    }
 
     //Se llama cada vez que el carrusel necesita crear una nuevo item.
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GridViewHolder {
@@ -43,7 +36,7 @@ class CharacterAdapter(
         fun bind(character: CharactersItem, listener: (CharactersItem) -> Unit) {
 
             //Si un item no recibe ningun dato, hacemos que el texto y la imagen se hagan invisibles
-            if (character.name.isBlank()) {
+            if (character.imageUrl.isBlank()) {
                 image.visibility = View.INVISIBLE
                 return
             }
@@ -57,12 +50,14 @@ class CharacterAdapter(
                 .load("https://marvelrivalsapi.com/"+character.imageUrl)
                 //Si no pone una de placeholder
                 .placeholder(R.drawable.frame_1)
+                //Acomoda la imagen en el centro del item
                 .fitCenter()
                 //En la imagen del item
                 .into(image)
 
             image.setOnClickListener {
-                listener(character) // Llama al callback
+                // Llama al callback
+                listener(character)
             }
 
         }

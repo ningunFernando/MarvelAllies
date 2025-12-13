@@ -1,59 +1,104 @@
 package com.example.marvelallies
 
+import MarvelAPI.MarvelAPIInstance
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
+import android.widget.TextView
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import models.SkinAdapter
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import Hero
+import models.AbilitiesAdapter
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [CharacterDetails.newInstance] factory method to
- * create an instance of this fragment.
- */
 class CharacterDetails : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
+    //Declarar elementos del fragment
+    private lateinit var back: ImageButton
+    private lateinit var nameLayout: TextView
+    private lateinit var bioLayout: TextView
+    private lateinit var recyclerView: RecyclerView
+    private lateinit var recyclerAbilities: RecyclerView
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_character_details, container, false)
+    ): View {
+
+        //inflate fragment
+        val view = inflater.inflate(R.layout.fragment_character_details, container, false)
+
+        // encontrar elementos de los fragments
+        back = view.findViewById(R.id.Back)
+        nameLayout = view.findViewById(R.id.Name)
+        bioLayout = view.findViewById(R.id.Bio)
+        recyclerView = view.findViewById(R.id.RecyclerSkin)
+        recyclerAbilities = view.findViewById(R.id.RecyclerAbilities)
+
+        //scrolleo horizontal
+        recyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+
+        //scroll vertical
+        recyclerAbilities.layoutManager = LinearLayoutManager(requireContext())
+
+        //detectar presionar boton back
+        back.setOnClickListener {
+            replaceFragment()
+        }
+
+        // Recibir argumentos
+        val query = arguments?.getString("character_id")
+        val characterName = arguments?.getString("character_name")
+
+        //Modifiicar el nombre de la API en mayusculas
+        nameLayout.text = characterName?.uppercase()
+
+        //cargar informacion de acuerdo a la ID del fragment anterior
+            loadCharacterDetails(query.toString())
+
+
+        return view
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment CharacterDetails.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            CharacterDetails().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+    private fun loadCharacterDetails(characterId: String) {
+
+        //obtiene al personaje por la ID
+        MarvelAPIInstance.apiService.getHeroById(characterId)
+            .enqueue(object : Callback<Hero> {
+
+                override fun onResponse(call: Call<Hero>, response: Response<Hero>) {
+                        //cargar la bio y las skins
+                        response.body()?.let { hero ->
+                            bioLayout.text = hero.bio
+                            //cargar las skins del personaje
+                            recyclerView.adapter = SkinAdapter(hero.costumes)
+                            //cargar las habilidades del personaje
+                            recyclerAbilities.adapter = AbilitiesAdapter(hero.abilities)
+
+
+                    }
                 }
-            }
+                //error de conexion
+                override fun onFailure(call: Call<Hero>, t: Throwable) {
+                    Log.e("API", "Error de conexión: ${t.message}")
+                }
+            })
+    }
+
+
+
+    //moverse al fragment characters
+    private fun replaceFragment() {
+        parentFragmentManager.beginTransaction()
+            .replace(R.id.frameLayout, Characters())
+            .commit()
     }
 }

@@ -22,10 +22,7 @@ class Characters : Fragment() {
     //variable del view Pager (carrusel)
     private lateinit var viewPager: ViewPager2
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         //carga el fragmento characters y encuentra el viewpager
         val view = inflater.inflate(R.layout.fragment_characters, container, false)
         viewPager = view.findViewById(R.id.viewPager)
@@ -54,6 +51,8 @@ class Characters : Fragment() {
 
                     //obtener la liosta de personajes
                     val apiCharacters = response.body() ?: emptyList()
+                    //Log.d("hola", "${apiCharacters}")
+
 
                     //los divide en paginas
                     val pages = groupIntoPages(apiCharacters)
@@ -74,17 +73,22 @@ class Characters : Fragment() {
     private fun onCharacterClicked(character: CharactersItem) {
         // Aquí puedes navegar al fragmento de detalles
         val fragmentTransaction = parentFragmentManager.beginTransaction()
+        //Pasar argumentos al segundo fragment
         val detailsFragment = CharacterDetails().apply {
             arguments = Bundle().apply {
+                //mandar id y nombre al fragment details
+                putString("character_id", character.query)
                 putString("character_name", character.name)
-                putString("character_image", character.imageUrl)
             }
+
         }
+        //cambiar de fragment
         fragmentTransaction.replace(R.id.frameLayout, detailsFragment)
-        fragmentTransaction.addToBackStack(null) // Para volver atrás
+        fragmentTransaction.addToBackStack(null)
         fragmentTransaction.commit()
     }
 
+    //Con ayuda de ChatGTP agarre los 9 que necesitaba
     private fun groupIntoPages(apiCharacters: List<Hero>): List<CharactersBanner> {
         //Divide a los personajes en lista de 9
         val chunked = apiCharacters.chunked(9)
@@ -93,30 +97,18 @@ class Characters : Fragment() {
         return chunked.map { chunk ->
             CharactersBanner(
                 characters = chunk.map {
-                    //Cada item de la page obtiene el nombre y descripcion
+                    //Cada item de la page obtiene el nombre, id y descripcion
                     CharactersItem(
+                        query = it.id,
                         name = it.name,
-                        imageUrl = it.imageUrl
+                        imageUrl = it.imageUrl,
 
-
-                    )
+                        )
                 }
             )
         }
     }
 
-    fun ReplaceFragment(character: CharactersItem) {
-        val fragmentTransaction = parentFragmentManager.beginTransaction()
-        val detailsFragment = CharacterDetails().apply {
-            arguments = Bundle().apply {
-                putString("character_name", character.name)
-                putString("character_image", character.imageUrl)
-            }
-        }
-        fragmentTransaction.replace(R.id.frameLayout, detailsFragment)
-        fragmentTransaction.addToBackStack(null)
-        fragmentTransaction.commit()
-    }
 
 
 }
