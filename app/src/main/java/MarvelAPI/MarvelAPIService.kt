@@ -19,4 +19,6 @@ interface MarvelAPIService
     //LLamar a un heroe en especifico
     @GET("heroes/hero/{query}")
     fun getHeroById(@Path("query") query: String): Call<Hero>
+
+
 }

@@ -7,10 +7,10 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.LinearLayout
 import androidx.viewpager2.widget.ViewPager2
-import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import models.CharactersBanner
 import models.CharactersItem
@@ -25,9 +25,9 @@ class Characters : Fragment() {
     //variable del view Pager (carrusel)
     private lateinit var viewPager: ViewPager2
     private lateinit var searchButton: ImageButton
-    private lateinit var searchInputLayout: TextInputLayout
+    private lateinit var searchInputText: EditText
 
-    private lateinit var searchInputField: TextInputEditText
+
     private lateinit var characterLayout: LinearLayout
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -37,10 +37,10 @@ class Characters : Fragment() {
 
         //Encontrar el boton de search y el input Field
         searchButton = view.findViewById(R.id.Search)
-        searchInputLayout = view.findViewById(R.id.SearchInputLayout)
-        searchInputField = view.findViewById(R.id.SearchInputField)
+        searchInputText = view.findViewById(R.id.SearchLayout)
+
         searchButton.setOnClickListener{
-            HideButton()
+            ShowLayout()
         }
 
         //Para el layout listener
@@ -58,10 +58,7 @@ class Characters : Fragment() {
         //llamar a la API
         MarvelAPIInstance.apiService.getAllHeroes().enqueue(object : Callback<List<Hero>> {
 
-                override fun onResponse(
-                    call: Call<List<Hero>>,
-                    response: Response<List<Hero>>
-                ) {
+                override fun onResponse(call: Call<List<Hero>>, response: Response<List<Hero>>) {
                     if (!response.isSuccessful) {
                         //mensaje error
                         Log.e("API", "Error: ${response.code()}")
@@ -128,15 +125,70 @@ class Characters : Fragment() {
         }
     }
 
+    private fun groupOnePage(apiCharacter: Hero): List<CharactersBanner>{
+
+        //Declarar el character Item
+        val characterItem = CharactersItem(
+            query = apiCharacter.id,
+            name = apiCharacter.name,
+            imageUrl = apiCharacter.imageUrl,
+        )
+
+        //Pasar al banner con la lista de personajes (solo uno)
+        val charactersBanner = CharactersBanner(
+            characters = listOf(characterItem)
+        )
+
+        //Devolver la pagina con un solo heroe
+        return listOf(charactersBanner)
+    }
+
+    private fun loadCharacterDetails(characterId: String) {
+        //obtiene al personaje por el nombre
+        MarvelAPIInstance.apiService.getHeroById(characterId)
+            .enqueue(object : Callback<Hero> {
+                override fun onResponse(call: Call<Hero>, response: Response<Hero>) {
+                    if (!response.isSuccessful) {
+                        //mensaje error
+                        Log.e("API", "Error: ${response.code()}")
+                        loadCharactersFromAPI()
+                        return
+                    }
+
+                    //el character sera igual ala respuesta de la API
+                    val character = response.body()
+
+                    if (character != null) {
+                        // Usar la versión singular
+                        val pages = groupOnePage(character)
+
+                        viewPager.adapter = CharactersPageAdapter(pages) { characterItem ->
+                            onCharacterClicked(characterItem)
+                        }
+                    }
+                }
+
+                //error de conexion
+                override fun onFailure(call: Call<Hero>, t: Throwable) {
+                    Log.e("API", "Error de conexión: ${t.message}")
+                }
+            })
+    }
+
+
     private fun HideLayout(){
-        searchInputLayout.visibility = View.GONE
-            searchButton.visibility = View.VISIBLE
+        searchInputText.visibility = View.INVISIBLE
 
 
     }
-    private fun HideButton(){
-        searchButton.visibility = View.GONE
-        searchInputLayout.visibility = View.VISIBLE
+    private fun ShowLayout(){
+        if(searchInputText.visibility == View.INVISIBLE) {
+            searchInputText.visibility = View.VISIBLE
+        }else{
+            //println(searchInputText.text)
+            loadCharacterDetails(searchInputText.text.toString())
+        }
+
     }
 
 
