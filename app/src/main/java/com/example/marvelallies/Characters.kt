@@ -7,7 +7,11 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
+import android.widget.LinearLayout
 import androidx.viewpager2.widget.ViewPager2
+import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textfield.TextInputLayout
 import models.CharactersBanner
 import models.CharactersItem
 import models.CharactersPageAdapter
@@ -20,18 +24,34 @@ class Characters : Fragment() {
 
     //variable del view Pager (carrusel)
     private lateinit var viewPager: ViewPager2
+    private lateinit var searchButton: ImageButton
+    private lateinit var searchInputLayout: TextInputLayout
+
+    private lateinit var searchInputField: TextInputEditText
+    private lateinit var characterLayout: LinearLayout
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         //carga el fragmento characters y encuentra el viewpager
         val view = inflater.inflate(R.layout.fragment_characters, container, false)
         viewPager = view.findViewById(R.id.viewPager)
-        return view
-    }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+        //Encontrar el boton de search y el input Field
+        searchButton = view.findViewById(R.id.Search)
+        searchInputLayout = view.findViewById(R.id.SearchInputLayout)
+        searchInputField = view.findViewById(R.id.SearchInputField)
+        searchButton.setOnClickListener{
+            HideButton()
+        }
+
+        //Para el layout listener
+        characterLayout = view.findViewById(R.id.CharactersLayout)
+        characterLayout.setOnClickListener{
+            HideLayout()
+        }
+
         //cargar los personajes de la api
         loadCharactersFromAPI()
+        return view
     }
 
     private fun loadCharactersFromAPI() {
@@ -106,6 +126,17 @@ class Characters : Fragment() {
                 }
             )
         }
+    }
+
+    private fun HideLayout(){
+        searchInputLayout.visibility = View.GONE
+            searchButton.visibility = View.VISIBLE
+
+
+    }
+    private fun HideButton(){
+        searchButton.visibility = View.GONE
+        searchInputLayout.visibility = View.VISIBLE
     }
 
 
