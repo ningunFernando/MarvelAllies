@@ -1,6 +1,7 @@
 package com.example.marvelallies
 import MarvelAPI.MarvelAPIInstance
 import Hero
+import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -11,7 +12,8 @@ import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.LinearLayout
 import androidx.viewpager2.widget.ViewPager2
-import com.google.android.material.textfield.TextInputLayout
+import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayoutMediator
 import models.CharactersBanner
 import models.CharactersItem
 import models.CharactersPageAdapter
@@ -26,6 +28,7 @@ class Characters : Fragment() {
     private lateinit var viewPager: ViewPager2
     private lateinit var searchButton: ImageButton
     private lateinit var searchInputText: EditText
+    private lateinit var tabLayout: TabLayout
 
 
     private lateinit var characterLayout: LinearLayout
@@ -34,6 +37,8 @@ class Characters : Fragment() {
         //carga el fragmento characters y encuentra el viewpager
         val view = inflater.inflate(R.layout.fragment_characters, container, false)
         viewPager = view.findViewById(R.id.viewPager)
+        tabLayout = view.findViewById(R.id.into_tab_layout)
+
 
         //Encontrar el boton de search y el input Field
         searchButton = view.findViewById(R.id.Search)
@@ -52,6 +57,15 @@ class Characters : Fragment() {
         //cargar los personajes de la api
         loadCharactersFromAPI()
         return view
+    }
+
+    //Cuando cambia de orientation vuelve a cargar los datos de la API para mostrar los items adecuados
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        //para que no crashee con ayuda de chatgtp
+        if (isAdded) {
+            loadCharactersFromAPI()
+        }
     }
 
     private fun loadCharactersFromAPI() {
@@ -78,6 +92,10 @@ class Characters : Fragment() {
                         // Esta función se ejecuta cuando se hace clic en un personaje
                         onCharacterClicked(character)
                     }
+
+                    //unir la Tab layout con el adapter
+                    TabLayoutMediator(tabLayout, viewPager) { tab, position ->
+                    }.attach()
 
                 }
 
@@ -106,8 +124,20 @@ class Characters : Fragment() {
 
     //Con ayuda de ChatGTP agarre los 9 que necesitaba
     private fun groupIntoPages(apiCharacters: List<Hero>): List<CharactersBanner> {
-        //Divide a los personajes en lista de 9
-        val chunked = apiCharacters.chunked(9)
+        //para que no crashee
+        if (!isAdded || context == null) {
+            return emptyList()
+        }
+        //Dependiendo de la orientacion del dispositivo acomodar el grid en 3X3 0 2x3
+        var numberItems: Int = if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+            //Divide a los personajes en lista de 9
+            9
+        }else{
+            //Divide a los personajes en lista de 6
+            6
+        }
+        val chunked = apiCharacters.chunked(numberItems)
+
 
         //cada grupo de 9 personajes se convierte en una pagina
         return chunked.map { chunk ->
@@ -126,16 +156,19 @@ class Characters : Fragment() {
     }
 
     private fun groupOnePage(apiCharacter: Hero): List<CharactersBanner>{
-
+        //para que no crashee
+        if (!isAdded || context == null) {
+            return emptyList()
+        }
         //Declarar el character Item
-        val characterItem = CharactersItem(
+        val characterItem: CharactersItem = CharactersItem(
             query = apiCharacter.id,
             name = apiCharacter.name,
             imageUrl = apiCharacter.imageUrl,
         )
 
         //Pasar al banner con la lista de personajes (solo uno)
-        val charactersBanner = CharactersBanner(
+        val charactersBanner: CharactersBanner = CharactersBanner(
             characters = listOf(characterItem)
         )
 

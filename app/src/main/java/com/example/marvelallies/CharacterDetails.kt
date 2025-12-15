@@ -16,6 +16,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import Hero
+import android.content.res.Configuration
 import models.AbilitiesAdapter
 
 class CharacterDetails : Fragment() {
@@ -68,6 +69,12 @@ class CharacterDetails : Fragment() {
         return view
     }
 
+    //Cuando cambia de orientacion vuelve a cargar la informacion del personaje
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        val query = arguments?.getString("character_id")
+        loadCharacterDetails(query.toString())
+    }
     private fun loadCharacterDetails(characterId: String) {
 
         //obtiene al personaje por la ID

@@ -62,4 +62,6 @@ dependencies {
 
     //Imagenes URL
     implementation("com.github.bumptech.glide:glide:5.0.5")
+
+
 }

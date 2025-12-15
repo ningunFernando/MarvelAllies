@@ -12,7 +12,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="65dp"
+        android:layout_height="63dp"
         android:background="@color/BackGroundBlue"
         android:orientation="horizontal">
 
@@ -25,7 +25,7 @@
             android:paddingLeft="20sp"
             android:text="Characters"
             android:textColor="@color/white"
-            android:textSize="34sp" />
+            android:textSize="24sp" />
 
         <Space
             android:layout_width="wrap_content"
@@ -34,8 +34,8 @@
 
         <EditText
             android:id="@+id/SearchLayout"
-            android:layout_width="138dp"
-            android:layout_height="match_parent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginLeft="0dp"
             android:layout_weight="0"
             android:ems="10"
@@ -47,8 +47,8 @@
 
         <ImageButton
             android:id="@+id/Search"
-            android:layout_width="61dp"
-            android:layout_height="49dp"
+            android:layout_width="63dp"
+            android:layout_height="50dp"
             android:layout_gravity="center|end"
             android:layout_marginLeft="0dp"
             android:layout_marginRight="10dp"
@@ -64,7 +64,6 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/CircleProgresion"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="bottom"
@@ -78,11 +77,7 @@
             android:layout_margin="0dp"
             android:layout_weight="100"
             android:foregroundGravity="center"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
+             />
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/into_tab_layout"
             android:layout_width="match_parent"
@@ -92,6 +87,7 @@
             app:tabBackground="@drawable/tab_pager_selector"
             app:tabGravity="center"
             app:tabIndicatorHeight="0dp" />
+
 
 
     </LinearLayout>
