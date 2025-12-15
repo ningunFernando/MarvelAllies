@@ -17,9 +17,9 @@
 
         <ImageButton
             android:id="@+id/Back"
-            android:layout_width="1dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_weight="0"
             android:background="@color/cardview_shadow_end_color"
             android:contentDescription="back"
             android:scaleType="centerInside"
@@ -29,7 +29,7 @@
             android:id="@+id/textView"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_weight="2"
+            android:layout_weight="1"
             android:gravity="center_vertical"
             android:paddingLeft="20sp"
             android:text="Characters"
@@ -52,7 +52,7 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/RecyclerSkin"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="match_parent" />
 
 
             <LinearLayout
