@@ -10,19 +10,19 @@ import Abilities
 
 class AbilitiesAdapter(
     private val abilities: List<Abilities>
-) : RecyclerView.Adapter<AbilitiesAdapter.CharacterViewHolder>() {
+) : RecyclerView.Adapter<AbilitiesAdapter.AbilityViewHolder>() {
 
     //Se llama cada vez que el recycler necesita crear una nuevo item.
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
-    ): CharacterViewHolder {
+    ): AbilityViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.abilities_item, parent, false)
-        return CharacterViewHolder(view)
+        return AbilityViewHolder(view)
     }
 
     //Se llama para asignar los datos a cada vista
-    override fun onBindViewHolder(holder: CharacterViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: AbilityViewHolder, position: Int) {
         val ability = abilities[position]
         holder.bind(ability)
     }
@@ -32,7 +32,7 @@ class AbilitiesAdapter(
         return abilities.size
     }
 
-    class CharacterViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    class AbilityViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
         private val abilityName: TextView = itemView.findViewById(R.id.Name)
         private val abilityDescription: TextView = itemView.findViewById(R.id.Description)

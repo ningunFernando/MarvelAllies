@@ -23,7 +23,8 @@ class CharacterAdapter(
 
     //Se llama para asignar los datos a cada vista
     override fun onBindViewHolder(holder: GridViewHolder, position: Int) {
-        holder.bind(items[position], onItemClickListener)
+        val item = items[position]
+        holder.bind(item, onItemClickListener)
     }
 
     //Devuelve el número total de ítems

@@ -12,11 +12,11 @@ data class Hero(
     val team: List<String>?,
     val difficulty: String?,
     val bio: String?,
-    val abilities: List<abilities>,
-    val costumes: List<costumes>
+    val abilities: List<Abilities>,
+    val costumes: List<Skin>
 )
 
-data class abilities(
+data class Abilities(
 
     val id: Int,
     val icon: String,
@@ -27,7 +27,7 @@ data class abilities(
     val transformation_id: String
 )
 
-data class costumes(
+data class Skin(
     val name: String,
     val icon: String
 )
@@ -36,8 +36,8 @@ data class costumes(
 data class Player(
     val uid: Int,
     val name: String,
-    val icon: List<Icon>,
-    val rank: List<Rank>,
+    val icon: Icon,
+    val rank: Rank,
     val overall_stats: List<Overall_stats>,
     val roles_played: List<Roles_played>,
 )

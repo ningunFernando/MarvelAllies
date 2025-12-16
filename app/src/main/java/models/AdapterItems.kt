@@ -12,6 +12,13 @@ data class CharactersItem(
     val imageUrl: String,
 
     )
+data class PlayersItem(
+    val uid: Int,
+    val name: String,
+    val player_icon: String,
+    val rank: String,
+    val Score: String
+    )
 
 
 
