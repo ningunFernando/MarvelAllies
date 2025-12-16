@@ -28,17 +28,13 @@ class News : Fragment() {
 
         button = view.findViewById(R.id.button)
         button.setOnClickListener {
-            ActiveForum()
+            ReplaceFragment()
         }
 
         return view
     }
 
-    private fun ActiveForum()
-    {
-        ReplaceFragment()
 
-    }
     private fun ReplaceFragment(){
 
         val fragmentTransaction = parentFragmentManager.beginTransaction()
