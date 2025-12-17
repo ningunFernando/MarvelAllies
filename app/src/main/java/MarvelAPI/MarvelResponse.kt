@@ -35,15 +35,15 @@ data class Skin(
 data class Player(
     val uid: Int,
     val name: String,
-    val player: PlayerDetails
+    val player: PlayerDetails,
+    val overall_stats: Overall_stats,
 
-)
+
+    )
 
 data class PlayerDetails(
     val icon: Icon,
     val rank: Rank,
-    val overall_stats: Overall_stats,
-    val roles_played: Roles_played,
 )
 
 data class Icon(
@@ -59,13 +59,14 @@ data class Rank(
 data class Overall_stats(
     val time_played: Int,
     val total_matches: Int,
+    val roles_played: Roles_played,
     val overall_kda: KDA,
-    val overall_kd: Int,
+    val overall_kd: Float,
     val total_mvps: MVP
 )
 
 data class KDA(
-    val kda: Int,
+    val kda: Float,
     )
 data class MVP(
     val mvps: Int
@@ -78,11 +79,11 @@ data class Roles_played(
 )
 
 data class Role(
-    val time_played: TimePlayed,
-    val matches_played: Int
+    val total_time_played: TimePlayed,
+    val matches_played: Float
 )
 data class TimePlayed(
-    val time_played: Int
+    val time_played: Float
 )
 
 //Obtener los datos de la leaderboard

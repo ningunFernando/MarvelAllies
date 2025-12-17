@@ -9,10 +9,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import com.bumptech.glide.Glide
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-
+import Player
 
 class PlayersProfile : Fragment() {
 
@@ -75,12 +76,53 @@ class PlayersProfile : Fragment() {
                     //cargar la leaderboard en su lugar
                     return
                 }
+                // En onResponse, justo después de verificar si la respuesta es exitosa
+                Log.d("API_DEBUG", "Response code: ${response.code()}")
+                Log.d("API_DEBUG", "Response body: ${response.body()}")
+                Log.d("API_DEBUG", "Response error body: ${response.errorBody()?.string()}")
                 //obtener la respuesta
                 val player = response.body() ?: return
 
+                //variables con el tiempo de cada role
+                var timeVanguard : Float = player.overall_stats.roles_played.vanguard.total_time_played.time_played
+                var timeDuelist : Float = player.overall_stats.roles_played.duelist.total_time_played.time_played
+                var timeStrategist : Float = player.overall_stats.roles_played.strategist.total_time_played.time_played
+
+                //una sumatoria de todos los tiempos
+                val rolesTotalTime: Float = timeVanguard+timeDuelist+timeStrategist
+
+                //convertirlo en porcentaje
+                timeVanguard = intToPercent(rolesTotalTime, timeVanguard)
+                timeDuelist = intToPercent(rolesTotalTime, timeDuelist)
+                timeStrategist = intToPercent(rolesTotalTime, timeStrategist)
+
+                //Change values
                 playerName.text = player.name
                 playerUID.text = player.uid.toString()
+                playerRank.text = player.player.rank.rank
+                playerScore.text = player.player.rank.score
+                playerTimePlayed.text = player.overall_stats.time_played.toString()
+                playerMatches.text = player.overall_stats.total_matches.toString()
 
+                //agregar el porcentaje de uso
+                roleVanguard.text = "Vanguard: " + timeVanguard + "%"
+                roleDuelist.text = "Duelist: " + timeDuelist + "%"
+                roleStrategist.text = "Strategist: " + timeStrategist + "%"
+
+                //cambiar las overal stats
+                statKDA.text = player.overall_stats.overall_kda.kda.toString()
+                statKD.text = player.overall_stats.overall_kd.toString()
+                statMVP.text = player.overall_stats.total_mvps.mvps.toString()
+
+                Glide.with(requireContext())
+                    //Si carga toma la imagen de este URL
+                    .load("https://marvelrivalsapi.com/rivals"+player.player.icon.player_icon)
+                    //Si no pone una de placeholder
+                    .placeholder(R.drawable.frame_1)
+                    //Acomoda la imagen en el centro del item
+                    .fitCenter()
+                    //En la imagen del item
+                    .into(playerImageView)
 
 
 
@@ -92,5 +134,10 @@ class PlayersProfile : Fragment() {
         })
     }
 
+    //convertirlo en porcentaje con una regla de 3
+    private fun intToPercent(total: Float, role: Float): Float {
+        var percentage: Float = (role*100)/total
+        return percentage
+    }
 
 }
