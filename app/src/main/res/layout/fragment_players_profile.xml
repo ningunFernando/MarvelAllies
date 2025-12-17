@@ -39,8 +39,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/BackgroundWhite"
         android:orientation="vertical">
-
 
 
         <ImageView
@@ -280,6 +280,7 @@
             android:text="@string/OverallStats"
             android:textSize="24sp"
             android:textStyle="bold" />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

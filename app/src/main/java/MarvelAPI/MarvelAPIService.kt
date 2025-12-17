@@ -17,11 +17,12 @@ interface MarvelAPIService
     @GET("v1/heroes/hero/{query}")
     fun getHeroById(@Path("query") query: String): Call<Hero>
 
-    @GET("v2/player")
-    fun gelAllPlayers(): Call<List<Player>>
+    //Encontrar un player en especifico
+    @GET("v2/player/{query}")
+    fun getPlayerById(@Path("query") query: String): Call<Player>
 
 
-
+    //Obtener la leaderboard decidiendo que pagina y el limite de players
    @GET("/api/v2/players/leaderboard")
    fun getLeaderboard( @Query("page") page: Int, @Query("limit") limit: Int): Call<Leaderboard>
 

@@ -118,7 +118,6 @@ class Characters : Fragment() {
         }
         //cambiar de fragment
         fragmentTransaction.replace(R.id.frameLayout, detailsFragment)
-        fragmentTransaction.addToBackStack(null)
         fragmentTransaction.commit()
     }
 

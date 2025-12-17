@@ -12,6 +12,8 @@ data class CharactersItem(
     val imageUrl: String,
 
     )
+
+//Datos que queremos de cada jugador en el adapter
 data class PlayersItem(
     val uid: String,
     val name: String,
