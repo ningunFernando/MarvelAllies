@@ -2,6 +2,7 @@ package com.example.marvelallies
 
 import MarvelAPI.MarvelAPIInstance
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -10,6 +11,9 @@ import android.widget.EditText
 import android.widget.ImageButton
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 
 class Players : Fragment() {
@@ -37,6 +41,7 @@ class Players : Fragment() {
         // Inflate the layout for this fragment
         return(view)
     }
+
 
   
 

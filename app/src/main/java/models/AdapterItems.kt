@@ -17,7 +17,7 @@ data class PlayersItem(
     val name: String,
     val player_icon: String,
     val rank: String,
-    val Score: String
+    val score: Int
     )
 
 

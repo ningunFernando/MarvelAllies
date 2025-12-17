@@ -45,7 +45,7 @@ class PlayersAdapter(
             playerName.text = player.name
             playerUID.text = player.uid.toString()
             playerRank.text = player.rank
-            playerScore.text = player.Score
+            playerScore.text = player.score.toString()
             Glide.with(itemView.context)
                 //Si carga toma la imagen de este URL
                 .load("https://marvelrivalsapi.com/"+player.player_icon)

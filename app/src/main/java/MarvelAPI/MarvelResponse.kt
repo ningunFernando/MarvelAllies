@@ -72,4 +72,22 @@ data class Role(
     val matches_played: Int
 )
 
+data class Leaderboard(
+    val page: Int,
+    val limit: Int,
+    val players: List<LeaderboardPlayer>
+)
+data class LeaderboardPlayer(
+    val uid: String,
+    val name: String,
+    val score: Int,
+    val icon: IconResponse,
+    val rank: RankResponse
+)
+data class IconResponse(
+    val player_icon: String
+)
+data class RankResponse(
+    val rank: String
+)
 // Noticias
