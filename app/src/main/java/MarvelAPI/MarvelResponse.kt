@@ -5,32 +5,29 @@
 data class Hero(
     val id: String,
     val name: String,
-    val real_name: String?,
     val imageUrl: String,
     val role: String,
     val attack_type: String?,
     val team: List<String>?,
     val difficulty: String?,
-    val bio: String?,
+    val bio: String,
     val abilities: List<Abilities>,
     val costumes: List<Skin>
 )
 
 data class Abilities(
 
-    val id: Int,
-    val icon: String,
     val name: String,
-    val type : String,
-    val isCollab: Boolean,
     val description: String,
-    val transformation_id: String
 )
 
 data class Skin(
+
     val name: String,
-    val icon: String
-)
+    val icon: String,
+
+
+    )
 
 //Player Stats
 data class Player(
