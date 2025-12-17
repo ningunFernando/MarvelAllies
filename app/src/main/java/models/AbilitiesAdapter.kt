@@ -44,4 +44,5 @@ class AbilitiesAdapter(
             abilityDescription.text = ability.description
         }
     }
+
 }

@@ -228,3 +228,5 @@ class Characters : Fragment() {
 
 }
 
+
+
