@@ -79,7 +79,7 @@ class Players : Fragment() {
                     //mapear las respuestas de la api para que concuerden con el players item
                     val playersItems = leaderboard.players.map { player ->
                         PlayersItem(
-                            uid = player.uid,
+                            query = player.uid,
                             name = player.name,
                             player_icon = player.icon.player_icon,
                             rank = player.rank.rank.rank,
@@ -94,6 +94,7 @@ class Players : Fragment() {
 
                     //Cambiar el recycler view
                     recyclerView.adapter = adapter
+
                 }
 
         //En caso de que haya error
@@ -103,6 +104,7 @@ class Players : Fragment() {
             })
     }
 
+    //Load one player
     private fun LoadPlayer(playerUid: String) {
         MarvelAPIInstance.apiService.getPlayerById(playerUid).
         enqueue(object : Callback<Player> {
@@ -110,22 +112,35 @@ class Players : Fragment() {
                 call: Call<Player>,
                 response: Response<Player>
             ) {
+                if (!response.isSuccessful) {
+                    //mensaje error
+                    Log.e("API", "Error: ${response.code()}")
+                    //cargar la leaderboard en su lugar
+                    LoadLeaderboard()
+                    return
+                }
+                //obtener la respuesta
                 val player = response.body() ?: return
 
+                //eliminar las comas del score para poder convertirlas en un int
+                val scoreData = player.player.rank.score.replace(",","")
+
+                //dar los valores al player item
                 val playerItem = PlayersItem(
-                    uid = player.uid.toString(),
+                    query = player.uid.toString(),
                     name = player.name,
                     player_icon = player.player.icon.player_icon,
                     rank = player.player.rank.rank,
-                    score = player.player.rank.score.toInt()
+                    score = scoreData.toInt()
                 )
 
+                //darle al adapter la lista del unico jugador
                 val adapter = PlayersAdapter(listOf(playerItem)) { player->
                     onCharacterClicked(player)
                 }
 
+                //cambiar el adapter
                 recyclerView.adapter = adapter
-                println("He cambiado el adapter")
 
             }
 
@@ -141,8 +156,8 @@ class Players : Fragment() {
         //Pasar argumentos al segundo fragment
         val detailsFragment = PlayersProfile().apply {
             arguments = Bundle().apply {
-                //mandar id y nombre al fragment details
-                putString("character_id", player.uid)
+                //mandar id al otro fragment
+                putString("player_id", player.query)
             }
 
         }
@@ -157,7 +172,7 @@ class Players : Fragment() {
         if(searchInputText.visibility == View.INVISIBLE) {
             searchInputText.visibility = View.VISIBLE
         }else{
-            //println(searchInputText.text)
+            //Cargar el adapter del jugador
             LoadPlayer(searchInputText.text.toString())
         }
     }

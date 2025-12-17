@@ -18,7 +18,7 @@ interface MarvelAPIService
     fun getHeroById(@Path("query") query: String): Call<Hero>
 
     //Encontrar un player en especifico
-    @GET("v2/player/{query}")
+    @GET("/api/v2/player/{query}")
     fun getPlayerById(@Path("query") query: String): Call<Player>
 
 

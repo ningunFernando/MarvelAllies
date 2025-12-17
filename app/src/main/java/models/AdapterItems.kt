@@ -15,7 +15,7 @@ data class CharactersItem(
 
 //Datos que queremos de cada jugador en el adapter
 data class PlayersItem(
-    val uid: String,
+    val query: String,
     val name: String,
     val player_icon: String,
     val rank: String,

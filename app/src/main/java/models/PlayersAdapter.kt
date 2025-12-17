@@ -43,7 +43,7 @@ class PlayersAdapter(
 
         fun bind(player: PlayersItem, listener: (PlayersItem) -> Unit){
             playerName.text = player.name
-            playerUID.text = player.uid.toString()
+            playerUID.text = player.query.toString()
             playerRank.text = player.rank
             playerScore.text = player.score.toString()
             Glide.with(itemView.context)
