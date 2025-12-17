@@ -43,3 +43,4 @@ class CharactersPageAdapter(
             gridRecycler.adapter = CharacterAdapter(page.characters, listener)        }
     }
 }
+
