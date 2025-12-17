@@ -18,6 +18,9 @@
     <string name="KDA">KDA</string>
     <string name="KD">KD</string>
     <string name="MVP">MVP</string>
+    <string name="Profile">Profile</string>
+    <string name="Edit_Profile">Edit Profile</string>
+    <string name="Sign_out">Sign out</string>
 
 
 </resources>
