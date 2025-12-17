@@ -7,4 +7,17 @@
     <string name="Players">Players</string>
     <string name="Score">Score</string>
     <string name="Rank">Rank</string>
+    <string name="TimeStats">Time Stats</string>
+    <string name="TimePlayed">Time Played</string>
+    <string name="Matches">Matches</string>
+    <string name="RoleStats">Role Stats</string>
+    <string name="Vanguard">Vanguard</string>
+    <string name="Duelist">Duelist</string>
+    <string name="Strategist">Strategist</string>
+    <string name="OverallStats">Overall Stats</string>
+    <string name="KDA">KDA</string>
+    <string name="KD">KD</string>
+    <string name="MVP">MVP</string>
+
+
 </resources>

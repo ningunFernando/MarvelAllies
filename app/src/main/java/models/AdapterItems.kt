@@ -13,7 +13,7 @@ data class CharactersItem(
 
     )
 data class PlayersItem(
-    val uid: Int,
+    val uid: String,
     val name: String,
     val player_icon: String,
     val rank: String,

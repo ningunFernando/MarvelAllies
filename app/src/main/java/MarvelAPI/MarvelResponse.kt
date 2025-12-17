@@ -78,13 +78,18 @@ data class LeaderboardPlayer(
     val uid: String,
     val name: String,
     val score: Int,
-    val icon: IconResponse,
-    val rank: RankResponse
+    val icon: IconPlayer,
+    val rank: RankPlayer
 )
-data class IconResponse(
+data class IconPlayer(
     val player_icon: String
 )
-data class RankResponse(
+data class RankPlayer(
+    val rank: RankObject
+)
+data class RankObject(
     val rank: String
 )
+
+
 // Noticias

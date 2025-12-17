@@ -2,6 +2,7 @@ package MarvelAPI
 
 import Hero
 import Player
+import Leaderboard
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Path
@@ -13,7 +14,7 @@ interface MarvelAPIService
     fun getAllHeroes(): Call<List<Hero>>
 
     //LLamar a un heroe en especifico
-    @GET("heroes/hero/{query}")
+    @GET("v1/heroes/hero/{query}")
     fun getHeroById(@Path("query") query: String): Call<Hero>
 
     @GET("v2/player")
@@ -21,7 +22,7 @@ interface MarvelAPIService
 
 
 
-   // @GET("/api/v2/players/leaderboard")
-   // fun getLeaderboard( @Query("page") page: Int = 1, @Query("limit") limit: Int = 25,): Call<Leaderboard>
+   @GET("/api/v2/players/leaderboard")
+   fun getLeaderboard( @Query("page") page: Int, @Query("limit") limit: Int): Call<Leaderboard>
 
 }

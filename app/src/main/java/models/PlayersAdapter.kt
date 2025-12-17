@@ -34,7 +34,7 @@ class PlayersAdapter(
     }
 
     class PlayerViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){
-        private val playerName: TextView = itemView.findViewById(R.id.Name)
+        private val playerName: TextView = itemView.findViewById(R.id.PlayerName)
         private val playerUID: TextView = itemView.findViewById(R.id.PlayerUID)
         private val playerRank: TextView = itemView.findViewById(R.id.Rank)
         private val playerScore: TextView = itemView.findViewById(R.id.Score)
@@ -48,7 +48,7 @@ class PlayersAdapter(
             playerScore.text = player.score.toString()
             Glide.with(itemView.context)
                 //Si carga toma la imagen de este URL
-                .load("https://marvelrivalsapi.com/"+player.player_icon)
+                .load("https://marvelrivalsapi.com/rivals"+player.player_icon)
                 //Si no pone una de placeholder
                 .placeholder(R.drawable.frame_1)
                 //Acomoda la imagen en el centro del item
