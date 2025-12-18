@@ -37,8 +37,7 @@ data class Player(
     val name: String,
     val player: PlayerDetails,
     val overall_stats: Overall_stats,
-
-
+    val isPrivate: Boolean,
     )
 
 data class PlayerDetails(
@@ -57,14 +56,17 @@ data class Rank(
 )
 
 data class Overall_stats(
-    val time_played: Int,
+    val total_play_time: TimePlayedPlayer,
     val total_matches: Int,
     val roles_played: Roles_played,
     val overall_kda: KDA,
     val overall_kd: Float,
     val total_mvps: MVP
 )
+data class TimePlayedPlayer(
+    val playtime: String,
 
+    )
 data class KDA(
     val kda: Float,
     )
@@ -73,17 +75,17 @@ data class MVP(
 
 )
 data class Roles_played(
-    val duelist: Role,
-    val strategist: Role,
-    val vanguard: Role
+    val duelist: Role?,
+    val strategist: Role?,
+    val vanguard: Role?
 )
 
 data class Role(
-    val total_time_played: TimePlayed,
-    val matches_played: Float
+    val total_time_played: TimePlayed?,
+    val matches_played: Float?
 )
 data class TimePlayed(
-    val time_played: Float
+    val time_played: Float?
 )
 
 //Obtener los datos de la leaderboard

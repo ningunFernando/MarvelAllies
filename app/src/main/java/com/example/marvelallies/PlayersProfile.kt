@@ -14,6 +14,10 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import Player
+import android.util.TypedValue
+import android.widget.ImageButton
+import android.widget.LinearLayout
+import android.widget.RelativeLayout
 
 class PlayersProfile : Fragment() {
 
@@ -31,6 +35,9 @@ class PlayersProfile : Fragment() {
     private lateinit var statKDA: TextView
     private lateinit var statKD: TextView
     private lateinit var statMVP: TextView
+
+    private lateinit var back: ImageButton
+    private lateinit var dataLayout: LinearLayout
 
 
     override fun onCreateView(
@@ -55,6 +62,12 @@ class PlayersProfile : Fragment() {
         statKDA = view.findViewById(R.id.KdaText)
         statKD = view.findViewById(R.id.KdText)
         statMVP = view.findViewById(R.id.MvpText)
+        back = view.findViewById(R.id.Back)
+        dataLayout = view.findViewById(R.id.DataLayout)
+
+        back.setOnClickListener {
+            replaceFragment()
+        }
 
         val query = arguments?.getString("player_id")
 
@@ -73,23 +86,34 @@ class PlayersProfile : Fragment() {
                 if (!response.isSuccessful) {
                     //mensaje error
                     Log.e("API", "Error: ${response.code()}")
+                    if(response.code() == 403)
+                    {
+                        playerName.text = "This profile is private"
+                        hideEverything()
+                        return
+                    }
+                    if(response.code() == 429)
+                    {
+                        playerName.text = "Too many requests please try later"
+                        hideEverything()
+
+                        return
+                    }
+
                     //cargar la leaderboard en su lugar
                     return
                 }
-                // En onResponse, justo después de verificar si la respuesta es exitosa
-                Log.d("API_DEBUG", "Response code: ${response.code()}")
-                Log.d("API_DEBUG", "Response body: ${response.body()}")
-                Log.d("API_DEBUG", "Response error body: ${response.errorBody()?.string()}")
+
                 //obtener la respuesta
                 val player = response.body() ?: return
 
-                //variables con el tiempo de cada role
-                var timeVanguard : Float = player.overall_stats.roles_played.vanguard.total_time_played.time_played
-                var timeDuelist : Float = player.overall_stats.roles_played.duelist.total_time_played.time_played
-                var timeStrategist : Float = player.overall_stats.roles_played.strategist.total_time_played.time_played
+                //variables con el tiempo de cada role y verifica checar si envia un valor nulo, en ese caso es igual a 0
+                var timeVanguard  = player.overall_stats.roles_played.vanguard?.total_time_played?.time_played ?: 0f
+                var timeDuelist  = player.overall_stats.roles_played.duelist?.total_time_played?.time_played ?: 0f
+                var timeStrategist = player.overall_stats.roles_played.strategist?.total_time_played?.time_played ?: 0f
 
                 //una sumatoria de todos los tiempos
-                val rolesTotalTime: Float = timeVanguard+timeDuelist+timeStrategist
+                val rolesTotalTime = timeVanguard +timeDuelist+timeStrategist
 
                 //convertirlo en porcentaje
                 timeVanguard = intToPercent(rolesTotalTime, timeVanguard)
@@ -101,18 +125,30 @@ class PlayersProfile : Fragment() {
                 playerUID.text = player.uid.toString()
                 playerRank.text = player.player.rank.rank
                 playerScore.text = player.player.rank.score
-                playerTimePlayed.text = player.overall_stats.time_played.toString()
+                playerTimePlayed.text = player.overall_stats.total_play_time.playtime
                 playerMatches.text = player.overall_stats.total_matches.toString()
 
-                //agregar el porcentaje de uso
-                roleVanguard.text = "Vanguard: " + timeVanguard + "%"
-                roleDuelist.text = "Duelist: " + timeDuelist + "%"
-                roleStrategist.text = "Strategist: " + timeStrategist + "%"
+                //agregar el porcentaje de uso y dejar el float en dos decimales
+                var vanguardText: String = "Vanguard: ${String.format("%.2f", timeVanguard)}%"
+                var duelistText: String = "Duelist: ${String.format("%.2f", timeDuelist)}%"
+                var strategistText: String = "Strategist: ${String.format("%.2f", timeStrategist)}%"
 
-                //cambiar las overal stats
-                statKDA.text = player.overall_stats.overall_kda.kda.toString()
-                statKD.text = player.overall_stats.overall_kd.toString()
-                statMVP.text = player.overall_stats.total_mvps.mvps.toString()
+                roleVanguard.text = vanguardText
+                roleDuelist.text = duelistText
+                roleStrategist.text = strategistText
+
+                //cambiar las overal stats y dejar el float en dos decimales
+
+                var kdaTextText = "KDA :  ${String.format("%.2f", player.overall_stats.overall_kda.kda)}"
+
+                var kdTextText = "KD :  ${String.format("%.2f", player.overall_stats.overall_kd)}"
+
+                var mvpText: String = player.overall_stats.total_mvps.mvps.toString()
+                var mvpTextText = "MVP :  $mvpText"
+
+                statKDA.text = kdaTextText
+                statKD.text = kdTextText
+                statMVP.text = mvpTextText
 
                 Glide.with(requireContext())
                     //Si carga toma la imagen de este URL
@@ -138,6 +174,22 @@ class PlayersProfile : Fragment() {
     private fun intToPercent(total: Float, role: Float): Float {
         var percentage: Float = (role*100)/total
         return percentage
+    }
+
+    //moverse al fragment characters
+    private fun replaceFragment() {
+        parentFragmentManager.beginTransaction()
+            .replace(R.id.frameLayout, Players())
+            .commit()
+    }
+
+    //Ocultar todo lo que no se va mostrar y hacer grande el texto
+    private fun hideEverything()
+    {
+        playerName.setTextSize(TypedValue.COMPLEX_UNIT_SP,40f);
+        dataLayout.visibility = View.INVISIBLE
+        playerUID.visibility = View.INVISIBLE
+
     }
 
 }

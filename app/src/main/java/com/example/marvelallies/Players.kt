@@ -62,7 +62,7 @@ class Players : Fragment() {
 
     //Carga el leaderboard con un limite de 50 jugadores
     private fun LoadLeaderboard() {
-        MarvelAPIInstance.apiService.getLeaderboard( page = 1, limit = 50).enqueue(object : Callback<Leaderboard> {
+        MarvelAPIInstance.apiService.getLeaderboard( page = 1, limit = 10).enqueue(object : Callback<Leaderboard> {
 
                 override fun onResponse(
                     call: Call<Leaderboard>,
