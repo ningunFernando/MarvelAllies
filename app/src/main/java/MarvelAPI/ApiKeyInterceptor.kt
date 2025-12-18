@@ -12,7 +12,7 @@ import okhttp3.Response
 class ApiKeyInterceptor : Interceptor
 {
     //https://marvelrivalsapi.com/dashboard/settings - el link de donde sacamos la Key
-    private val _privateKey = "16179dd8cec63563b9b26996bd9b2218b90341914ecfda3dc2c64ae7505bb30b"
+    private val _privateKey = "c639a6dd1dec673a54538edc33d11f8e24b4d5a546a5829fb2f842a3d47eb609"
 
     override fun intercept(chain: Interceptor.Chain): Response
     {

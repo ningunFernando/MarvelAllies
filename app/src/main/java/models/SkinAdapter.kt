@@ -12,19 +12,19 @@ import Skin
 
 class SkinAdapter(
     private val skins: List<Skin>
-) : RecyclerView.Adapter<SkinAdapter.CharacterViewHolder>() {
+) : RecyclerView.Adapter<SkinAdapter.SkinViewHolder>() {
 
     //Se llama cada vez que el recycler necesita crear una nuevo item.
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
-    ): CharacterViewHolder {
+    ): SkinViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.skin_item, parent, false)
-        return CharacterViewHolder(view)
+        return SkinViewHolder(view)
     }
 
     //Se llama para asignar los datos a cada vista
-    override fun onBindViewHolder(holder: CharacterViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: SkinViewHolder, position: Int) {
         val skin = skins[position]
         holder.bind(skin)
     }
@@ -34,7 +34,7 @@ class SkinAdapter(
         return skins.size
     }
 
-    class CharacterViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    class SkinViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
         private val skinImage: ImageView = itemView.findViewById(R.id.SkinImage)
 
@@ -48,3 +48,4 @@ class SkinAdapter(
         }
     }
 }
+

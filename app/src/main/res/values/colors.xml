@@ -7,4 +7,5 @@
     <color name="LightYellow">#f1c22d</color>
     <color name="transparent">#00FFFFFF</color>
     <color name="BackgroundWhite">#F2F2F2</color>
+    <color name="OpacityWhite">#50F2F2F2</color>
 </resources>
