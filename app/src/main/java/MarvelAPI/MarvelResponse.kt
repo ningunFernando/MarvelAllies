@@ -1,5 +1,3 @@
-import models.PlayersItem
-
 //Aqui podremos agrego toda las data class que podemos ir necesitando, para player stats, heroes stats, etc.
 
 //Hero Data
@@ -113,17 +111,16 @@ data class RankPlayer(
 
 
 // Noticias
+
 data class Balance(
-    val totalPaches: Int,
-    val formatted_patches: formatted_patches,
+    val total_balances: Int,
+    val balances: List<FormattedPatch>?
 )
 
-data class formatted_patches(
-    val patchTitle: String,
-    val patchDate: String,
-    val patchType: String,
-    val previewText : String,
-    val imagePath: String,
+data class FormattedPatch(
+    val id: String,
+    val title: String,
+    val date: String,
     val fullContent: String,
-    val htmlContent: String
+    val imagePath: String
 )
