@@ -22,6 +22,12 @@ data class PlayersItem(
     val score: Int
     )
 
+data class NewsItem(
+    val title: String,
+    val description: String,
+    val imageUrl: String
+)
+
 
 
 
