@@ -10,7 +10,6 @@ import android.widget.Button
 
 
 class News : Fragment() {
-    private lateinit var button: Button
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -26,10 +25,7 @@ class News : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_news, container, false)
 
-        button = view.findViewById(R.id.button)
-        button.setOnClickListener {
-            ReplaceFragment()
-        }
+
 
         return view
     }
