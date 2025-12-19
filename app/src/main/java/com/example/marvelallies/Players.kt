@@ -128,6 +128,8 @@ class Players : Fragment() {
                 call: Call<Player>,
                 response: Response<Player>
             ) {
+                progressBar.visibility = View.GONE
+
                 if (!response.isSuccessful) {
                     //mensaje error
                     Log.e("API", "Error: ${response.code()}")
