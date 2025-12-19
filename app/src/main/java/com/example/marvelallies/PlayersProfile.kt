@@ -17,7 +17,7 @@ import Player
 import android.util.TypedValue
 import android.widget.ImageButton
 import android.widget.LinearLayout
-import android.widget.RelativeLayout
+import android.widget.ProgressBar
 
 class PlayersProfile : Fragment() {
 
@@ -35,6 +35,8 @@ class PlayersProfile : Fragment() {
     private lateinit var statKDA: TextView
     private lateinit var statKD: TextView
     private lateinit var statMVP: TextView
+    private lateinit var progressBar: ProgressBar
+
 
     private lateinit var back: ImageButton
     private lateinit var dataLayout: LinearLayout
@@ -65,6 +67,11 @@ class PlayersProfile : Fragment() {
         back = view.findViewById(R.id.Back)
         dataLayout = view.findViewById(R.id.DataLayout)
 
+        progressBar = view.findViewById(R.id.progressBar)
+
+
+
+
         back.setOnClickListener {
             replaceFragment()
         }
@@ -77,12 +84,16 @@ class PlayersProfile : Fragment() {
     }
 
     private fun LoadPlayer(playerUid: String) {
+        progressBar.visibility = View.VISIBLE
+
         MarvelAPIInstance.apiService.getPlayerById(playerUid).
         enqueue(object : Callback<Player> {
             override fun onResponse(
                 call: Call<Player>,
                 response: Response<Player>
             ) {
+                progressBar.visibility = View.GONE
+
                 if (!response.isSuccessful) {
                     //mensaje error
                     Log.e("API", "Error: ${response.code()}")

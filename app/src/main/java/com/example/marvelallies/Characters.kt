@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.LinearLayout
+import android.widget.ProgressBar
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
@@ -30,7 +31,7 @@ class Characters : Fragment() {
     private lateinit var searchInputText: EditText
     private lateinit var tabLayout: TabLayout
 
-
+    private lateinit var progressBar: ProgressBar
     private lateinit var characterLayout: LinearLayout
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -38,6 +39,8 @@ class Characters : Fragment() {
         val view = inflater.inflate(R.layout.fragment_characters, container, false)
         viewPager = view.findViewById(R.id.viewPager)
         tabLayout = view.findViewById(R.id.into_tab_layout)
+        progressBar = view.findViewById(R.id.progressBar)
+
 
 
         //Encontrar el boton de search y el input Field
@@ -69,10 +72,12 @@ class Characters : Fragment() {
     }
 
     private fun loadCharactersFromAPI() {
+        progressBar.visibility = View.VISIBLE
         //llamar a la API
         MarvelAPIInstance.apiService.getAllHeroes().enqueue(object : Callback<List<Hero>> {
 
                 override fun onResponse(call: Call<List<Hero>>, response: Response<List<Hero>>) {
+                    progressBar.visibility = View.GONE
                     if (!response.isSuccessful) {
                         //mensaje error
                         Log.e("API", "Error: ${response.code()}")
@@ -101,6 +106,7 @@ class Characters : Fragment() {
 
                 override fun onFailure(call: Call<List<Hero>>, t: Throwable) {
                     Log.e("API", "Error: ${t.message}")
+                    progressBar.visibility = View.GONE
                 }
             })
     }
@@ -176,10 +182,14 @@ class Characters : Fragment() {
     }
 
     private fun loadCharacterDetails(characterId: String) {
+        progressBar.visibility = View.VISIBLE
+
         //obtiene al personaje por el nombre
         MarvelAPIInstance.apiService.getHeroById(characterId)
             .enqueue(object : Callback<Hero> {
                 override fun onResponse(call: Call<Hero>, response: Response<Hero>) {
+                    progressBar.visibility = View.GONE
+
                     if (!response.isSuccessful) {
                         //mensaje error
                         Log.e("API", "Error: ${response.code()}")

@@ -8,11 +8,23 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ProgressBar
+import models.NewsAdapter
+import models.NewsItem
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.LinearLayoutManager
+
+
 
 class News : Fragment() {
+
+    private lateinit var recyclerNews: RecyclerView
+    private lateinit var progressBar: ProgressBar
+
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -22,15 +34,25 @@ class News : Fragment() {
 
         val view = inflater.inflate(R.layout.fragment_news, container, false)
 
+        recyclerNews = view.findViewById(R.id.RecyclerNews)
+
+        recyclerNews.layoutManager = LinearLayoutManager(requireContext())
+        progressBar = view.findViewById(R.id.progressBar)
+
+
         getNews()
 
         return view
     }
 
     private fun getNews() {
+        progressBar.visibility = View.VISIBLE
+
         MarvelAPIInstance.apiService.getNewsBalances(1, 20)
             .enqueue(object : Callback<Balance> {
                 override fun onResponse(call: Call<Balance>, response: Response<Balance>) {
+                    progressBar.visibility = View.GONE
+
                     if (!response.isSuccessful) {
                         Log.e("NewsAPI", "Error HTTP: ${response.code()}")
                         return
@@ -42,26 +64,49 @@ class News : Fragment() {
                         return
                     }
 
-                    val patches = news.balances.orEmpty()
-                    if (patches.isEmpty()) {
-                        Log.e("NewsAPI", "No balances available")
-                        return
+
+
+                    val newsItems = news.balances!!.map { player ->
+                        NewsItem(
+                            title = player.title,
+                            description = player.fullContent,
+                            imageUrl = player.imagePath
+                        )
                     }
 
-                    Log.d("News", "Total patches: ${news.total_balances}")
-                    patches.forEachIndexed { index, patch ->
-                        Log.d("NewsPatch", "======= PATCH #$index =======")
-                        Log.d("NewsPatch", "Title: ${patch.title}")
-                        Log.d("NewsPatch", "Date: ${patch.date}")
-                        Log.d("NewsPatch", "Preview (first 200 chars): ${patch.fullContent.take(200)}...")
-                        Log.d("NewsPatch", "Image Path: ${patch.imagePath}")
+                    val adapter = NewsAdapter(newsItems) { new ->
+                        onCharacterClicked(new)
                     }
+
+                    //Cambiar el recycler view
+                    recyclerNews.adapter = adapter
+
+
                 }
 
                 override fun onFailure(call: Call<Balance>, t: Throwable) {
                     Log.e("NewsAPI", "Request failed", t)
+                    progressBar.visibility = View.GONE
+
                 }
             })
+    }
+    private fun onCharacterClicked(new: NewsItem) {
+        // Aquí puedes navegar al fragmento de detalles
+        val fragmentTransaction = parentFragmentManager.beginTransaction()
+        //Pasar argumentos al segundo fragment
+        val detailsFragment = Forum().apply {
+            arguments = Bundle().apply {
+                //mandar id al otro fragment
+                putString("new_image", new.imageUrl)
+                putString("new_description", new.description)
+            }
+
+        }
+        //cambiar de fragment
+        fragmentTransaction.replace(R.id.frameLayout, detailsFragment)
+        fragmentTransaction.addToBackStack(null)
+        fragmentTransaction.commit()
     }
 
 
