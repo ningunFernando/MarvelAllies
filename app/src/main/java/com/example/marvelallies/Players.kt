@@ -20,6 +20,8 @@ import Leaderboard
 import Player
  import android.widget.LinearLayout
 import android.widget.ProgressBar
+import android.content.res.Configuration
+
 
 
 class Players : Fragment() {
@@ -29,7 +31,6 @@ class Players : Fragment() {
     private lateinit var playersLayout: LinearLayout
     private lateinit var searchInputText: EditText
     private lateinit var progressBar: ProgressBar
-
 
     override fun onCreateView(
         inflater: LayoutInflater,

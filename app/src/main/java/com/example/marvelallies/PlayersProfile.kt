@@ -18,6 +18,7 @@ import android.util.TypedValue
 import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.ProgressBar
+import android.content.res.Configuration
 
 class PlayersProfile : Fragment() {
 
