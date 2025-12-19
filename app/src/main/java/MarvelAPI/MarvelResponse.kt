@@ -24,12 +24,9 @@ data class Abilities(
 )
 
 data class Skin(
-
     val name: String,
     val icon: String,
-
-
-    )
+)
 
 //Player Stats
 data class Player(
@@ -38,7 +35,7 @@ data class Player(
     val player: PlayerDetails,
     val overall_stats: Overall_stats,
     val isPrivate: Boolean,
-    )
+)
 
 data class PlayerDetails(
     val icon: Icon,
@@ -116,3 +113,17 @@ data class RankPlayer(
 
 
 // Noticias
+data class Balance(
+    val totalPaches: Int,
+    val formatted_patches: formatted_patches,
+)
+
+data class formatted_patches(
+    val patchTitle: String,
+    val patchDate: String,
+    val patchType: String,
+    val previewText : String,
+    val imagePath: String,
+    val fullContent: String,
+    val htmlContent: String
+)
