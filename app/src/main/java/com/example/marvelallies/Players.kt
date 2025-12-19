@@ -19,6 +19,10 @@ import retrofit2.Response
 import Leaderboard
 import Player
  import android.widget.LinearLayout
+import android.widget.ProgressBar
+import android.content.res.Configuration
+
+
 
 class Players : Fragment() {
 
@@ -26,6 +30,7 @@ class Players : Fragment() {
     private lateinit var searchButton: ImageButton
     private lateinit var playersLayout: LinearLayout
     private lateinit var searchInputText: EditText
+    private lateinit var progressBar: ProgressBar
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -38,6 +43,9 @@ class Players : Fragment() {
         searchButton = view.findViewById(R.id.Search)
         searchInputText = view.findViewById(R.id.SearchLayout)
         playersLayout = view.findViewById(R.id.PlayersLayout)
+
+        progressBar = view.findViewById(R.id.progressBar)
+
 
         //cuando se clickea el boton de lupa
         searchButton.setOnClickListener{
@@ -62,14 +70,19 @@ class Players : Fragment() {
 
     //Carga el leaderboard con un limite de 50 jugadores
     private fun LoadLeaderboard() {
+        progressBar.visibility = View.VISIBLE
+
         MarvelAPIInstance.apiService.getLeaderboard( page = 1, limit = 10).enqueue(object : Callback<Leaderboard> {
 
                 override fun onResponse(
                     call: Call<Leaderboard>,
                     response: Response<Leaderboard>
                 ) {
+                    progressBar.visibility = View.GONE
+
                     if (!response.isSuccessful || response.body() == null) {
                         Log.e("API", "Error: ${response.code()}")
+
                         return
                     }
 
@@ -100,18 +113,24 @@ class Players : Fragment() {
         //En caso de que haya error
                 override fun onFailure(call: Call<Leaderboard>, t: Throwable) {
                     Log.e("API", "Error: ${t.message}", t)
-                }
+            progressBar.visibility = View.GONE
+
+        }
             })
     }
 
     //Load one player
     private fun LoadPlayer(playerUid: String) {
+        progressBar.visibility = View.VISIBLE
+
         MarvelAPIInstance.apiService.getPlayerById(playerUid).
         enqueue(object : Callback<Player> {
             override fun onResponse(
                 call: Call<Player>,
                 response: Response<Player>
             ) {
+                progressBar.visibility = View.GONE
+
                 if (!response.isSuccessful) {
                     //mensaje error
                     Log.e("API", "Error: ${response.code()}")
@@ -145,7 +164,10 @@ class Players : Fragment() {
             }
 
             override fun onFailure(call: Call<Player>, t: Throwable) {
-                Log.e("API", "Error: ${t.message}", t)            }
+                Log.e("API", "Error: ${t.message}", t)
+                progressBar.visibility = View.GONE
+
+            }
 
         })
     }

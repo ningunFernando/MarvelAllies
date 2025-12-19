@@ -50,9 +50,11 @@
 
             <ImageView
                 android:id="@+id/NewsImage"
-                android:layout_width="match_parent"
-                android:layout_height="200dp"
+                android:layout_width="wrap_content"
+                android:layout_height="100dp"
+                android:layout_gravity="center"
                 android:layout_margin="20dp"
+                android:foregroundGravity="center"
                 android:scaleType="fitXY"
                 tools:src="@tools:sample/backgrounds/scenic" />
 

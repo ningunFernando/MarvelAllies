@@ -18,6 +18,8 @@ import retrofit2.Response
 import Hero
 import android.content.res.Configuration
 import models.AbilitiesAdapter
+import android.widget.ProgressBar
+
 
 class CharacterDetails : Fragment() {
 
@@ -27,6 +29,9 @@ class CharacterDetails : Fragment() {
     private lateinit var bioLayout: TextView
     private lateinit var recyclerView: RecyclerView
     private lateinit var recyclerAbilities: RecyclerView
+    private lateinit var progressBar: ProgressBar
+
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -43,6 +48,8 @@ class CharacterDetails : Fragment() {
         bioLayout = view.findViewById(R.id.Bio)
         recyclerView = view.findViewById(R.id.RecyclerSkin)
         recyclerAbilities = view.findViewById(R.id.RecyclerAbilities)
+
+        progressBar = view.findViewById(R.id.progressBar)
 
         //scrolleo horizontal
         recyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
@@ -76,13 +83,15 @@ class CharacterDetails : Fragment() {
         loadCharacterDetails(query.toString())
     }
     private fun loadCharacterDetails(characterId: String) {
+        progressBar.visibility = View.VISIBLE
 
         //obtiene al personaje por la ID
         MarvelAPIInstance.apiService.getHeroById(characterId)
             .enqueue(object : Callback<Hero> {
-
                 override fun onResponse(call: Call<Hero>, response: Response<Hero>) {
-                        //cargar la bio y las skins
+                    progressBar.visibility = View.GONE
+
+                    //cargar la bio y las skins
                         response.body()?.let { hero ->
                             bioLayout.text = hero.bio
                             //cargar las skins del personaje
@@ -96,6 +105,8 @@ class CharacterDetails : Fragment() {
                 //error de conexion
                 override fun onFailure(call: Call<Hero>, t: Throwable) {
                     Log.e("API", "Error de conexión: ${t.message}")
+                    progressBar.visibility = View.GONE
+
                 }
             })
     }

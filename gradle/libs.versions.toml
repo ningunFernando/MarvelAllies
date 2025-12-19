@@ -22,6 +22,7 @@ credentialsPlayServicesAuth = "1.5.0"
 googleid = "1.1.1"
 firebaseCrashlytics = "20.0.3"
 googleFirebaseCrashlytics = "3.0.6"
+scenecore = "1.0.0-alpha10"
 
 
 [libraries]
@@ -44,6 +45,7 @@ androidx-credentials = { group = "androidx.credentials", name = "credentials", v
 androidx-credentials-play-services-auth = { group = "androidx.credentials", name = "credentials-play-services-auth", version.ref = "credentialsPlayServicesAuth" }
 googleid = { group = "com.google.android.libraries.identity.googleid", name = "googleid", version.ref = "googleid" }
 firebase-crashlytics = { group = "com.google.firebase", name = "firebase-crashlytics", version.ref = "firebaseCrashlytics" }
+androidx-scenecore = { group = "androidx.xr.scenecore", name = "scenecore", version.ref = "scenecore" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
