@@ -6,10 +6,12 @@
         android:title="Light Mode"
         android:id="@+id/lightMode"
         android:icon="@drawable/baseline_lightbulb_24"
+        android:fontFamily="@font/roboto_medium"
         />
     <item
         android:title="Dark Mode"
         android:id="@+id/darkMode"
         android:icon="@drawable/baseline_dark_mode_24"
+        android:fontFamily="@font/roboto_medium"
         />
 </menu>

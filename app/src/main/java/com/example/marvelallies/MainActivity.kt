@@ -1,13 +1,18 @@
 package com.example.marvelallies
 
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var bottomNavBarViww : BottomNavigationView
+    private lateinit var _topBarview: Toolbar
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -18,10 +23,10 @@ class MainActivity : AppCompatActivity() {
             handleNavigationItemSelected(item.itemId)
         }
 
+        _topBarview = findViewById(R.id.TopbarView)
+        setSupportActionBar(_topBarview)
+
         LoadFragment(News())
-
-
-
 
     }
     private fun LoadFragment(fragment: Fragment){
@@ -49,4 +54,26 @@ class MainActivity : AppCompatActivity() {
            else -> false
        }
    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.top_bar, menu)
+        return true
+    }
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.lightMode -> {
+                AppCompatDelegate.setDefaultNightMode(
+                    AppCompatDelegate.MODE_NIGHT_NO
+                )
+                true
+            }
+            R.id.darkMode -> {
+                AppCompatDelegate.setDefaultNightMode(
+                    AppCompatDelegate.MODE_NIGHT_YES
+                )
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
 }

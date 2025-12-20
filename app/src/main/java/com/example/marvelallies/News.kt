@@ -49,6 +49,11 @@ class News : Fragment() {
 
         return view
     }
+    override fun onResume() {
+        super.onResume()
+        requireActivity().title = "News"
+    }
+
 
     private fun getNews() {
         progressBar.visibility = View.VISIBLE
