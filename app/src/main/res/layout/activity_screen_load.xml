@@ -1,0 +1,17 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    android:gravity="center"
+    android:background="@color/BackGroundBlue"
+    tools:context=".ScreenLoad">
+
+    <ImageView
+        android:layout_width="223dp"
+        android:layout_height="223dp"
+        android:src="@drawable/logo" />
+
+</LinearLayout>
