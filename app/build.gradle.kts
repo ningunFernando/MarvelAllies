@@ -59,10 +59,13 @@ dependencies {
     implementation(libs.androidx.credentials.play.services.auth)
     implementation(libs.googleid)
     implementation(libs.firebase.crashlytics)
+    implementation(libs.androidx.constraintlayout)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     implementation(kotlin("script-runtime"))
+    implementation(libs.play.services.auth)
+
 
     //Crear carrusel para el characters views
     implementation("androidx.viewpager2:viewpager2:1.1.0")
