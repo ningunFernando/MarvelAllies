@@ -7,14 +7,14 @@
     android:layout_height="match_parent"
     android:gravity="bottom"
     android:orientation="vertical"
+    android:background="?android:attr/colorBackground"
     tools:context=".MainActivity">
-
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/TopbarView"
         android:layout_width="match_parent"
         android:layout_height="80dp"
-        android:background="@color/BackGroundBlue"
+        android:background="?attr/colorPrimary"
         app:titleTextAppearance="@style/ToolbarTitleStyle"
         app:theme="@style/ToolbarSearchTheme"
         app:menu="@menu/top_bar"/>
@@ -23,13 +23,14 @@
         android:id="@+id/frameLayout"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1" />
+        android:layout_weight="1"
+        android:background="?attr/colorSurface"/>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigationView"
         android:layout_width="match_parent"
         android:layout_height="56dp"
-        android:background="#282C3F"
+        android:background="@color/BackGroundBlue"
         app:itemActiveIndicatorStyle="@color/transparent"
         app:itemBackground="@drawable/navbar_style"
         app:itemIconSize="24dp"
@@ -38,6 +39,5 @@
         app:labelVisibilityMode="labeled"
         app:menu="@menu/bottom_nav"
         app:shapeAppearance="@color/transparent" />
-
 
 </LinearLayout>

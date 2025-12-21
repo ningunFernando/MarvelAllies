@@ -1,6 +1,6 @@
 //Aqui podremos agrego toda las data class que podemos ir necesitando, para player stats, heroes stats, etc.
 
-//Hero Data
+//Hero Data --------------
 
 data class Hero(
     val id: String,
@@ -26,7 +26,7 @@ data class Skin(
     val icon: String,
 )
 
-//Player Stats
+//Player Stats --------------
 data class Player(
     val uid: Int,
     val name: String,
@@ -110,7 +110,7 @@ data class RankPlayer(
 )
 
 
-// Noticias
+// Noticias --------------
 
 data class Balance(
     val total_balances: Int,
