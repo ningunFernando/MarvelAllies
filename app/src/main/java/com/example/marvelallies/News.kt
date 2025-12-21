@@ -10,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
+import androidx.appcompat.app.AppCompatActivity
 import models.NewsAdapter
 import models.NewsItem
 import retrofit2.Call
@@ -49,10 +50,17 @@ class News : Fragment() {
 
         return view
     }
-    override fun onResume() {
-        super.onResume()
-        requireActivity().title = getString(R.string.News)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        val activity = requireActivity() as AppCompatActivity
+        activity.supportActionBar?.apply {
+            title = getString(R.string.News)
+            setDisplayHomeAsUpEnabled(false)
+            setHomeAsUpIndicator(null)
+        }
     }
+
 
 
     private fun getNews() {

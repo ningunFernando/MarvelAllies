@@ -16,8 +16,6 @@ class Profile : Fragment() {
         super.onResume()
         requireActivity().title = getString(R.string.Profile)
     }
-
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?

@@ -9,11 +9,13 @@ import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import com.bumptech.glide.Glide
+import androidx.appcompat.app.AppCompatActivity
+import android.view.MenuItem
+
 
 
 class Forum : Fragment() {
 
-    private lateinit var back: ImageButton
     private lateinit var imageNew: ImageView
     private lateinit var newText: TextView
 
@@ -48,21 +50,27 @@ class Forum : Fragment() {
             //En la imagen del item
             .into(imageNew)
 
-        // Aquí usas la vista inflada para encontrar el botón
-        back = view.findViewById(R.id.Back)
-        back.setOnClickListener {
-            replaceFragment()
-        }
-
         return view
     }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
+        val activity = requireActivity() as AppCompatActivity
+        activity.supportActionBar?.apply {
+            setDisplayHomeAsUpEnabled(true)
+            setHomeAsUpIndicator(R.drawable.ic_back_24)
+            title = getString(R.string.Forum)
+        }
 
-    private fun replaceFragment(){
-
-        val fragmentTransaction = parentFragmentManager.beginTransaction()
-        fragmentTransaction.replace(R.id.frameLayout, News())
-        fragmentTransaction.commit()
+        setHasOptionsMenu(true)
     }
-
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            android.R.id.home -> {
+                parentFragmentManager.popBackStack()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
 }
