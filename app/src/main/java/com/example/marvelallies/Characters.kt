@@ -24,7 +24,6 @@ class Characters : Fragment() {
     private lateinit var viewPager: ViewPager2
     private lateinit var tabLayout: TabLayout
 
-    // 🔹 ESTE FRAGMENT USARÁ MENÚ EN LA TOOLBAR
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
@@ -63,7 +62,7 @@ class Characters : Fragment() {
         requireActivity().title = getString(R.string.Characters)
     }
 
-    // 🔹 MENÚ DE BÚSQUEDA EN LA TOOLBAR
+    // menu de busqueda del top bar
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.top_bar_characters, menu)
 
