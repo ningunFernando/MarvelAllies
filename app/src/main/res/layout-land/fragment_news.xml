@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_marginLeft="0sp"
+    android:background="@color/BackgroundWhite"
     android:orientation="vertical"
     tools:context=".News">
 
@@ -21,11 +21,14 @@
             android:scaleX="0.2"
             android:scaleY="0.2"
             android:visibility="gone" />
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/RecyclerNews"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:background="@color/BackgroundWhite" />
+            android:layout_gravity="center"
+            android:background="@color/BackgroundWhite"
+            android:foregroundGravity="center" />
 
     </LinearLayout>
 

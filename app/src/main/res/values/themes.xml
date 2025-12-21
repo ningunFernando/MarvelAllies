@@ -3,10 +3,12 @@
     <style name="Base.Theme.MarvelAllies" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+
+        <item name="colorPrimary">@color/BackGroundBlue</item>
+        <item name="colorOnPrimary">@color/BackGroundBlue</item>
+
+        <item name="colorSecondary">@color/white </item>
+        <item name="colorOnSecondary">@color/white </item>
     </style>
-
     <style name="Theme.MarvelAllies" parent="Base.Theme.MarvelAllies" />
-
-
-
 </resources>

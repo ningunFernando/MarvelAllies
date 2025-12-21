@@ -3,12 +3,10 @@ package com.example.marvelallies
 import MarvelAPI.MarvelAPIInstance
 import android.os.Bundle
 import android.util.Log
+import android.view.*
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.widget.EditText
-import android.widget.ImageButton
+import androidx.appcompat.widget.SearchView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import models.PlayersAdapter
@@ -16,68 +14,148 @@ import models.PlayersItem
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import android.widget.ProgressBar
 import Leaderboard
 import Player
- import android.widget.LinearLayout
 
 class Players : Fragment() {
 
+    /*
+     * RecyclerView encargado de mostrar el leaderboard
+     * o el resultado de una búsqueda específica
+     */
     private lateinit var recyclerView: RecyclerView
-    private lateinit var searchButton: ImageButton
-    private lateinit var playersLayout: LinearLayout
-    private lateinit var searchInputText: EditText
+
+    /*
+     * Barra de progreso que indica el estado de carga
+     * durante las peticiones a la API
+     */
+    private lateinit var progressBar: ProgressBar
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        /*
+         * Indico que este fragment define su propio menú,
+         * necesario para habilitar el buscador en la Toolbar
+         */
+        setHasOptionsMenu(true)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+
+        /*
+         * Inflo el layout del fragment y preparo los componentes
+         * que mostrarán la información de los jugadores
+         */
         val view = inflater.inflate(R.layout.fragment_players, container, false)
 
-        //Encontrar los elementos en la toolbar
-        searchButton = view.findViewById(R.id.Search)
-        searchInputText = view.findViewById(R.id.SearchLayout)
-        playersLayout = view.findViewById(R.id.PlayersLayout)
-
-        //cuando se clickea el boton de lupa
-        searchButton.setOnClickListener{
-            ShowLayout()
-        }
-
-        //cuando se clickea afuera de la lupa dentro del toolbar
-        playersLayout.setOnClickListener{
-            HideLayout()
-        }
-
-        //Encontrar el recycler view
         recyclerView = view.findViewById(R.id.RecyclerPlayers)
+        progressBar = view.findViewById(R.id.progressBar)
 
+        /*
+         * Utilizo un LinearLayoutManager para presentar
+         * los jugadores en una lista vertical
+         */
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
-        //Cargar el Leaderboard
-        LoadLeaderboard()
+         // Cargo el leaderboard completo al entrar al fragment
+        loadLeaderboard()
 
         return view
     }
 
-    //Carga el leaderboard con un limite de 50 jugadores
-    private fun LoadLeaderboard() {
-        MarvelAPIInstance.apiService.getLeaderboard( page = 1, limit = 10).enqueue(object : Callback<Leaderboard> {
+    override fun onResume() {
+        super.onResume()
 
-                override fun onResponse(
-                    call: Call<Leaderboard>,
-                    response: Response<Leaderboard>
-                ) {
+        /*
+         * Configuro la Toolbar para esta sección,
+         * ocultando el botón de regreso al tratarse de una pantalla principal
+         */
+        val activity = requireActivity() as AppCompatActivity
+        activity.supportActionBar?.apply {
+            setDisplayHomeAsUpEnabled(false)
+            setHomeAsUpIndicator(null)
+            title = getString(R.string.Players)
+        }
+    }
+
+    // Menu con buscador
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.top_bar_search_players, menu)
+
+        val searchItem = menu.findItem(R.id.action_search)
+        val searchView = searchItem.actionView as SearchView
+
+        searchView.queryHint = getString(R.string.Name)
+
+        /*
+         * Configuro el buscador para ejecutar la búsqueda
+         * únicamente cuando el usuario confirma la acción
+         */
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+
+                /*
+                 * Este método se ejecuta cuando el usuario confirma la búsqueda
+                 * desde el teclado (por ejemplo, presionando Enter o el botón de búsqueda)
+                 * Decido procesar la búsqueda únicamente en este punto para evitar
+                 * realizar múltiples llamadas a la API mientras el usuario escribe
+                 */
+                if (!query.isNullOrBlank()) {
+                    loadPlayer(query)
+                }
+
+                 // Limpio el foco del SearchView para cerrar el teclado
+                searchView.clearFocus()
+
+                return true
+            }
+            override fun onQueryTextChange(newText: String?): Boolean {
+
+                /*
+                 * decido no utilizarlo para evitar búsquedas en tiempo real,
+                 * Aunque no se use lo pide la interfaz
+                 */
+                return false
+            }
+        })
+
+    }
+
+    // Cargar leaderboard completo
+    private fun loadLeaderboard() {
+
+        /*
+         * Muestro la barra de progreso antes de iniciar la llamada
+         * para informar al usuario del estado de carga
+         */
+        progressBar.visibility = View.VISIBLE
+
+        /*
+         * Solicito el leaderboard paginado desde la API
+         * El límite se establece para reducir la cantidad de peticiones
+         */
+        MarvelAPIInstance.apiService.getLeaderboard(page = 1, limit = 50)
+            .enqueue(object : Callback<Leaderboard> {
+
+                override fun onResponse(call: Call<Leaderboard>, response: Response<Leaderboard>) {
+                    progressBar.visibility = View.GONE
+
                     if (!response.isSuccessful || response.body() == null) {
                         Log.e("API", "Error: ${response.code()}")
                         return
                     }
 
-                    //tomar la variable de la rrespuesta
-                    val leaderboard = response.body()!!
-
-                    //mapear las respuestas de la api para que concuerden con el players item
-                    val playersItems = leaderboard.players.map { player ->
+                    /*
+                     * Transformo el modelo de la API en un modelo
+                     * adaptado a la capa de presentación
+                     */
+                    val playersItems = response.body()!!.players.map { player ->
                         PlayersItem(
                             query = player.uid,
                             name = player.name,
@@ -87,98 +165,85 @@ class Players : Fragment() {
                         )
                     }
 
-                    //el adaptador sera igual a la respuesta de la api y detectar los clicks
-                    val adapter = PlayersAdapter(playersItems) { player ->
-                        onCharacterClicked(player)
+                    recyclerView.adapter = PlayersAdapter(playersItems) { player ->
+                        openPlayerProfile(player)
                     }
-
-                    //Cambiar el recycler view
-                    recyclerView.adapter = adapter
-
                 }
 
-        //En caso de que haya error
                 override fun onFailure(call: Call<Leaderboard>, t: Throwable) {
+                    progressBar.visibility = View.GONE
                     Log.e("API", "Error: ${t.message}", t)
                 }
             })
     }
 
-    //Load one player
-    private fun LoadPlayer(playerUid: String) {
-        MarvelAPIInstance.apiService.getPlayerById(playerUid).
-        enqueue(object : Callback<Player> {
-            override fun onResponse(
-                call: Call<Player>,
-                response: Response<Player>
-            ) {
-                if (!response.isSuccessful) {
-                    //mensaje error
-                    Log.e("API", "Error: ${response.code()}")
-                    //cargar la leaderboard en su lugar
-                    LoadLeaderboard()
-                    return
+    // Cargar jugador por UID
+    private fun loadPlayer(playerUid: String) {
+
+        /*
+         * Se realiza una búsqueda directa por UID
+         * En caso de error, se vuelve a mostrar el leaderboard completo
+         */
+        progressBar.visibility = View.VISIBLE
+
+        MarvelAPIInstance.apiService.getPlayerById(playerUid)
+            .enqueue(object : Callback<Player> {
+
+                override fun onResponse(call: Call<Player>, response: Response<Player>) {
+                    progressBar.visibility = View.GONE
+
+                    if (!response.isSuccessful || response.body() == null) {
+                        Log.e("API", "Error: ${response.code()}")
+                        loadLeaderboard() // fallback
+                        return
+                    }
+
+                    val player = response.body()!!
+
+                    /*
+                     * Normalizo el score eliminando separadores
+                     * para poder manejarlo como valor numérico
+                     */
+                    val scoreData = player.player.rank.score
+                        .replace(",", "")
+                        .toInt()
+
+                    val playerItem = PlayersItem(
+                        query = player.uid.toString(),
+                        name = player.name,
+                        player_icon = player.player.icon.player_icon,
+                        rank = player.player.rank.rank,
+                        score = scoreData
+                    )
+
+                    recyclerView.adapter = PlayersAdapter(listOf(playerItem)) { p ->
+                        openPlayerProfile(p)
+                    }
                 }
-                //obtener la respuesta
-                val player = response.body() ?: return
 
-                //eliminar las comas del score para poder convertirlas en un int
-                val scoreData = player.player.rank.score.replace(",","")
-
-                //dar los valores al player item
-                val playerItem = PlayersItem(
-                    query = player.uid.toString(),
-                    name = player.name,
-                    player_icon = player.player.icon.player_icon,
-                    rank = player.player.rank.rank,
-                    score = scoreData.toInt()
-                )
-
-                //darle al adapter la lista del unico jugador
-                val adapter = PlayersAdapter(listOf(playerItem)) { player->
-                    onCharacterClicked(player)
+                override fun onFailure(call: Call<Player>, t: Throwable) {
+                    progressBar.visibility = View.GONE
+                    Log.e("API", "Error: ${t.message}", t)
                 }
-
-                //cambiar el adapter
-                recyclerView.adapter = adapter
-
-            }
-
-            override fun onFailure(call: Call<Player>, t: Throwable) {
-                Log.e("API", "Error: ${t.message}", t)            }
-
-        })
+            })
     }
 
-    private fun onCharacterClicked(player: PlayersItem) {
-        // Aquí puedes navegar al fragmento de detalles
+    private fun openPlayerProfile(player: PlayersItem) {
+
+        /*
+         * Manejo la navegación hacia el fragment de perfil
+         * enviando el UID del jugador seleccionado
+         */
         val fragmentTransaction = parentFragmentManager.beginTransaction()
-        //Pasar argumentos al segundo fragment
+
         val detailsFragment = PlayersProfile().apply {
             arguments = Bundle().apply {
-                //mandar id al otro fragment
                 putString("player_id", player.query)
             }
-
         }
-        //cambiar de fragment
+
         fragmentTransaction.replace(R.id.frameLayout, detailsFragment)
         fragmentTransaction.addToBackStack(null)
         fragmentTransaction.commit()
-    }
-
-    //Mostrar el editor de texto
-    private fun ShowLayout(){
-        if(searchInputText.visibility == View.INVISIBLE) {
-            searchInputText.visibility = View.VISIBLE
-        }else{
-            //Cargar el adapter del jugador
-            LoadPlayer(searchInputText.text.toString())
-        }
-    }
-
-    //Esconder el editor de texto
-    private fun HideLayout(){
-        searchInputText.visibility = View.INVISIBLE
     }
 }

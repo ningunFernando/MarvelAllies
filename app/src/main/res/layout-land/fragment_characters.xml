@@ -1,93 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/CharactersLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_gravity="center"
-    android:gravity="center"
-    android:orientation="vertical"
-    tools:context=".Characters">
+    android:orientation="horizontal">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="63dp"
-        android:background="@color/BackGroundBlue"
-        android:orientation="horizontal">
-
-        <TextView
-            android:id="@+id/textView"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="0"
-            android:gravity="center_vertical"
-            android:paddingLeft="20sp"
-            android:text="@string/Characters"
-            android:textColor="@color/white"
-            android:textSize="24sp" />
-
-        <Space
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="1" />
-
-        <EditText
-            android:id="@+id/SearchLayout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="0"
-            android:ems="10"
-            android:hint="@string/Name"
-            android:inputType="text"
-            android:textColor="@color/white"
-            android:textColorHint="@color/white"
-            android:visibility="invisible" />
-
-        <ImageButton
-            android:id="@+id/Search"
-            android:layout_width="63dp"
-            android:layout_height="50dp"
-            android:layout_gravity="center|end"
-            android:layout_marginRight="10dp"
-            android:layout_weight="0"
-            android:adjustViewBounds="false"
-            android:background="@color/transparent"
-            android:contentDescription="search"
-            android:foregroundGravity="center"
-            android:scaleType="centerInside"
-            android:src="@drawable/search"
-            android:visibility="visible" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/into_tab_layout"
+        android:layout_width="72dp"
         android:layout_height="match_parent"
-        android:layout_gravity="bottom"
-        android:orientation="vertical">
+        app:tabGravity="fill"
+        app:tabIndicatorHeight="0dp"
+        app:tabMode="fixed" />
 
-        <androidx.viewpager2.widget.ViewPager2
-            android:id="@+id/viewPager"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_margin="0dp"
-            android:layout_weight="100"
-            android:foregroundGravity="center"
-             />
-        <com.google.android.material.tabs.TabLayout
-            android:id="@+id/into_tab_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:contentDescription="Circle Progresion"
-            android:layout_gravity="bottom"
-            app:tabBackground="@drawable/tab_pager_selector"
-            app:tabGravity="center"
-            app:tabIndicatorHeight="0dp" />
-
-
-
-    </LinearLayout>
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/viewPager"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1" />
 
 </LinearLayout>
