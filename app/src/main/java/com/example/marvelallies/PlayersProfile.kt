@@ -15,14 +15,14 @@ import retrofit2.Callback
 import retrofit2.Response
 import Player
 import android.util.TypedValue
-import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.ProgressBar
-import android.content.res.Configuration
+import androidx.appcompat.app.AppCompatActivity
+import android.view.MenuItem
+
 
 class PlayersProfile : Fragment() {
 
-    //Declarar todos los elementos que se van a modificar dentro del fragment
     private lateinit var playerImageView: ImageView
     private lateinit var playerName: TextView
     private lateinit var playerUID: TextView
@@ -37,21 +37,15 @@ class PlayersProfile : Fragment() {
     private lateinit var statKD: TextView
     private lateinit var statMVP: TextView
     private lateinit var progressBar: ProgressBar
-
-
-    private lateinit var back: ImageButton
     private lateinit var dataLayout: LinearLayout
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_players_profile, container, false)
 
-
-        //Encontrar las views dentro del layout
+        // Views
         playerImageView = view.findViewById(R.id.PlayerImage)
         playerName = view.findViewById(R.id.NamePlayer)
         playerUID = view.findViewById(R.id.UidPlayer)
@@ -65,143 +59,118 @@ class PlayersProfile : Fragment() {
         statKDA = view.findViewById(R.id.KdaText)
         statKD = view.findViewById(R.id.KdText)
         statMVP = view.findViewById(R.id.MvpText)
-        back = view.findViewById(R.id.Back)
+        progressBar = view.findViewById(R.id.progressBar)
         dataLayout = view.findViewById(R.id.DataLayout)
 
-        progressBar = view.findViewById(R.id.progressBar)
+        // Obtener ID del player
+        val query = arguments?.getString("player_id")
+        query?.let { LoadPlayer(it) }
 
+        return view
+    }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-
-
-        back.setOnClickListener {
-            replaceFragment()
+        val activity = requireActivity() as AppCompatActivity
+        activity.supportActionBar?.apply {
+            setDisplayHomeAsUpEnabled(true)
+            setHomeAsUpIndicator(R.drawable.ic_back_24)
+            title = getString(R.string.Players)
         }
 
-        val query = arguments?.getString("player_id")
-
-        LoadPlayer(query.toString())
-
-        return (view)
+        setHasOptionsMenu(true)
+    }
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            android.R.id.home -> {
+                parentFragmentManager.popBackStack()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+    override fun onResume() {
+        super.onResume()
+        requireActivity().title = getString(R.string.Players)
     }
 
     private fun LoadPlayer(playerUid: String) {
         progressBar.visibility = View.VISIBLE
 
-        MarvelAPIInstance.apiService.getPlayerById(playerUid).
-        enqueue(object : Callback<Player> {
-            override fun onResponse(
-                call: Call<Player>,
-                response: Response<Player>
-            ) {
-                progressBar.visibility = View.GONE
+        MarvelAPIInstance.apiService.getPlayerById(playerUid)
+            .enqueue(object : Callback<Player> {
+                override fun onResponse(call: Call<Player>, response: Response<Player>) {
+                    progressBar.visibility = View.GONE
 
-                if (!response.isSuccessful) {
-                    //mensaje error
-                    Log.e("API", "Error: ${response.code()}")
-                    if(response.code() == 403)
-                    {
-                        playerName.text = "This profile is private"
-                        hideEverything()
-                        return
-                    }
-                    if(response.code() == 429)
-                    {
-                        playerName.text = "Too many requests please try later"
-                        hideEverything()
-
+                    if (!response.isSuccessful) {
+                        Log.e("API", "Error: ${response.code()}")
+                        handleApiError(response.code())
                         return
                     }
 
-                    //cargar la leaderboard en su lugar
-                    return
+                    val player = response.body() ?: return
+                    bindPlayerData(player)
                 }
 
-                //obtener la respuesta
-                val player = response.body() ?: return
+                override fun onFailure(call: Call<Player>, t: Throwable) {
+                    progressBar.visibility = View.GONE
+                    Log.e("API", "Error: ${t.message}", t)
+                }
+            })
+    }
 
-                //variables con el tiempo de cada role y verifica checar si envia un valor nulo, en ese caso es igual a 0
-                var timeVanguard  = player.overall_stats.roles_played.vanguard?.total_time_played?.time_played ?: 0f
-                var timeDuelist  = player.overall_stats.roles_played.duelist?.total_time_played?.time_played ?: 0f
-                var timeStrategist = player.overall_stats.roles_played.strategist?.total_time_played?.time_played ?: 0f
-
-                //una sumatoria de todos los tiempos
-                val rolesTotalTime = timeVanguard +timeDuelist+timeStrategist
-
-                //convertirlo en porcentaje
-                timeVanguard = intToPercent(rolesTotalTime, timeVanguard)
-                timeDuelist = intToPercent(rolesTotalTime, timeDuelist)
-                timeStrategist = intToPercent(rolesTotalTime, timeStrategist)
-
-                //Change values
-                playerName.text = player.name
-                playerUID.text = player.uid.toString()
-                playerRank.text = player.player.rank.rank
-                playerScore.text = player.player.rank.score
-                playerTimePlayed.text = player.overall_stats.total_play_time.playtime
-                playerMatches.text = player.overall_stats.total_matches.toString()
-
-                //agregar el porcentaje de uso y dejar el float en dos decimales
-                var vanguardText: String = "Vanguard: ${String.format("%.2f", timeVanguard)}%"
-                var duelistText: String = "Duelist: ${String.format("%.2f", timeDuelist)}%"
-                var strategistText: String = "Strategist: ${String.format("%.2f", timeStrategist)}%"
-
-                roleVanguard.text = vanguardText
-                roleDuelist.text = duelistText
-                roleStrategist.text = strategistText
-
-                //cambiar las overal stats y dejar el float en dos decimales
-
-                var kdaTextText = "KDA :  ${String.format("%.2f", player.overall_stats.overall_kda.kda)}"
-
-                var kdTextText = "KD :  ${String.format("%.2f", player.overall_stats.overall_kd)}"
-
-                var mvpText: String = player.overall_stats.total_mvps.mvps.toString()
-                var mvpTextText = "MVP :  $mvpText"
-
-                statKDA.text = kdaTextText
-                statKD.text = kdTextText
-                statMVP.text = mvpTextText
-
-                Glide.with(requireContext())
-                    //Si carga toma la imagen de este URL
-                    .load("https://marvelrivalsapi.com/rivals"+player.player.icon.player_icon)
-                    //Si no pone una de placeholder
-                    .placeholder(R.drawable.frame_1)
-                    //Acomoda la imagen en el centro del item
-                    .fitCenter()
-                    //En la imagen del item
-                    .into(playerImageView)
-
-
-
+    private fun handleApiError(code: Int) {
+        when(code) {
+            403 -> {
+                playerName.text = "This profile is private"
+                hideEverything()
             }
-
-            override fun onFailure(call: Call<Player>, t: Throwable) {
-                Log.e("API", "Error: ${t.message}", t)            }
-
-        })
+            429 -> {
+                playerName.text = "Too many requests, try later"
+                hideEverything()
+            }
+        }
     }
 
-    //convertirlo en porcentaje con una regla de 3
-    private fun intToPercent(total: Float, role: Float): Float {
-        var percentage: Float = (role*100)/total
-        return percentage
+    private fun bindPlayerData(player: Player) {
+        var timeVanguard = player.overall_stats.roles_played.vanguard?.total_time_played?.time_played ?: 0f
+        var timeDuelist = player.overall_stats.roles_played.duelist?.total_time_played?.time_played ?: 0f
+        var timeStrategist = player.overall_stats.roles_played.strategist?.total_time_played?.time_played ?: 0f
+
+        val totalTime = timeVanguard + timeDuelist + timeStrategist
+        timeVanguard = intToPercent(totalTime, timeVanguard)
+        timeDuelist = intToPercent(totalTime, timeDuelist)
+        timeStrategist = intToPercent(totalTime, timeStrategist)
+
+        playerName.text = player.name
+        playerUID.text = player.uid.toString()
+        playerRank.text = player.player.rank.rank
+        playerScore.text = player.player.rank.score
+        playerTimePlayed.text = player.overall_stats.total_play_time.playtime
+        playerMatches.text = player.overall_stats.total_matches.toString()
+
+        roleVanguard.text = "Vanguard: ${String.format("%.2f", timeVanguard)}%"
+        roleDuelist.text = "Duelist: ${String.format("%.2f", timeDuelist)}%"
+        roleStrategist.text = "Strategist: ${String.format("%.2f", timeStrategist)}%"
+
+        statKDA.text = "KDA: ${String.format("%.2f", player.overall_stats.overall_kda.kda)}"
+        statKD.text = "KD: ${String.format("%.2f", player.overall_stats.overall_kd)}"
+        statMVP.text = "MVP: ${player.overall_stats.total_mvps.mvps}"
+
+        Glide.with(requireContext())
+            .load("https://marvelrivalsapi.com/rivals${player.player.icon.player_icon}")
+            .placeholder(R.drawable.frame_1)
+            .fitCenter()
+            .into(playerImageView)
     }
 
-    //moverse al fragment characters
-    private fun replaceFragment() {
-        parentFragmentManager.beginTransaction()
-            .replace(R.id.frameLayout, Players())
-            .commit()
+    private fun intToPercent(total: Float, value: Float): Float {
+        return if(total > 0) (value * 100) / total else 0f
     }
 
-    //Ocultar todo lo que no se va mostrar y hacer grande el texto
-    private fun hideEverything()
-    {
-        playerName.setTextSize(TypedValue.COMPLEX_UNIT_SP,40f);
+    private fun hideEverything() {
+        playerName.setTextSize(TypedValue.COMPLEX_UNIT_SP, 40f)
         dataLayout.visibility = View.INVISIBLE
         playerUID.visibility = View.INVISIBLE
-
     }
-
 }

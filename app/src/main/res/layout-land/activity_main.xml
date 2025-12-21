@@ -9,6 +9,16 @@
     android:orientation="vertical"
     tools:context=".MainActivity">
 
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/TopbarView"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:background="@color/BackGroundBlue"
+        app:titleTextAppearance="@style/ToolbarTitleStyle"
+        app:theme="@style/ToolbarSearchTheme"
+        app:menu="@menu/top_bar"/>
+
     <FrameLayout
         android:id="@+id/frameLayout"
         android:layout_width="match_parent"
