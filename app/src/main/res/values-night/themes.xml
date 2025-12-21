@@ -18,6 +18,8 @@
         <item name="android:textColorPrimary">@color/white</item>
         <item name="android:textColorSecondary">@color/OpacityWhite</item>
 
+
+
     </style>
 
 </resources>
