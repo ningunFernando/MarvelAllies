@@ -11,7 +11,7 @@
         android:layout_height="80dp"
         android:background="@color/BackGroundBlue"
         app:titleTextAppearance="@style/ToolbarTitleStyle"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Dark"
+        app:theme="@style/ToolbarSearchTheme"
         app:menu="@menu/top_bar"/>
 
     <FrameLayout
