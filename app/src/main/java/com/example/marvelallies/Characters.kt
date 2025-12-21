@@ -70,6 +70,10 @@ class Characters : Fragment() {
             loadCharactersFromAPI()
         }
     }
+    override fun onResume() {
+        super.onResume()
+        requireActivity().title = getString(R.string.Characters)
+    }
 
     private fun loadCharactersFromAPI() {
         progressBar.visibility = View.VISIBLE

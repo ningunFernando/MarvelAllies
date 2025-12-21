@@ -55,6 +55,7 @@ class MainActivity : AppCompatActivity() {
        }
    }
 
+    //Crear las opciones para el toolbar (top bar)
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.top_bar, menu)
         return true

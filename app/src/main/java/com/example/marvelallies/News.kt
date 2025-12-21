@@ -51,7 +51,7 @@ class News : Fragment() {
     }
     override fun onResume() {
         super.onResume()
-        requireActivity().title = "News"
+        requireActivity().title = getString(R.string.News)
     }
 
 
