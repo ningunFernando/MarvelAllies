@@ -15,7 +15,8 @@ class MainActivity : AppCompatActivity() {
      * La barra de navegación inferior se encarga de cambiar
      * entre los fragmentos principales de la aplicación
      */
-    private lateinit var bottomNavBarViww: BottomNavigationView
+    private lateinit var bottomNavBarView: BottomNavigationView
+
 
     /*
      * La Toolbar funciona como barra superior global y se reutiliza
@@ -26,16 +27,15 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
         /*
          * Inicializo la barra de navegación inferior y delego la lógica
          * de selección a un método separado para mejorar la legibilidad
          */
-        bottomNavBarViww = findViewById(R.id.bottomNavigationView)
-        bottomNavBarViww.setOnItemSelectedListener { item ->
+
+        bottomNavBarView = findViewById(R.id.bottomNavigationView)
+        bottomNavBarView.setOnItemSelectedListener { item ->
             handleNavigationItemSelected(item.itemId)
         }
-
         /*
          * Configuro la Toolbar como ActionBar para que pueda
          * integrarse con los fragments y los menús
@@ -47,7 +47,11 @@ class MainActivity : AppCompatActivity() {
          * Cargo el fragment inicial al iniciar la aplicación
          * Este fragment actúa como pantalla principal por defecto
          */
-        LoadFragment(News())
+
+        //En caso de que sea primera vez cargando la activity, el fragment base sera las news
+        if (savedInstanceState == null) {
+            bottomNavBarView.selectedItemId = R.id.news
+        }
     }
 
     private fun LoadFragment(fragment: Fragment) {
@@ -66,6 +70,8 @@ class MainActivity : AppCompatActivity() {
          * Centralizo la lógica de navegación para evitar duplicación
          * y facilitar el mantenimiento cuando se agreguen más secciones
          */
+
+
         return when (itemId) {
             R.id.news -> {
                 LoadFragment(News())
