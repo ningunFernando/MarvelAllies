@@ -36,6 +36,7 @@ interface MarvelAPIService
         @Query("limit") limit: Int
     ): Call<Leaderboard>
 
+
     //News
     @GET("api/v1/balances")
     fun getNewsBalances(
