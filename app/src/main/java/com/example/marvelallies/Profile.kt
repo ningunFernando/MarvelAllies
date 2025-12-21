@@ -15,12 +15,16 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 
 
 class Profile : Fragment() {
@@ -28,6 +32,7 @@ class Profile : Fragment() {
     //FIREBASE VARIABLES
     private lateinit var auth: FirebaseAuth
     private lateinit var db: FirebaseFirestore
+    private lateinit var googleSingInClient: GoogleSignInClient
 
     //UID API SETUP
     private lateinit var layoutApiIdSetup: LinearLayout
@@ -50,6 +55,9 @@ class Profile : Fragment() {
     private lateinit var kdaTextProfile: TextView
     private lateinit var kdTextProfile: TextView
     private lateinit var mvpTextProfile: TextView
+    private lateinit var btnEditProfile: Button
+    private lateinit var btnSignOut: Button
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -95,8 +103,18 @@ class Profile : Fragment() {
         kdaTextProfile = view.findViewById(R.id.KdaTextProfile)
         kdTextProfile = view.findViewById(R.id.KdTextProfile)
         mvpTextProfile = view.findViewById(R.id.MvpTextProfile)
+        btnEditProfile = view.findViewById(R.id.btnEditProfile)
+        btnSignOut = view.findViewById(R.id.btnSignOut)
+
+        btnSignOut.setOnClickListener { SingOut() }
 
 
+        val activity = requireActivity() as AppCompatActivity
+        activity.supportActionBar?.apply {
+            title = getString(R.string.Profile)
+            setDisplayHomeAsUpEnabled(false)
+            setHomeAsUpIndicator(null)
+        }
         loadUserAndToggleUi()
     }
 
@@ -264,6 +282,16 @@ class Profile : Fragment() {
             .placeholder(R.drawable.frame_1)
             .fitCenter()
             .into(imageProfile)
+    }
+
+
+    //Sign out
+    private fun SingOut(){
+        auth.signOut()
+        googleSingInClient.signOut()
+
+        startActivity(Intent(requireContext(), LoginActivity::class.java))
+        requireActivity()
     }
 
 }
