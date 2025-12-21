@@ -17,14 +17,15 @@ import retrofit2.Callback
 import retrofit2.Response
 import Hero
 import android.content.res.Configuration
+import android.view.MenuItem
 import models.AbilitiesAdapter
 import android.widget.ProgressBar
+import androidx.appcompat.app.AppCompatActivity
 
 
 class CharacterDetails : Fragment() {
 
     //Declarar elementos del fragment
-    private lateinit var back: ImageButton
     private lateinit var nameLayout: TextView
     private lateinit var bioLayout: TextView
     private lateinit var recyclerView: RecyclerView
@@ -43,7 +44,6 @@ class CharacterDetails : Fragment() {
         val view = inflater.inflate(R.layout.fragment_character_details, container, false)
 
         // encontrar elementos de los fragments
-        back = view.findViewById(R.id.Back)
         nameLayout = view.findViewById(R.id.Name)
         bioLayout = view.findViewById(R.id.Bio)
         recyclerView = view.findViewById(R.id.RecyclerSkin)
@@ -58,9 +58,6 @@ class CharacterDetails : Fragment() {
         recyclerAbilities.layoutManager = LinearLayoutManager(requireContext())
 
         //detectar presionar boton back
-        back.setOnClickListener {
-            replaceFragment()
-        }
 
         // Recibir argumentos
         val query = arguments?.getString("character_id")
@@ -74,6 +71,34 @@ class CharacterDetails : Fragment() {
 
 
         return view
+    }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        val activity = requireActivity() as AppCompatActivity
+        activity.supportActionBar?.apply {
+            setDisplayHomeAsUpEnabled(true)
+            setHomeAsUpIndicator(R.drawable.ic_back_24)
+            title = getString(R.string.Characters)
+        }
+
+        setHasOptionsMenu(true)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            android.R.id.home -> {
+                parentFragmentManager.popBackStack()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+
+    override fun onResume() {
+        super.onResume()
+        requireActivity().title = getString(R.string.Characters )
     }
 
     //Cuando cambia de orientacion vuelve a cargar la informacion del personaje
@@ -109,15 +134,6 @@ class CharacterDetails : Fragment() {
 
                 }
             })
-    }
-
-
-
-    //moverse al fragment characters
-    private fun replaceFragment() {
-        parentFragmentManager.beginTransaction()
-            .replace(R.id.frameLayout, Characters())
-            .commit()
     }
 }
 

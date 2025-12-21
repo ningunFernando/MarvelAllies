@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.*
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
@@ -59,12 +60,19 @@ class Characters : Fragment() {
     //Cambiar el título del Toolbar al entrar al fragment
     override fun onResume() {
         super.onResume()
-        requireActivity().title = getString(R.string.Characters)
+
+        val activity = requireActivity() as AppCompatActivity
+        activity.supportActionBar?.apply {
+            setDisplayHomeAsUpEnabled(false)
+            setHomeAsUpIndicator(null)
+            title = getString(R.string.Characters)
+        }
     }
+
 
     // menu de busqueda del top bar
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.top_bar_characters, menu)
+        inflater.inflate(R.menu.top_bar_search, menu)
 
         val searchItem = menu.findItem(R.id.action_search)
         val searchView = searchItem.actionView as SearchView
