@@ -13,6 +13,7 @@ import androidx.core.view.WindowInsetsCompat
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.firebase.auth.GoogleAuthProvider
 import com.google.android.gms.common.SignInButton
 import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.FirebaseAuth
@@ -24,6 +25,14 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var auth: FirebaseAuth
 
     private lateinit var googleSingInClient: GoogleSignInClient
+
+    override fun onStart() {
+        super.onStart()
+
+        if(auth.currentUser != null){
+            goToMain()
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,6 +55,7 @@ class LoginActivity : AppCompatActivity() {
 
         auth = FirebaseAuth.getInstance()
 
+
         emailField = findViewById(R.id.login_etEmail)
         passwordField = findViewById(R.id.login_etPassword)
 
@@ -57,10 +67,16 @@ class LoginActivity : AppCompatActivity() {
         val email = emailField.text.toString()
         val password = passwordField.text.toString()
 
+        if(email.isBlank() || password.isBlank()){
+            Toast.makeText(this, "Email y contraseña son obligatorios", Toast.LENGTH_SHORT).show()
+            return
+        }
+
         auth.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
                     Toast.makeText(this, "Registration successful", Toast.LENGTH_SHORT).show()
+                    goToMain()
                 }else{
                     Toast.makeText(this, "Registration failed", Toast.LENGTH_SHORT).show()
                     println("Error: ${task.exception}")
@@ -72,14 +88,20 @@ class LoginActivity : AppCompatActivity() {
         val email = emailField.text.toString()
         val password = passwordField.text.toString()
 
+        if(email.isBlank() || password.isBlank()){
+            Toast.makeText(this, "Email y contraseña son obligatorios", Toast.LENGTH_SHORT).show()
+            return
+        }
+
         auth.signInWithEmailAndPassword(email, password)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
 
                     val user = auth.currentUser
                     val userId = user?.uid
-
                     Toast.makeText(this, "Login successful. UID: $userId", Toast.LENGTH_SHORT).show()
+
+                    goToMain()
                 }else{
                     Toast.makeText(this, "Login failed", Toast.LENGTH_SHORT).show()
                     println("Error: ${task.exception}")
@@ -89,6 +111,10 @@ class LoginActivity : AppCompatActivity() {
 
     private fun SingOut(){
         auth.signOut()
+        googleSingInClient.signOut()
+
+        startActivity(Intent(this, LoginActivity::class.java))
+        finish()
         Toast.makeText(this, "Logout successful", Toast.LENGTH_SHORT).show()
     }
 
@@ -98,19 +124,48 @@ class LoginActivity : AppCompatActivity() {
         Toast.makeText(this, "Login with Google", Toast.LENGTH_SHORT).show()
     }
 
+    private fun goToMain(){
+        val email = auth.currentUser?.email ?: ""
+        val intent = Intent(this, MainActivity::class.java)
+        intent.putExtra("email", email)
+
+        startActivity(intent)
+        finish()
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
         if (requestCode == 9001){
             val task = GoogleSignIn.getSignedInAccountFromIntent(data)
-            if(task.isSuccessful){
+            if (task.isSuccessful) {
                 val account = task.getResult(ApiException::class.java)
-                Log.d("Google Login", "Account name: ${account?.displayName}")
-            }else{
+
+                val idToken = account.idToken
+                if (idToken != null) {
+                    firebaseAuthWithGoogle(idToken)
+                } else {
+                    Toast.makeText(this, "No ID token from Google", Toast.LENGTH_SHORT).show()
+                    Log.w("Google Login", "idToken was null")
+                }
+            } else {
                 Log.w("Google Login", "Google sign in failed", task.exception)
+                Toast.makeText(this, "Google sign-in failed", Toast.LENGTH_SHORT).show()
             }
         }
+    }
 
+    private fun firebaseAuthWithGoogle(idToken: String) {
+        val credential = GoogleAuthProvider.getCredential(idToken, null)
+        auth.signInWithCredential(credential)
+            .addOnCompleteListener(this) { task ->
+                if (task.isSuccessful) {
+                    Toast.makeText(this, "Login successful", Toast.LENGTH_SHORT).show()
+                    goToMain()
+                } else {
+                    Toast.makeText(this, "Login failed", Toast.LENGTH_SHORT).show()
+                }
+            }
     }
 
 }
