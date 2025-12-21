@@ -72,7 +72,7 @@ class Characters : Fragment() {
 
     // menu de busqueda del top bar
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.top_bar_search, menu)
+        inflater.inflate(R.menu.top_bar_search_characters, menu)
 
         val searchItem = menu.findItem(R.id.action_search)
         val searchView = searchItem.actionView as SearchView
