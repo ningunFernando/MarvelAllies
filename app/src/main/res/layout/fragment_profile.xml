@@ -4,7 +4,7 @@
     android:id="@+id/profileScroll"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/BackgroundWhite"
+    android:background="?attr/android:colorBackground"
     android:contentDescription="scroll"
     tools:context=".PlayersProfile">
 
@@ -12,6 +12,7 @@
         android:id="@+id/profileRoot"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="?attr/android:colorBackground"
         android:orientation="vertical">
 
         <!-- =========================================================
@@ -31,7 +32,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
                 android:text="Enter your API ID"
-                android:textColor="@color/black"
+                android:textColor="?attr/android:textColorPrimary"
                 android:textSize="22sp"
                 android:textStyle="bold" />
 
@@ -40,7 +41,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="18dp"
                 android:text="We need it to fetch your profile from the API."
-                android:textColor="#888888"
+                android:textColor="?attr/android:textColorPrimary"
                 android:textSize="14sp" />
 
             <EditText
@@ -56,7 +57,7 @@
                 android:id="@+id/btnSaveApiId"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:backgroundTint="@color/BackGroundBlue"
+                android:backgroundTint="?attr/android:textColorSecondary"
                 android:text="Save API ID"
                 android:textColor="@color/white" />
 
@@ -65,7 +66,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
                 android:text="You can change this later in Profile."
-                android:textColor="#888888"
+                android:textColor="?attr/android:textColorPrimary"
                 android:textSize="12sp" />
         </LinearLayout>
 
@@ -82,7 +83,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/BackgroundWhite"
+                android:background="?attr/android:colorBackground"
                 android:orientation="vertical">
 
                 <LinearLayout
@@ -135,7 +136,7 @@
                             android:id="@+id/btnEditProfile"
                             android:layout_width="200dp"
                             android:layout_height="wrap_content"
-                            android:backgroundTint="@color/BackGroundBlue"
+                            android:backgroundTint="?attr/android:textColorSecondary"
                             android:fontFamily="@font/roboto_medium"
                             android:text="@string/Edit_Profile"
                             android:textColor="@color/white" />
@@ -145,7 +146,7 @@
                             android:layout_width="200dp"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="16dp"
-                            android:backgroundTint="@color/BackGroundBlue"
+                            android:backgroundTint="?attr/android:textColorSecondary"
                             android:fontFamily="@font/roboto_medium"
                             android:text="@string/Sign_out"
                             android:textColor="@color/white" />
@@ -176,7 +177,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_margin="10dp"
-                            android:background="@color/BackGroundBlue"
+                            android:background="?attr/android:textColorSecondary"
                             android:orientation="vertical">
 
                             <TextView
@@ -242,7 +243,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_margin="10dp"
-                            android:background="@color/BackGroundBlue"
+                            android:background="?attr/android:textColorSecondary"
                             android:orientation="vertical">
 
                             <TextView
@@ -309,7 +310,7 @@
                         android:layout_height="wrap_content"
                         android:layout_margin="10dp"
                         android:layout_weight="1"
-                        android:background="@color/BackGroundBlue"
+                        android:background="?attr/android:textColorSecondary"
                         android:padding="10dp"
                         android:text="@string/Vanguard"
                         android:textColor="@color/white" />
@@ -320,7 +321,7 @@
                         android:layout_height="wrap_content"
                         android:layout_margin="10dp"
                         android:layout_weight="1"
-                        android:background="@color/BackGroundBlue"
+                        android:background="?attr/android:textColorSecondary"
                         android:padding="10dp"
                         android:text="@string/Duelist"
                         android:textColor="@color/white" />
@@ -331,7 +332,7 @@
                         android:layout_height="wrap_content"
                         android:layout_margin="10dp"
                         android:layout_weight="1"
-                        android:background="@color/BackGroundBlue"
+                        android:background="?attr/android:textColorSecondary"
                         android:padding="10dp"
                         android:text="@string/Strategist"
                         android:textColor="@color/white" />
@@ -357,7 +358,7 @@
                         android:layout_height="wrap_content"
                         android:layout_margin="10dp"
                         android:layout_weight="1"
-                        android:background="@color/BackGroundBlue"
+                        android:background="?attr/android:textColorSecondary"
                         android:padding="10dp"
                         android:text="@string/KDA"
                         android:textColor="@color/white" />
@@ -368,7 +369,7 @@
                         android:layout_height="wrap_content"
                         android:layout_margin="10dp"
                         android:layout_weight="1"
-                        android:background="@color/BackGroundBlue"
+                        android:background="?attr/android:textColorSecondary"
                         android:padding="10dp"
                         android:text="@string/KD"
                         android:textColor="@color/white" />
@@ -379,7 +380,7 @@
                         android:layout_height="wrap_content"
                         android:layout_margin="10dp"
                         android:layout_weight="1"
-                        android:background="@color/BackGroundBlue"
+                        android:background="?attr/android:textColorSecondary"
                         android:padding="10dp"
                         android:text="@string/MVP"
                         android:textColor="@color/white" />
