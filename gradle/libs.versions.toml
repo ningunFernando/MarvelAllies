@@ -25,6 +25,7 @@ firebaseCrashlytics = "20.0.3"
 googleFirebaseCrashlytics = "3.0.6"
 constraintlayout = "2.2.1"
 scenecore = "1.0.0-alpha10"
+firebaseFirestore = "26.0.2"
 
 
 [libraries]
@@ -50,6 +51,7 @@ firebase-crashlytics = { group = "com.google.firebase", name = "firebase-crashly
 play-services-auth = { group = "com.google.android.gms", name = "play-services-auth", version.ref = "playServicesAuth" }
 androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
 androidx-scenecore = { group = "androidx.xr.scenecore", name = "scenecore", version.ref = "scenecore" }
+firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore", version.ref = "firebaseFirestore" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
