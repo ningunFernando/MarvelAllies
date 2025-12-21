@@ -27,6 +27,11 @@ class Characters : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        /*
+         * Indico que este fragment tiene su propio menú en la Toolbar
+         * Esto es necesario para poder mostrar el buscador personalizado
+         */
         setHasOptionsMenu(true)
     }
 
@@ -42,7 +47,10 @@ class Characters : Fragment() {
         viewPager = view.findViewById(R.id.viewPager)
         tabLayout = view.findViewById(R.id.into_tab_layout)
 
-        //cargar los personajes de la api
+        /*
+         * Solicito la lista completa de personajes al inicializar la vista
+         * Esta información será transformada en páginas dentro del ViewPager
+         */
         loadCharactersFromAPI()
 
         return view
@@ -51,7 +59,11 @@ class Characters : Fragment() {
     //Cuando cambia de orientation vuelve a cargar los datos de la API para mostrar los items adecuados
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
-        //para que no crashee con ayuda de chatgtp
+
+        /*
+         * Verifico que el fragment siga asociado a la actividad antes de
+         * realizar cualquier operación para evitar errores de ciclo de vida
+         */
         if (isAdded) {
             loadCharactersFromAPI()
         }
@@ -61,6 +73,10 @@ class Characters : Fragment() {
     override fun onResume() {
         super.onResume()
 
+        /*
+         * Configuro la Toolbar para este fragment eliminando el botón de regreso,
+         * ya que este fragment funciona como pantalla principal de navegación
+         */
         val activity = requireActivity() as AppCompatActivity
         activity.supportActionBar?.apply {
             setDisplayHomeAsUpEnabled(false)
@@ -68,7 +84,6 @@ class Characters : Fragment() {
             title = getString(R.string.Characters)
         }
     }
-
 
     // menu de busqueda del top bar
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -79,6 +94,11 @@ class Characters : Fragment() {
 
         searchView.queryHint = getString(R.string.Name)
 
+        /*
+         * Configuro el comportamiento del buscador
+         * Solo reacciono cuando el usuario confirma la búsqueda,
+         * evitando llamadas innecesarias mientras escribe
+         */
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
 
             override fun onQueryTextSubmit(query: String?): Boolean {
@@ -97,7 +117,10 @@ class Characters : Fragment() {
     }
 
     private fun loadCharactersFromAPI() {
-        //llamar a la API
+        /*
+         * Realizo una llamada asíncrona para obtener todos los héroes
+         * El resultado se procesa en el callback para no bloquear la UI
+         */
         MarvelAPIInstance.apiService.getAllHeroes()
             .enqueue(object : Callback<List<Hero>> {
 
@@ -114,7 +137,10 @@ class Characters : Fragment() {
                     //obtener la lista de personajes
                     val apiCharacters = response.body() ?: emptyList()
 
-                    //los divide en paginas
+                    /*
+                     * Transformo la lista plana de personajes en páginas
+                     * Cada página representa un banner dentro del ViewPager
+                     */
                     val pages = groupIntoPages(apiCharacters)
 
                     // Pasar un callback al adapter
@@ -123,7 +149,10 @@ class Characters : Fragment() {
                         onCharacterClicked(character)
                     }
 
-                    //unir la Tab layout con el adapter
+                    /*
+                     * Vinculo el TabLayout con el ViewPager sin títulos,
+                     * utilizando los tabs únicamente como indicadores de página
+                     */
                     TabLayoutMediator(tabLayout, viewPager) { _, _ -> }.attach()
                 }
 
@@ -134,7 +163,10 @@ class Characters : Fragment() {
     }
 
     private fun onCharacterClicked(character: CharactersItem) {
-        // Aquí puedes navegar al fragmento de detalles
+        /*
+         * Manejo la navegación manualmente usando el FragmentManager
+         * para poder controlar el back stack y pasar argumentos
+         */
         val fragmentTransaction = parentFragmentManager.beginTransaction()
 
         //Pasar argumentos al segundo fragment
@@ -154,12 +186,16 @@ class Characters : Fragment() {
 
     //Con ayuda de ChatGTP agarre los 9 que necesitaba
     private fun groupIntoPages(apiCharacters: List<Hero>): List<CharactersBanner> {
+
         //para que no crashee
         if (!isAdded || context == null) {
             return emptyList()
         }
 
-        //Dependiendo de la orientacion del dispositivo acomodar el grid en 3X3 o 2x3
+        /*
+         * Defino dinámicamente cuántos elementos tendrá cada página
+         * según la orientación del dispositivo para optimizar el uso del espacio
+         */
         val numberItems: Int =
             if (resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
                 //Divide a los personajes en lista de 9
@@ -171,7 +207,10 @@ class Characters : Fragment() {
 
         val chunked = apiCharacters.chunked(numberItems)
 
-        //cada grupo de personajes se convierte en una pagina
+        /*
+         * Cada grupo de personajes se transforma en un banner,
+         * adaptando el modelo de la API a un modelo de UI.
+         */
         return chunked.map { chunk ->
             CharactersBanner(
                 characters = chunk.map {
@@ -187,10 +226,16 @@ class Characters : Fragment() {
     }
 
     private fun groupOnePage(apiCharacter: Hero): List<CharactersBanner> {
+
         //para que no crashee
         if (!isAdded || context == null) {
             return emptyList()
         }
+
+        /*
+         * Este método se utiliza para mostrar un solo personaje,
+         * principalmente como resultado de una búsqueda
+         */
 
         //Declarar el character Item
         val characterItem = CharactersItem(
@@ -210,6 +255,11 @@ class Characters : Fragment() {
 
     private fun loadCharacterDetails(characterId: String) {
         //obtiene al personaje por el nombre
+
+        /*
+         * Se reutiliza el endpoint de búsqueda por ID para filtrar
+         * y mostrar únicamente el personaje solicitado.
+         */
         MarvelAPIInstance.apiService.getHeroById(characterId)
             .enqueue(object : Callback<Hero> {
 
@@ -228,6 +278,10 @@ class Characters : Fragment() {
                         // Usar la versión singular
                         val pages = groupOnePage(character)
 
+                        /*
+                         * Reemplazo el adapter del ViewPager para mostrar
+                         * únicamente el resultado de la búsqueda
+                         */
                         viewPager.adapter = CharactersPageAdapter(pages) { characterItem ->
                             onCharacterClicked(characterItem)
                         }
