@@ -15,9 +15,11 @@ import com.google.firebase.firestore.FirebaseFirestore
 
 class EditProfile : Fragment() {
 
+    //FIREBASE VARIABLES
     private lateinit var auth: FirebaseAuth
     private lateinit var db: FirebaseFirestore
 
+    //UI VARIABLES
     private lateinit var etApiId: EditText
     private lateinit var btnSave: Button
 
@@ -25,7 +27,10 @@ class EditProfile : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        /*
+         * No realizo lógica adicional en este método,
+         * ya que el fragment depende principalmente de los argumentos recibidos
+         */
     }
 
     override fun onCreateView(
