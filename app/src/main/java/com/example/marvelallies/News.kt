@@ -155,6 +155,7 @@ class News : Fragment() {
                 //mandar id al otro fragment
                 putString("new_image", new.imageUrl)
                 putString("new_description", new.description)
+                putString("post_id", safeKey(new.title))
             }
         }
 
@@ -162,5 +163,9 @@ class News : Fragment() {
         fragmentTransaction.replace(R.id.frameLayout, detailsFragment)
         fragmentTransaction.addToBackStack(null)
         fragmentTransaction.commit()
+    }
+
+    private fun safeKey(input: String): String {
+        return input.replace(Regex("[.#$\\[\\]/]"), "_")
     }
 }

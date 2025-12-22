@@ -17,6 +17,11 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import android.util.Log
+import android.widget.Button
+import android.widget.EditText
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.firestore.FirebaseFirestore
 import models.CommentaryAdapter
 import models.CommentaryItem
 
@@ -24,13 +29,19 @@ import models.CommentaryItem
 class Forum : Fragment() {
     /*
      * Estos elementos se utilizan para mostrar el contenido
-     * de una noticia seleccionada previamente
+     * de una noticia seleccionada previamente y enviar el mensaje de los comentarios
      */
     private lateinit var imageNew: ImageView
     private lateinit var newText: TextView
+    private lateinit var commentaryAdapter: CommentaryAdapter
+    private lateinit var etComment: EditText
+    private lateinit var btnSend: Button
 
     private lateinit var recyclerView: RecyclerView
 
+    private val auth = FirebaseAuth.getInstance()
+    private val firestore = FirebaseFirestore.getInstance()
+    private val rtdb = FirebaseDatabase.getInstance().reference
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,6 +66,9 @@ class Forum : Fragment() {
         //Tomar elementos pasados
         val newImageUrl = arguments?.getString("new_image")
         val newDescription = arguments?.getString("new_description")
+
+        //se toma el id del post para el comentario si hay uno
+        val postId = arguments?.getString("post_id") ?: return view
 
         /*
          * Inicializo los componentes visuales que mostrarán
@@ -86,10 +100,23 @@ class Forum : Fragment() {
 
         //Comentarios
         recyclerView = view.findViewById(R.id.RecyclerCommentary)
+        etComment = view.findViewById(R.id.etComment)
+        btnSend = view.findViewById(R.id.btnSend)
+
 
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
         LoadCommentaries()
+
+        listenComments(postId)
+
+        btnSend.setOnClickListener {
+            val text = etComment.text.toString().trim()
+            if (text.isNotEmpty()) {
+                sendComment(postId, text)
+                etComment.setText("")
+            }
+        }
 
         recyclerView.adapter = CommentaryAdapter()
 
