@@ -5,16 +5,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".Forum" >
+    android:background="?android:attr/colorBackground"
+    tools:context=".Forum">
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/BackgroundWhite"
+            android:background="?attr/colorSurface"
             android:gravity="top"
             android:orientation="vertical">
 
@@ -34,8 +35,31 @@
                 android:layout_marginEnd="20dp"
                 android:fontFamily="@font/roboto_medium"
                 android:text="TextView"
+                android:textColor="?attr/colorOnSurface"
                 android:textSize="20sp" />
+
+            <EditText
+                android:id="@+id/etComment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="Write a comment..."
+                android:inputType="textMultiLine"
+                android:paddingTop="15dp" />
+
+            <Button
+                android:id="@+id/btnSend"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Send" />
         </LinearLayout>
     </ScrollView>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/RecyclerCommentary"
+        android:layout_width="match_parent"
+        android:layout_height="345dp" />
+
+
 
 </LinearLayout>

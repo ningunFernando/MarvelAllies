@@ -59,6 +59,7 @@ class Profile : Fragment() {
     private lateinit var btnSignOut: Button
 
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -106,7 +107,14 @@ class Profile : Fragment() {
         btnEditProfile = view.findViewById(R.id.btnEditProfile)
         btnSignOut = view.findViewById(R.id.btnSignOut)
 
+        //BOTONES PARA SING OUT Y EDITAR PERFIL
         btnSignOut.setOnClickListener { SingOut() }
+        btnEditProfile.setOnClickListener {
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.frameLayout, EditProfile())
+                .addToBackStack(null)
+                .commit()
+        }
 
 
         val activity = requireActivity() as AppCompatActivity
@@ -119,6 +127,10 @@ class Profile : Fragment() {
     }
 
     private fun loadUserAndToggleUi(){
+        /*
+         * Obtengo el usuario actual desde FirebaseAuth
+         * Si es null, significa que no hay sesion activa
+         */
         val user = auth.currentUser
         if(user == null){
             startActivity(Intent(requireContext(), LoginActivity::class.java))
@@ -127,13 +139,18 @@ class Profile : Fragment() {
             return
         }
 
+        //el uid es mi identificador de firebase auth y mi id en la firestore
         val uid = user?.uid ?: ""
         val email = user?.email ?: ""
 
+
+        //referencia a mi doc en firestore
         val docRef = db.collection("users").document(uid)
 
         docRef.get()
             .addOnSuccessListener { doc ->
+                //si el documento no existe se crea
+                //se guarda email y apiid en el documento para poder llamarlos luego desde firestore
                 if(!doc.exists()){
                     val newUserData = hashMapOf(
                         "email" to email,
@@ -149,7 +166,8 @@ class Profile : Fragment() {
                         }
                     return@addOnSuccessListener
                 }
-
+                //si ya existe el registro de apiId se muestra el perfil
+                //si no existe se muestra la pantalla de setup de apiId
                 val apiId = doc.getLong("apiId")
                 if(apiId == null){
                     showApiSetup()
@@ -291,7 +309,6 @@ class Profile : Fragment() {
         googleSingInClient.signOut()
 
         startActivity(Intent(requireContext(), LoginActivity::class.java))
-        requireActivity()
     }
 
 }

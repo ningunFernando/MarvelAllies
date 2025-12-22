@@ -1,14 +1,25 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
-    <style name="Base.Theme.MarvelAllies" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
 
+    <style name="Base.Theme.MarvelAllies" parent="Theme.Material3.Light.NoActionBar">
+
+        <!-- Color principal -->
         <item name="colorPrimary">@color/BackGroundBlue</item>
-        <item name="colorOnPrimary">@color/BackGroundBlue</item>
+        <item name="colorOnPrimary">@color/white</item>
 
-        <item name="colorSecondary">@color/white </item>
-        <item name="colorOnSecondary">@color/white </item>
+        <!-- Color secundario / complementario -->
+        <item name="colorSecondary">@color/LightYellow</item>
+        <item name="colorOnSecondary">@color/black</item>
+
+        <!-- Fondos -->
+        <item name="android:colorBackground">@color/BackgroundWhite</item>
+        <item name="colorSurface">@color/white</item>
+
+        <!-- Texto -->
+        <item name="android:textColorPrimary">@color/black</item>
+        <item name="android:textColorSecondary">@color/BackGroundBlue</item>
+
     </style>
+
     <style name="Theme.MarvelAllies" parent="Base.Theme.MarvelAllies" />
+
 </resources>

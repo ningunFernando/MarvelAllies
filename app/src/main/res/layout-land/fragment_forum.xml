@@ -5,16 +5,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".Forum" >
+    android:background="?android:attr/colorBackground"
+    tools:context=".Forum">
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/BackgroundWhite"
+            android:background="?attr/colorSurface"
             android:gravity="top"
             android:orientation="vertical">
 
@@ -24,7 +25,6 @@
                 android:layout_height="100dp"
                 android:layout_gravity="center"
                 android:layout_margin="20dp"
-                android:foregroundGravity="center"
                 android:scaleType="fitXY"
                 tools:src="@tools:sample/backgrounds/scenic" />
 
@@ -36,8 +36,15 @@
                 android:layout_marginEnd="20dp"
                 android:fontFamily="@font/roboto_medium"
                 android:text="TextView"
+                android:textColor="?attr/colorOnSurface"
                 android:textSize="20sp" />
+
         </LinearLayout>
     </ScrollView>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/RecyclerCommentary"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
 </LinearLayout>
