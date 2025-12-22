@@ -59,6 +59,7 @@ class Profile : Fragment() {
     private lateinit var btnSignOut: Button
 
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -107,6 +108,13 @@ class Profile : Fragment() {
         btnSignOut = view.findViewById(R.id.btnSignOut)
 
         btnSignOut.setOnClickListener { SingOut() }
+        btnEditProfile.setOnClickListener {
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.frameLayout, EditProfile())
+                .addToBackStack(null)
+                .commit()
+        }
+
 
 
         val activity = requireActivity() as AppCompatActivity
@@ -291,7 +299,6 @@ class Profile : Fragment() {
         googleSingInClient.signOut()
 
         startActivity(Intent(requireContext(), LoginActivity::class.java))
-        requireActivity()
     }
 
 }
