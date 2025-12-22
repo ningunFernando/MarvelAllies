@@ -1,5 +1,6 @@
 package com.example.marvelallies
 
+import MarvelAPI.MarvelAPIInstance
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -10,6 +11,15 @@ import android.widget.TextView
 import com.bumptech.glide.Glide
 import androidx.appcompat.app.AppCompatActivity
 import android.view.MenuItem
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.LinearLayoutManager
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import android.util.Log
+import models.CommentaryAdapter
+import models.CommentaryItem
+
 
 class Forum : Fragment() {
     /*
@@ -18,6 +28,9 @@ class Forum : Fragment() {
      */
     private lateinit var imageNew: ImageView
     private lateinit var newText: TextView
+
+    private lateinit var recyclerView: RecyclerView
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -71,6 +84,15 @@ class Forum : Fragment() {
             //En la imagen del item
             .into(imageNew)
 
+        //Comentarios
+        recyclerView = view.findViewById(R.id.RecyclerCommentary)
+
+        recyclerView.layoutManager = LinearLayoutManager(requireContext())
+
+        LoadCommentaries()
+
+        recyclerView.adapter = CommentaryAdapter()
+
         return view
     }
 
@@ -103,5 +125,36 @@ class Forum : Fragment() {
             }
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    private fun LoadCommentaries(){
+        MarvelAPIInstance.apiService.getPlayerById("224829686")
+            .enqueue(object : Callback<Player> {
+
+                override fun onResponse(call: Call<Player>, response: Response<Player>) {
+
+                    if (!response.isSuccessful) {
+                        Log.e("API", "Error: ${response.code()}")
+                        return
+                    }
+
+                    /*
+                     * Si la respuesta es válida, enlazo los datos
+                     * del jugador con los componentes visuales
+                     */
+                    val player = response.body() ?: return
+
+                    val commentaryItem =
+                        CommentaryItem(
+                            name = player.name,
+                            //commentary = player.fullContent,
+                            imageURL = player.player.icon.player_icon,
+                        )
+                    }
+
+                override fun onFailure(call: Call<Player>, t: Throwable) {
+                    Log.e("API", "Error: ${t.message}", t)
+                }
+            })
     }
 }
