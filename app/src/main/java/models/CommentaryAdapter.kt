@@ -9,9 +9,15 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.marvelallies.R
 
-class CommentaryAdapter(
-    private val commentaries: List<CommentaryItem>
-) : RecyclerView.Adapter<CommentaryAdapter.CommentaryViewHolder>() {
+class CommentaryAdapter : RecyclerView.Adapter<CommentaryAdapter.CommentaryViewHolder>() {
+
+    private val commentaries = mutableListOf<CommentaryItem>()
+
+    fun submitList(newList: List<CommentaryItem>) {
+        commentaries.clear()
+        commentaries.addAll(newList)
+        notifyDataSetChanged()
+    }
 
     //Se llama cada vez que el recycler necesita crear una nuevo item.
     override fun onCreateViewHolder(
@@ -24,8 +30,7 @@ class CommentaryAdapter(
 
     //Se llama para asignar los datos a cada vista
     override fun onBindViewHolder(holder: CommentaryViewHolder, position: Int) {
-        val commentary = commentaries[position]
-        holder.bind(commentary)
+        holder.bind(commentaries[position])
     }
 
     //Devuelve el número total de ítems

@@ -17,20 +17,38 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import android.util.Log
+import android.widget.Button
+import android.widget.EditText
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
+import com.google.firebase.firestore.FirebaseFirestore
 import models.CommentaryAdapter
 import models.CommentaryItem
+import Player
+import RealtimeComment
 
 
 class Forum : Fragment() {
     /*
      * Estos elementos se utilizan para mostrar el contenido
-     * de una noticia seleccionada previamente
+     * de una noticia seleccionada previamente y enviar el mensaje de los comentarios
      */
     private lateinit var imageNew: ImageView
     private lateinit var newText: TextView
+    private lateinit var commentaryAdapter: CommentaryAdapter
+    private lateinit var etComment: EditText
+    private lateinit var btnSend: Button
 
     private lateinit var recyclerView: RecyclerView
 
+    private val auth = FirebaseAuth.getInstance()
+    private val firestore = FirebaseFirestore.getInstance()
+    private val rtdb = FirebaseDatabase.getInstance().reference
+
+    private var commentsListener: ValueEventListener? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,6 +74,9 @@ class Forum : Fragment() {
         val newImageUrl = arguments?.getString("new_image")
         val newDescription = arguments?.getString("new_description")
 
+        //se toma el id del post para el comentario si hay uno
+        val postId = arguments?.getString("post_id") ?: return view
+
         /*
          * Inicializo los componentes visuales que mostrarán
          * la información textual y gráfica de la noticia
@@ -67,7 +88,7 @@ class Forum : Fragment() {
          * Asigno directamente el texto recibido
          * Se asume que el contenido ya viene procesado desde el fragment anterior
          */
-        newText.text = newDescription
+        newText.text = newDescription ?: ""
 
         /*
          * Utilizo Glide para manejar la carga de imágenes remotas
@@ -86,13 +107,23 @@ class Forum : Fragment() {
 
         //Comentarios
         recyclerView = view.findViewById(R.id.RecyclerCommentary)
+        etComment = view.findViewById(R.id.etComment)
+        btnSend = view.findViewById(R.id.btnSend)
+
 
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
+        commentaryAdapter = CommentaryAdapter()
+        recyclerView.adapter = commentaryAdapter
 
-        LoadCommentaries()
+        listenComments(postId)
 
-        recyclerView.adapter = CommentaryAdapter()
-
+        btnSend.setOnClickListener {
+            val text = etComment.text.toString().trim()
+            if (text.isNotEmpty()) {
+                sendComment(postId, text)
+                etComment.setText("")
+            }
+        }
         return view
     }
 
@@ -127,34 +158,96 @@ class Forum : Fragment() {
         }
     }
 
-    private fun LoadCommentaries(){
-        MarvelAPIInstance.apiService.getPlayerById("224829686")
-            .enqueue(object : Callback<Player> {
+    private fun listenComments(postId: String) {
+        val ref = rtdb.child("comments").child(postId)
 
-                override fun onResponse(call: Call<Player>, response: Response<Player>) {
+        val listener = object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val list = mutableListOf<CommentaryItem>()
 
-                    if (!response.isSuccessful) {
-                        Log.e("API", "Error: ${response.code()}")
-                        return
-                    }
+                for (child in snapshot.children) {
+                    val c = child.getValue(RealtimeComment::class.java) ?: continue
 
-                    /*
-                     * Si la respuesta es válida, enlazo los datos
-                     * del jugador con los componentes visuales
-                     */
-                    val player = response.body() ?: return
-
-                    val commentaryItem =
+                    list.add(
                         CommentaryItem(
-                            name = player.name,
-                            //commentary = player.fullContent,
-                            imageURL = player.player.icon.player_icon,
+                            name = if (c.authorName.isNotBlank()) c.authorName else "UID ${c.authorApiId}",
+                            commentary = c.text,
+                            imageURL = c.authorIcon
                         )
-                    }
+                    )
+                }
+
+             //nos da el comentario mas reciente hasta abajo de la lista
+                commentaryAdapter.submitList(list)
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.e("RTDB", "listenComments cancelled: ${error.message}")
+            }
+        }
+
+        commentsListener = listener
+        ref.orderByChild("timestamp").addValueEventListener(listener)
+    }
+
+    private fun sendComment(postId: String, text: String) {
+        val user = auth.currentUser
+        if (user == null) {
+            Log.e("FORUM", "No user logged in")
+            return
+        }
+
+        firestore.collection("users").document(user.uid)
+            .get()
+            .addOnSuccessListener { doc ->
+                val apiId = doc.getLong("apiId")
+                if (apiId == null || apiId == 0L) {
+                    Log.e("FORUM", "apiId missing. User must set it in Profile.")
+                    return@addOnSuccessListener
+                }
+
+                fetchPlayerPreview(apiId) { authorName, authorIcon ->
+                    val comment = RealtimeComment(
+                        text = text,
+                        authorUid = user.uid,
+                        authorApiId = apiId,
+                        authorName = authorName,
+                        authorIcon = authorIcon,
+                        timestamp = System.currentTimeMillis()
+                    )
+
+                    rtdb.child("comments").child(postId)
+                        .push()
+                        .setValue(comment)
+                        .addOnFailureListener { e ->
+                            Log.e("RTDB", "Failed to send comment", e)
+                        }
+                }
+            }
+            .addOnFailureListener { e ->
+                Log.e("FORUM", "Failed to read user apiId", e)
+            }
+    }
+
+
+    private fun fetchPlayerPreview(
+        apiId: Long,
+        onDone: (name: String, iconPath: String) -> Unit
+    ) {
+        MarvelAPIInstance.apiService.getPlayerById(apiId.toString())
+            .enqueue(object : Callback<Player> {
+                override fun onResponse(call: Call<Player>, response: Response<Player>) {
+                    val player = response.body()
+                    val name = player?.name ?: "Unknown"
+                    val icon = player?.player?.icon?.player_icon ?: ""
+                    onDone(name, icon)
+                }
 
                 override fun onFailure(call: Call<Player>, t: Throwable) {
-                    Log.e("API", "Error: ${t.message}", t)
+                    Log.e("API", "fetchPlayerPreview failed: ${t.message}", t)
+                    onDone("Unknown", "")
                 }
             })
     }
+
 }
