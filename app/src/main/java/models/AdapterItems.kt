@@ -28,6 +28,12 @@ data class NewsItem(
     val imageUrl: String
 )
 
+data class CommentaryItem(
+    val name: String,
+    val commentary: String,
+    val imageURL: String,
+)
+
 
 
 
