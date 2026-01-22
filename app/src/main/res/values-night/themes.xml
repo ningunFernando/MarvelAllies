@@ -18,7 +18,9 @@
         <item name="android:textColorPrimary">@color/white</item>
         <item name="android:textColorSecondary">@color/OpacityWhite</item>
 
-
+        <!-- Boton salir -->
+        <item name="colorError">@color/RedDark</item>
+        <item name="colorOnError">@color/white</item>
 
     </style>
 

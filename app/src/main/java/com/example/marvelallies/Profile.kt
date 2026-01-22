@@ -57,6 +57,7 @@ class Profile : Fragment() {
     private lateinit var mvpTextProfile: TextView
     private lateinit var btnEditProfile: Button
     private lateinit var btnSignOut: Button
+    private lateinit var btnExitApp: Button
 
 
 
@@ -106,6 +107,7 @@ class Profile : Fragment() {
         mvpTextProfile = view.findViewById(R.id.MvpTextProfile)
         btnEditProfile = view.findViewById(R.id.btnEditProfile)
         btnSignOut = view.findViewById(R.id.btnSignOut)
+        btnExitApp = view.findViewById(R.id.btnExitApp)
 
         //BOTONES PARA SING OUT Y EDITAR PERFIL
         btnSignOut.setOnClickListener { SingOut() }
@@ -114,6 +116,9 @@ class Profile : Fragment() {
                 .replace(R.id.frameLayout, EditProfile())
                 .addToBackStack(null)
                 .commit()
+        }
+        btnExitApp.setOnClickListener{
+            requireActivity().finishAffinity()
         }
 
 
