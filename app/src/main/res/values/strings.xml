@@ -24,6 +24,7 @@
     <string name="News">News</string>
     <string name="Search">Search</string>
     <string name="Forum">Forum</string>
+    <string name="ExitApp">Exit App</string>
 
 
 </resources>

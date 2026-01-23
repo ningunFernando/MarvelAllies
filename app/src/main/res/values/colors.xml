@@ -11,6 +11,8 @@
 
     <!-- Commplementario -->
     <color name="LightYellow">#F1C22D</color>
+    <color name="RedLight">#FF2C00</color>
+    <color name="RedDark">#851800</color>
 
     <!-- Fondos claros -->
     <color name="BackgroundWhite">#F2F2F2</color>
