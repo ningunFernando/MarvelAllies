@@ -20,34 +20,34 @@ import android.widget.ProgressBar
 import androidx.appcompat.app.AppCompatActivity
 import android.view.MenuItem
 
-class PlayersProfile : Fragment() {
-
+class PlayersProfile : Fragment()
+{
     /*
      * Estos elementos representan toda la información visual
      * asociada al perfil detallado de un jugador
      */
-    private lateinit var playerImageView: ImageView
-    private lateinit var playerName: TextView
-    private lateinit var playerUID: TextView
-    private lateinit var playerRank: TextView
-    private lateinit var playerScore: TextView
-    private lateinit var playerTimePlayed: TextView
-    private lateinit var playerMatches: TextView
-    private lateinit var roleVanguard: TextView
-    private lateinit var roleDuelist: TextView
-    private lateinit var roleStrategist: TextView
-    private lateinit var statKDA: TextView
-    private lateinit var statKD: TextView
-    private lateinit var statMVP: TextView
-    private lateinit var progressBar: ProgressBar
-    private lateinit var dataLayout: LinearLayout
+    private lateinit var _playerImageView: ImageView
+    private lateinit var _playerName: TextView
+    private lateinit var _playerUID: TextView
+    private lateinit var _playerRank: TextView
+    private lateinit var _playerScore: TextView
+    private lateinit var _playerTimePlayed: TextView
+    private lateinit var _playerMatches: TextView
+    private lateinit var _roleVanguard: TextView
+    private lateinit var _roleDuelist: TextView
+    private lateinit var _roleStrategist: TextView
+    private lateinit var _statKDA: TextView
+    private lateinit var _statKD: TextView
+    private lateinit var _statMVP: TextView
+    private lateinit var _progressBar: ProgressBar
+    private lateinit var _dataLayout: LinearLayout
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-
+    ): View?
+    {
         /*
          * Inflo el layout del perfil del jugador y preparo
          * todos los componentes visuales que se actualizarán dinámicamente
@@ -55,21 +55,21 @@ class PlayersProfile : Fragment() {
         val view = inflater.inflate(R.layout.fragment_players_profile, container, false)
 
         // Views
-        playerImageView = view.findViewById(R.id.PlayerImage)
-        playerName = view.findViewById(R.id.NamePlayer)
-        playerUID = view.findViewById(R.id.UidPlayer)
-        playerRank = view.findViewById(R.id.RankText)
-        playerScore = view.findViewById(R.id.ScoreText)
-        playerTimePlayed = view.findViewById(R.id.TimeText)
-        playerMatches = view.findViewById(R.id.MatchesText)
-        roleVanguard = view.findViewById(R.id.VanguardText)
-        roleDuelist = view.findViewById(R.id.DuelistText)
-        roleStrategist = view.findViewById(R.id.StrategistText)
-        statKDA = view.findViewById(R.id.KdaText)
-        statKD = view.findViewById(R.id.KdText)
-        statMVP = view.findViewById(R.id.MvpText)
-        progressBar = view.findViewById(R.id.progressBar)
-        dataLayout = view.findViewById(R.id.DataLayout)
+        _playerImageView = view.findViewById(R.id.PlayerImage)
+        _playerName = view.findViewById(R.id.NamePlayer)
+        _playerUID = view.findViewById(R.id.UidPlayer)
+        _playerRank = view.findViewById(R.id.RankText)
+        _playerScore = view.findViewById(R.id.ScoreText)
+        _playerTimePlayed = view.findViewById(R.id.TimeText)
+        _playerMatches = view.findViewById(R.id.MatchesText)
+        _roleVanguard = view.findViewById(R.id.VanguardText)
+        _roleDuelist = view.findViewById(R.id.DuelistText)
+        _roleStrategist = view.findViewById(R.id.StrategistText)
+        _statKDA = view.findViewById(R.id.KdaText)
+        _statKD = view.findViewById(R.id.KdText)
+        _statMVP = view.findViewById(R.id.MvpText)
+        _progressBar = view.findViewById(R.id.progressBar)
+        _dataLayout = view.findViewById(R.id.DataLayout)
 
         /*
          * Obtengo el UID del jugador enviado desde el fragment anterior
@@ -77,13 +77,12 @@ class PlayersProfile : Fragment() {
          */
         val query = arguments?.getString("player_id")
         query?.let { LoadPlayer(it) }
-
         return view
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?)
+    {
         super.onViewCreated(view, savedInstanceState)
-
         /*
          * Configuro la Toolbar para permitir regresar
          * a la lista de jugadores
@@ -94,16 +93,17 @@ class PlayersProfile : Fragment() {
             setHomeAsUpIndicator(R.drawable.ic_back_24)
             title = getString(R.string.Players)
         }
-
         setHasOptionsMenu(true)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean
+    {
         /*
          * Manejo manualmente el botón de regreso
          * utilizando el back stack del FragmentManager
          */
-        return when (item.itemId) {
+        return when (item.itemId)
+        {
             android.R.id.home -> {
                 parentFragmentManager.popBackStack()
                 true
@@ -112,7 +112,8 @@ class PlayersProfile : Fragment() {
         }
     }
 
-    override fun onResume() {
+    override fun onResume()
+    {
         super.onResume()
         /*
          * Aseguro que el título de la actividad
@@ -121,21 +122,23 @@ class PlayersProfile : Fragment() {
         requireActivity().title = getString(R.string.Players)
     }
 
-    private fun LoadPlayer(playerUid: String) {
-
+    private fun LoadPlayer(playerUid: String)
+    {
         /*
          * Muestro la barra de progreso mientras se consulta
          * la información detallada del jugador
          */
-        progressBar.visibility = View.VISIBLE
+        _progressBar.visibility = View.VISIBLE
 
         MarvelAPIInstance.apiService.getPlayerById(playerUid)
-            .enqueue(object : Callback<Player> {
+            .enqueue(object : Callback<Player>
+            {
+                override fun onResponse(call: Call<Player>, response: Response<Player>)
+                {
+                    _progressBar.visibility = View.GONE
 
-                override fun onResponse(call: Call<Player>, response: Response<Player>) {
-                    progressBar.visibility = View.GONE
-
-                    if (!response.isSuccessful) {
+                    if (!response.isSuccessful)
+                    {
                         Log.e("API", "Error: ${response.code()}")
                         handleApiError(response.code())
                         return
@@ -149,33 +152,35 @@ class PlayersProfile : Fragment() {
                     bindPlayerData(player)
                 }
 
-                override fun onFailure(call: Call<Player>, t: Throwable) {
-                    progressBar.visibility = View.GONE
+                override fun onFailure(call: Call<Player>, t: Throwable)
+                {
+                    _progressBar.visibility = View.GONE
                     Log.e("API", "Error: ${t.message}", t)
                 }
             })
     }
 
-    private fun handleApiError(code: Int) {
-
+    private fun handleApiError(code: Int)
+    {
         /*
          * Manejo explícitamente errores conocidos de la API
          * para mostrar un mensaje claro al usuario
          */
-        when (code) {
+        when (code)
+        {
             403 -> {
-                playerName.text = "This profile is private"
+                _playerName.text = "This profile is private"
                 hideEverything()
             }
             429 -> {
-                playerName.text = "Too many requests, try later"
+                _playerName.text = "Too many requests, try later"
                 hideEverything()
             }
         }
     }
 
-    private fun bindPlayerData(player: Player) {
-
+    private fun bindPlayerData(player: Player)
+    {
         /*
          * Obtengo el tiempo jugado por rol
          * Uso valores por defecto para evitar errores por datos nulos
@@ -197,25 +202,25 @@ class PlayersProfile : Fragment() {
         timeStrategist = intToPercent(totalTime, timeStrategist)
 
          // Asigno los valores básicos del perfil
-        playerName.text = player.name
-        playerUID.text = player.uid.toString()
-        playerRank.text = player.player.rank.rank
-        playerScore.text = player.player.rank.score
-        playerTimePlayed.text = player.overall_stats.total_play_time.playtime
-        playerMatches.text = player.overall_stats.total_matches.toString()
+        _playerName.text = player.name
+        _playerUID.text = player.uid.toString()
+        _playerRank.text = player.player.rank.rank
+        _playerScore.text = player.player.rank.score
+        _playerTimePlayed.text = player.overall_stats.total_play_time.playtime
+        _playerMatches.text = player.overall_stats.total_matches.toString()
 
         /*
          * Muestro los porcentajes de uso por rol
          * con formato controlado para mejor legibilidad
          */
-        roleVanguard.text = "Vanguard: ${String.format("%.2f", timeVanguard)}%"
-        roleDuelist.text = "Duelist: ${String.format("%.2f", timeDuelist)}%"
-        roleStrategist.text = "Strategist: ${String.format("%.2f", timeStrategist)}%"
+        _roleVanguard.text = "Vanguard: ${String.format("%.2f", timeVanguard)}%"
+        _roleDuelist.text = "Duelist: ${String.format("%.2f", timeDuelist)}%"
+        _roleStrategist.text = "Strategist: ${String.format("%.2f", timeStrategist)}%"
 
          // Muestro estadísticas generales del jugador.
-        statKDA.text = "KDA: ${String.format("%.2f", player.overall_stats.overall_kda.kda)}"
-        statKD.text = "KD: ${String.format("%.2f", player.overall_stats.overall_kd)}"
-        statMVP.text = "MVP: ${player.overall_stats.total_mvps.mvps}"
+        _statKDA.text = "KDA: ${String.format("%.2f", player.overall_stats.overall_kda.kda)}"
+        _statKD.text = "KD: ${String.format("%.2f", player.overall_stats.overall_kd)}"
+        _statMVP.text = "MVP: ${player.overall_stats.total_mvps.mvps}"
 
         /*
          * Cargo la imagen del jugador utilizando Glide
@@ -225,22 +230,23 @@ class PlayersProfile : Fragment() {
             .load("https://marvelrivalsapi.com/rivals${player.player.icon.player_icon}")
             .placeholder(R.drawable.frame_1)
             .fitCenter()
-            .into(playerImageView)
+            .into(_playerImageView)
     }
 
-    private fun intToPercent(total: Float, value: Float): Float {
-         // Convierto un valor absoluto a porcentaje,
+    private fun intToPercent(total: Float, value: Float): Float
+    {
+        // Convierto un valor absoluto a porcentaje,
         return if (total > 0) (value * 100) / total else 0f
     }
 
-    private fun hideEverything() {
-
+    private fun hideEverything()
+    {
         /*
          * Oculto toda la información del perfil
          * cuando no es posible mostrar datos válidos
          */
-        playerName.setTextSize(TypedValue.COMPLEX_UNIT_SP, 40f)
-        dataLayout.visibility = View.INVISIBLE
-        playerUID.visibility = View.INVISIBLE
+        _playerName.setTextSize(TypedValue.COMPLEX_UNIT_SP, 40f)
+        _dataLayout.visibility = View.INVISIBLE
+        _playerUID.visibility = View.INVISIBLE
     }
 }
