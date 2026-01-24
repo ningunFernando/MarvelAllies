@@ -11,7 +11,6 @@ import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
-
 class EditProfile : Fragment()
 {
     //FIREBASE VARIABLES
@@ -21,8 +20,6 @@ class EditProfile : Fragment()
     //UI VARIABLES
     private lateinit var _etApiId: EditText
     private lateinit var _btnSave: Button
-
-
 
     override fun onCreate(savedInstanceState: Bundle?)
     {
@@ -55,7 +52,6 @@ class EditProfile : Fragment()
 
         _btnSave.setOnClickListener { saveChanges() }
     }
-
 
     private fun loadCurrentData()
     {
