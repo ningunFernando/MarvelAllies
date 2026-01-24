@@ -31,26 +31,28 @@ import Player
 import RealtimeComment
 
 
-class Forum : Fragment() {
+class Forum : Fragment()
+{
     /*
      * Estos elementos se utilizan para mostrar el contenido
      * de una noticia seleccionada previamente y enviar el mensaje de los comentarios
      */
-    private lateinit var imageNew: ImageView
-    private lateinit var newText: TextView
-    private lateinit var commentaryAdapter: CommentaryAdapter
-    private lateinit var etComment: EditText
-    private lateinit var btnSend: Button
+    private lateinit var _imageNew: ImageView
+    private lateinit var _newText: TextView
+    private lateinit var _commentaryAdapter: CommentaryAdapter
+    private lateinit var _etComment: EditText
+    private lateinit var _btnSend: Button
 
-    private lateinit var recyclerView: RecyclerView
+    private lateinit var _recyclerView: RecyclerView
 
-    private val auth = FirebaseAuth.getInstance()
-    private val firestore = FirebaseFirestore.getInstance()
-    private val rtdb = FirebaseDatabase.getInstance().reference
+    private val _auth = FirebaseAuth.getInstance()
+    private val _firestore = FirebaseFirestore.getInstance()
+    private val _rtdb = FirebaseDatabase.getInstance().reference
 
-    private var commentsListener: ValueEventListener? = null
+    private var _commentsListener: ValueEventListener? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
+    override fun onCreate(savedInstanceState: Bundle?)
+    {
         super.onCreate(savedInstanceState)
         /*
          * No realizo lógica adicional en este método,
@@ -62,8 +64,8 @@ class Forum : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-
+    ): View?
+    {
         /*
          * Inflo el layout correspondiente al detalle de la noticia
          * y trabajo directamente sobre esta vista
@@ -81,14 +83,14 @@ class Forum : Fragment() {
          * Inicializo los componentes visuales que mostrarán
          * la información textual y gráfica de la noticia
          */
-        newText = view.findViewById(R.id.NewsText)
-        imageNew = view.findViewById(R.id.NewsImage)
+        _newText = view.findViewById(R.id.NewsText)
+        _imageNew = view.findViewById(R.id.NewsImage)
 
         /*
          * Asigno directamente el texto recibido
          * Se asume que el contenido ya viene procesado desde el fragment anterior
          */
-        newText.text = newDescription ?: ""
+        _newText.text = newDescription ?: ""
 
         /*
          * Utilizo Glide para manejar la carga de imágenes remotas
@@ -103,33 +105,34 @@ class Forum : Fragment() {
             //Acomoda la imagen en el centro del item
             .fitCenter()
             //En la imagen del item
-            .into(imageNew)
+            .into(_imageNew)
 
         //Comentarios
-        recyclerView = view.findViewById(R.id.RecyclerCommentary)
-        etComment = view.findViewById(R.id.etComment)
-        btnSend = view.findViewById(R.id.btnSend)
+        _recyclerView = view.findViewById(R.id.RecyclerCommentary)
+        _etComment = view.findViewById(R.id.etComment)
+        _btnSend = view.findViewById(R.id.btnSend)
 
 
-        recyclerView.layoutManager = LinearLayoutManager(requireContext())
-        commentaryAdapter = CommentaryAdapter()
-        recyclerView.adapter = commentaryAdapter
+        _recyclerView.layoutManager = LinearLayoutManager(requireContext())
+        _commentaryAdapter = CommentaryAdapter()
+        _recyclerView.adapter = _commentaryAdapter
 
         listenComments(postId)
 
-        btnSend.setOnClickListener {
-            val text = etComment.text.toString().trim()
-            if (text.isNotEmpty()) {
+        _btnSend.setOnClickListener {
+            val text = _etComment.text.toString().trim()
+            if (text.isNotEmpty())
+            {
                 sendComment(postId, text)
-                etComment.setText("")
+                _etComment.setText("")
             }
         }
         return view
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?)
+    {
         super.onViewCreated(view, savedInstanceState)
-
         /*
          * Configuro la Toolbar para mostrar el botón de regreso,
          * ya que este fragment se comporta como una pantalla secundaria
@@ -140,16 +143,17 @@ class Forum : Fragment() {
             setHomeAsUpIndicator(R.drawable.ic_back_24)
             title = getString(R.string.Forum)
         }
-
         setHasOptionsMenu(true)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean
+    {
         /*
          * Intercepto el evento del botón de regreso en la Toolbar
          * para volver al fragment anterior usando el back stack
          */
-        return when (item.itemId) {
+        return when (item.itemId)
+        {
             android.R.id.home -> {
                 parentFragmentManager.popBackStack()
                 true
@@ -158,16 +162,19 @@ class Forum : Fragment() {
         }
     }
 
-    private fun listenComments(postId: String) {
-        val ref = rtdb.child("comments").child(postId)
+    private fun listenComments(postId: String)
+    {
+        val ref = _rtdb.child("comments").child(postId)
 
-        val listener = object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
+        val listener = object : ValueEventListener
+        {
+            override fun onDataChange(snapshot: DataSnapshot)
+            {
                 val list = mutableListOf<CommentaryItem>()
 
-                for (child in snapshot.children) {
+                for (child in snapshot.children)
+                {
                     val c = child.getValue(RealtimeComment::class.java) ?: continue
-
                     list.add(
                         CommentaryItem(
                             name = if (c.authorName.isNotBlank()) c.authorName else "UID ${c.authorApiId}",
@@ -177,36 +184,40 @@ class Forum : Fragment() {
                     )
                 }
 
-             //nos da el comentario mas reciente hasta abajo de la lista
-                commentaryAdapter.submitList(list)
+                //nos da el comentario mas reciente hasta abajo de la lista
+                _commentaryAdapter.submitList(list)
             }
 
-            override fun onCancelled(error: DatabaseError) {
+            override fun onCancelled(error: DatabaseError)
+            {
                 Log.e("RTDB", "listenComments cancelled: ${error.message}")
             }
         }
-
-        commentsListener = listener
+        _commentsListener = listener
         ref.orderByChild("timestamp").addValueEventListener(listener)
     }
 
-    private fun sendComment(postId: String, text: String) {
-        val user = auth.currentUser
-        if (user == null) {
+    private fun sendComment(postId: String, text: String)
+    {
+        val user = _auth.currentUser
+        if (user == null)
+        {
             Log.e("FORUM", "No user logged in")
             return
         }
 
-        firestore.collection("users").document(user.uid)
+        _firestore.collection("users").document(user.uid)
             .get()
             .addOnSuccessListener { doc ->
                 val apiId = doc.getLong("apiId")
-                if (apiId == null || apiId == 0L) {
+                if (apiId == null || apiId == 0L)
+                {
                     Log.e("FORUM", "apiId missing. User must set it in Profile.")
                     return@addOnSuccessListener
                 }
 
-                fetchPlayerPreview(apiId) { authorName, authorIcon ->
+                fetchPlayerPreview(apiId)
+                { authorName, authorIcon ->
                     val comment = RealtimeComment(
                         text = text,
                         authorUid = user.uid,
@@ -216,7 +227,7 @@ class Forum : Fragment() {
                         timestamp = System.currentTimeMillis()
                     )
 
-                    rtdb.child("comments").child(postId)
+                    _rtdb.child("comments").child(postId)
                         .push()
                         .setValue(comment)
                         .addOnFailureListener { e ->
@@ -229,25 +240,27 @@ class Forum : Fragment() {
             }
     }
 
-
     private fun fetchPlayerPreview(
         apiId: Long,
         onDone: (name: String, iconPath: String) -> Unit
-    ) {
+    )
+    {
         MarvelAPIInstance.apiService.getPlayerById(apiId.toString())
-            .enqueue(object : Callback<Player> {
-                override fun onResponse(call: Call<Player>, response: Response<Player>) {
+            .enqueue(object : Callback<Player>
+            {
+                override fun onResponse(call: Call<Player>, response: Response<Player>)
+                {
                     val player = response.body()
                     val name = player?.name ?: "Unknown"
                     val icon = player?.player?.icon?.player_icon ?: ""
                     onDone(name, icon)
                 }
 
-                override fun onFailure(call: Call<Player>, t: Throwable) {
+                override fun onFailure(call: Call<Player>, t: Throwable)
+                {
                     Log.e("API", "fetchPlayerPreview failed: ${t.message}", t)
                     onDone("Unknown", "")
                 }
             })
     }
-
 }

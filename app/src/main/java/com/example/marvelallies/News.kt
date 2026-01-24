@@ -19,18 +19,19 @@ import retrofit2.Response
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.LinearLayoutManager
 
-class News : Fragment() {
-
+class News : Fragment()
+{
      // Este RecyclerView muestra la lista de noticias obtenidas desde la API
-    private lateinit var recyclerNews: RecyclerView
+    private lateinit var _recyclerNews: RecyclerView
 
     /*
      * La barra de progreso indica el estado de carga mientras
      * se realiza la petición de red
      */
-    private lateinit var progressBar: ProgressBar
+    private lateinit var _progressBar: ProgressBar
 
-    override fun onConfigurationChanged(newConfig: Configuration) {
+    override fun onConfigurationChanged(newConfig: Configuration)
+    {
         super.onConfigurationChanged(newConfig)
         /*
          * Al cambiar la orientación, vuelvo a solicitar las noticias
@@ -44,32 +45,32 @@ class News : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View {
-
+    ): View
+    {
         /*
          * Inflo el layout del fragment y preparo los componentes necesarios
          * para mostrar la lista de noticias
          */
         val view = inflater.inflate(R.layout.fragment_news, container, false)
 
-        recyclerNews = view.findViewById(R.id.RecyclerNews)
+        _recyclerNews = view.findViewById(R.id.RecyclerNews)
 
         /*
          * Utilizo un LinearLayoutManager vertical para mostrar
          * las noticias en forma de lista
          */
-        recyclerNews.layoutManager = LinearLayoutManager(requireContext())
+        _recyclerNews.layoutManager = LinearLayoutManager(requireContext())
 
-        progressBar = view.findViewById(R.id.progressBar)
+        _progressBar = view.findViewById(R.id.progressBar)
 
          //Inicio la carga de noticias apenas la vista está disponible
         getNews()
         return view
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?)
+    {
         super.onViewCreated(view, savedInstanceState)
-
         /*
          * Configuro la Toolbar para este fragment
          * No muestro botón de regreso porque funciona como sección principal
@@ -82,31 +83,34 @@ class News : Fragment() {
         }
     }
 
-    private fun getNews() {
-
+    private fun getNews()
+    {
         /*
          * Muestro la barra de progreso antes de iniciar la llamada
          * para informar al usuario que los datos se están cargando
          */
-        progressBar.visibility = View.VISIBLE
+        _progressBar.visibility = View.VISIBLE
 
         /*
          * Realizo la petición a la API para obtener noticias
          * Se especifica la página y el límite de resultados
          */
         MarvelAPIInstance.apiService.getNewsBalances(1, 20)
-            .enqueue(object : Callback<Balance> {
+            .enqueue(object : Callback<Balance>
+            {
+                override fun onResponse(call: Call<Balance>, response: Response<Balance>)
+                {
+                    _progressBar.visibility = View.GONE
 
-                override fun onResponse(call: Call<Balance>, response: Response<Balance>) {
-                    progressBar.visibility = View.GONE
-
-                    if (!response.isSuccessful) {
+                    if (!response.isSuccessful)
+                    {
                         Log.e("NewsAPI", "Error HTTP: ${response.code()}")
                         return
                     }
 
                     val news = response.body()
-                    if (news == null) {
+                    if (news == null)
+                    {
                         Log.e("NewsAPI", "Response body is null")
                         return
                     }
@@ -127,22 +131,25 @@ class News : Fragment() {
                      * Inicializo el adapter pasando un callback
                      * que se ejecuta cuando el usuario selecciona una noticia
                      */
-                    val adapter = NewsAdapter(newsItems) { new ->
+                    val adapter = NewsAdapter(newsItems)
+                    { new ->
                         onCharacterClicked(new)
                     }
 
                     //Cambiar el recycler view
-                    recyclerNews.adapter = adapter
+                    _recyclerNews.adapter = adapter
                 }
 
-                override fun onFailure(call: Call<Balance>, t: Throwable) {
+                override fun onFailure(call: Call<Balance>, t: Throwable)
+                {
                     Log.e("NewsAPI", "Request failed", t)
-                    progressBar.visibility = View.GONE
+                    _progressBar.visibility = View.GONE
                 }
             })
     }
 
-    private fun onCharacterClicked(new: NewsItem) {
+    private fun onCharacterClicked(new: NewsItem)
+    {
         /*
          * Manejo la navegación al fragment de detalle de la noticia,
          * enviando la información necesaria mediante argumentos
@@ -165,7 +172,8 @@ class News : Fragment() {
         fragmentTransaction.commit()
     }
 
-    private fun safeKey(input: String): String {
+    private fun safeKey(input: String): String
+    {
         return input.replace(Regex("[.#$\\[\\]/]"), "_")
     }
 }
