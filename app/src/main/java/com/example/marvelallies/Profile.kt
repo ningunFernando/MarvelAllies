@@ -59,8 +59,6 @@ class Profile : Fragment() {
     private lateinit var btnSignOut: Button
     private lateinit var btnExitApp: Button
 
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
