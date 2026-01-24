@@ -21,8 +21,8 @@ import models.AbilitiesAdapter
 import android.widget.ProgressBar
 import androidx.appcompat.app.AppCompatActivity
 
-class CharacterDetails : Fragment() {
-
+class CharacterDetails : Fragment()
+{
     /*
      * Aquí declaro los elementos visuales que voy a utilizar para mostrar
      * la información detallada del personaje seleccionado
