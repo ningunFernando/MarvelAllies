@@ -118,16 +118,6 @@ class LoginActivity : AppCompatActivity()
             }
     }
 
-    private fun SingOut()
-    {
-        _auth.signOut()
-        _googleSingInClient.signOut()
-
-        startActivity(Intent(this, LoginActivity::class.java))
-        finish()
-        Toast.makeText(this, "Logout successful", Toast.LENGTH_SHORT).show()
-    }
-
     private fun SingInWithGoogle()
     {
         val singInIntent = _googleSingInClient.signInIntent
