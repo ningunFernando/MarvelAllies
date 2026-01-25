@@ -18,12 +18,16 @@ import models.CharactersPageAdapter
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import android.widget.ProgressBar
+
 
 class Characters : Fragment()
 {
     //variable del view Pager (carrusel)
-    private lateinit var _viewPager: ViewPager2
-    private lateinit var _tabLayout: TabLayout
+    private lateinit var _characterViewPager: ViewPager2
+    private lateinit var _charactersTabLayout: TabLayout
+    private lateinit var _progressBar: ProgressBar
+
 
     override fun onCreate(savedInstanceState: Bundle?)
     {
@@ -44,8 +48,10 @@ class Characters : Fragment()
         //carga el fragmento characters y encuentra el viewpager
         val view = inflater.inflate(R.layout.fragment_characters, container, false)
 
-        _viewPager = view.findViewById(R.id.viewPager)
-        _tabLayout = view.findViewById(R.id.into_tab_layout)
+        _characterViewPager = view.findViewById(R.id.viewPager)
+        _charactersTabLayout = view.findViewById(R.id.into_tab_layout)
+        _progressBar = view.findViewById(R.id.progressBar)
+
         /*
          * Solicito la lista completa de personajes al inicializar la vista
          * Esta información será transformada en páginas dentro del ViewPager
@@ -120,6 +126,8 @@ class Characters : Fragment()
 
     private fun loadCharactersFromAPI()
     {
+        _progressBar.visibility = View.VISIBLE
+
         /*
          * Realizo una llamada asíncrona para obtener todos los héroes
          * El resultado se procesa en el callback para no bloquear la UI
@@ -132,6 +140,8 @@ class Characters : Fragment()
                     response: Response<List<Hero>>
                 )
                 {
+                    _progressBar.visibility = View.GONE
+
                     if (!response.isSuccessful)
                     {
                         //mensaje error
@@ -147,7 +157,7 @@ class Characters : Fragment()
                     val pages = groupIntoPages(apiCharacters)
 
                     // Pasar un callback al adapter
-                    _viewPager.adapter = CharactersPageAdapter(pages)
+                    _characterViewPager.adapter = CharactersPageAdapter(pages)
                     { character ->
                         // Esta función se ejecuta cuando se hace clic en un personaje
                         onCharacterClicked(character)
@@ -156,7 +166,7 @@ class Characters : Fragment()
                      * Vinculo el TabLayout con el ViewPager sin títulos,
                      * utilizando los tabs únicamente como indicadores de página
                      */
-                    TabLayoutMediator(_tabLayout, _viewPager) { _, _ -> }.attach()
+                    TabLayoutMediator(_charactersTabLayout, _characterViewPager) { _, _ -> }.attach()
                 }
 
                 override fun onFailure(call: Call<List<Hero>>, t: Throwable)
@@ -219,12 +229,12 @@ class Characters : Fragment()
         return chunked.map { chunk ->
             CharactersBanner(
                 characters = chunk.map
-                {
+                { characters->
                     //Cada item de la page obtiene el nombre, id y descripcion
                     CharactersItem(
-                        query = it.id,
-                        name = it.name,
-                        imageUrl = it.imageUrl
+                        query = characters.id,
+                        name = characters.name,
+                        imageUrl = characters.imageUrl
                     )
                 }
             )
@@ -261,6 +271,8 @@ class Characters : Fragment()
 
     private fun loadCharacterDetails(characterId: String)
     {
+        _progressBar.visibility = View.VISIBLE
+
         /*
          * Se reutiliza el endpoint de búsqueda por ID para filtrar
          * y mostrar únicamente el personaje solicitado.
@@ -270,6 +282,8 @@ class Characters : Fragment()
             {
                 override fun onResponse(call: Call<Hero>, response: Response<Hero>)
                 {
+                    _progressBar.visibility = View.GONE
+
                     if (!response.isSuccessful)
                     {
                         //mensaje error
@@ -288,7 +302,7 @@ class Characters : Fragment()
                          * Reemplazo el adapter del ViewPager para mostrar
                          * únicamente el resultado de la búsqueda
                          */
-                        _viewPager.adapter = CharactersPageAdapter(pages)
+                        _characterViewPager.adapter = CharactersPageAdapter(pages)
                         { characterItem ->
                             onCharacterClicked(characterItem)
                         }
