@@ -215,14 +215,14 @@ class PlayersProfile : Fragment()
          * Muestro los porcentajes de uso por rol
          * con formato controlado para mejor legibilidad
          */
-        _roleVanguard.text = "Vanguard: ${String.format("%.2f", timeVanguard)}%"
-        _roleDuelist.text = "Duelist: ${String.format("%.2f", timeDuelist)}%"
-        _roleStrategist.text = "Strategist: ${String.format("%.2f", timeStrategist)}%"
+        _roleVanguard.text = "${getString(R.string.Vanguard)}: ${String.format("%.2f", timeVanguard)}%"
+        _roleDuelist.text = "${getString(R.string.Duelist)}: ${String.format("%.2f", timeDuelist)}%"
+        _roleStrategist.text = "${getString(R.string.Strategist)}: ${String.format("%.2f", timeStrategist)}%"
 
          // Muestro estadísticas generales del jugador.
-        _statKDA.text = "KDA: ${String.format("%.2f", player.overall_stats.overall_kda.kda)}"
-        _statKD.text = "KD: ${String.format("%.2f", player.overall_stats.overall_kd)}"
-        _statMVP.text = "MVP: ${player.overall_stats.total_mvps.mvps}"
+        _statKDA.text = "${getString(R.string.KDA)}: ${String.format("%.2f", player.overall_stats.overall_kda.kda)}"
+        _statKD.text = "${getString(R.string.KD)}: ${String.format("%.2f", player.overall_stats.overall_kd)}"
+        _statMVP.text = "${getString(R.string.MVP)}: ${player.overall_stats.total_mvps.mvps}"
 
         /*
          * Cargo la imagen del jugador utilizando Glide
