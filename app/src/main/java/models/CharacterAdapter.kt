@@ -9,40 +9,42 @@ import com.bumptech.glide.Glide
 import com.example.marvelallies.R
 
 class CharacterAdapter(
-    private val items: List<CharactersItem>,
+    private val _items: List<CharactersItem>,
     //valor que se va a pasar hacia el fragment principal cuando se detecte un click, con la ayuda de chatgtp descubri el Unit
-    private val onItemClickListener: (CharactersItem) -> Unit
-) : RecyclerView.Adapter<CharacterAdapter.GridViewHolder>() {
-
-
+    private val _onItemClickListener: (CharactersItem) -> Unit
+) : RecyclerView.Adapter<CharacterAdapter.GridViewHolder>()
+{
     //Se llama cada vez que el carrusel necesita crear una nuevo item.
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GridViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GridViewHolder
+    {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.character_item, parent, false)
         return GridViewHolder(view)
     }
 
     //Se llama para asignar los datos a cada vista
-    override fun onBindViewHolder(holder: GridViewHolder, position: Int) {
-        val item = items[position]
-        holder.bind(item, onItemClickListener)
+    override fun onBindViewHolder(holder: GridViewHolder, position: Int)
+    {
+        val item = _items[position]
+        holder.bind(item, _onItemClickListener)
     }
 
     //Devuelve el número total de ítems
-    override fun getItemCount() = items.size
+    override fun getItemCount() = _items.size
 
-    class GridViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        private val image: ImageView = itemView.findViewById(R.id.characterImage)
+    class GridViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
+    {
+        private val _image: ImageView = itemView.findViewById(R.id.characterImage)
 
-
-        fun bind(character: CharactersItem, listener: (CharactersItem) -> Unit) {
-
+        //bidea la imagen del character
+        fun bind(character: CharactersItem, listener: (CharactersItem) -> Unit)
+        {
             //Si un item no recibe ningun dato, hacemos que el texto y la imagen se hagan invisibles
-            if (character.imageUrl.isBlank()) {
-                image.visibility = View.INVISIBLE
+            if (character.imageUrl.isBlank())
+            {
+                _image.visibility = View.INVISIBLE
                 return
             }
-
-            image.visibility = View.VISIBLE
+            _image.visibility = View.VISIBLE
             //toma el nombre del personaje desde la API
 
             //usamos la libreria de Glide para tomar imagenes de un URL
@@ -54,16 +56,12 @@ class CharacterAdapter(
                 //Acomoda la imagen en el centro del item
                 .fitCenter()
                 //En la imagen del item
-                .into(image)
+                .into(_image)
 
-            image.setOnClickListener {
+            _image.setOnClickListener {
                 // Llama al callback
                 listener(character)
             }
-
         }
-
     }
-
 }
-

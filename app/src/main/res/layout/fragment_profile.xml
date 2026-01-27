@@ -150,6 +150,16 @@
                             android:fontFamily="@font/roboto_medium"
                             android:text="@string/Sign_out"
                             android:textColor="@color/white" />
+
+                        <Button
+                            android:id="@+id/btnExitApp"
+                            android:layout_width="200dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="16dp"
+                            android:backgroundTint="?attr/colorError"
+                            android:fontFamily="@font/roboto_medium"
+                            android:text="@string/ExitApp"
+                            android:textColor="@color/white" />
                     </LinearLayout>
 
                 </LinearLayout>

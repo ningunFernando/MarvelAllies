@@ -17,105 +17,120 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
+import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 
 
-class Profile : Fragment() {
-
+class Profile : Fragment()
+{
     //FIREBASE VARIABLES
-    private lateinit var auth: FirebaseAuth
-    private lateinit var db: FirebaseFirestore
-    private lateinit var googleSingInClient: GoogleSignInClient
+    private lateinit var _auth: FirebaseAuth
+    private lateinit var _dataBase: FirebaseFirestore
+    private lateinit var _googleSingInClient: GoogleSignInClient
 
     //UID API SETUP
-    private lateinit var layoutApiIdSetup: LinearLayout
-    private lateinit var layoutProfileContent: LinearLayout
-    private lateinit var etApiId: EditText
-    private lateinit var btnSaveApiId: Button
+    private lateinit var _layoutApiIdSetup: LinearLayout
+    private lateinit var _layoutProfileContent: LinearLayout
+    private lateinit var _etApiId: EditText
+    private lateinit var _btnSaveApiId: Button
 
     //PROFILE UI
-    private lateinit var imageProfile: ImageView
-    private lateinit var nameProfile: TextView
-    private lateinit var uidProfile: TextView
-    private lateinit var rankTextProfile: TextView
-    private lateinit var scoreTextProfile: TextView
-    private lateinit var timeTextProfile: TextView
-    private lateinit var matchesTextProfile: TextView
-    private lateinit var vanguardTextProfile: TextView
-    private lateinit var duelistTextProfile: TextView
-    private lateinit var strategistTextProfile: TextView
-    private lateinit var overallProfile: TextView
-    private lateinit var kdaTextProfile: TextView
-    private lateinit var kdTextProfile: TextView
-    private lateinit var mvpTextProfile: TextView
-    private lateinit var btnEditProfile: Button
-    private lateinit var btnSignOut: Button
+    private lateinit var _imageProfile: ImageView
+    private lateinit var _nameProfile: TextView
+    private lateinit var _uidProfile: TextView
+    private lateinit var _rankTextProfile: TextView
+    private lateinit var _scoreTextProfile: TextView
+    private lateinit var _timeTextProfile: TextView
+    private lateinit var _matchesTextProfile: TextView
+    private lateinit var _vanguardTextProfile: TextView
+    private lateinit var _duelistTextProfile: TextView
+    private lateinit var _strategistTextProfile: TextView
+    private lateinit var _overallProfile: TextView
+    private lateinit var _kdaTextProfile: TextView
+    private lateinit var _kdTextProfile: TextView
+    private lateinit var _mvpTextProfile: TextView
+    private lateinit var _btnEditProfile: Button
+    private lateinit var _btnSignOut: Button
+    private lateinit var _btnExitApp: Button
 
-
-
-    override fun onCreate(savedInstanceState: Bundle?) {
+    override fun onCreate(savedInstanceState: Bundle?)
+    {
         super.onCreate(savedInstanceState)
-
     }
-    override fun onResume() {
+
+    override fun onResume()
+    {
         super.onResume()
         requireActivity().title = getString(R.string.Profile)
     }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View?
+    {
         return inflater.inflate(R.layout.fragment_profile, container, false)
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?)
+    {
         super.onViewCreated(view, savedInstanceState)
         //FIREBASE VARIABLES
-        auth = FirebaseAuth.getInstance()
-        db = FirebaseFirestore.getInstance()
+        _auth = FirebaseAuth.getInstance()
+        _dataBase = FirebaseFirestore.getInstance()
+
+        //GOOGLE SESION
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken("341760355003-kqopo7bfp4aqqbg09s5ecmjjk0it3bti.apps.googleusercontent.com")
+            .requestEmail()
+            .build()
+
+        _googleSingInClient = GoogleSignIn.getClient(requireContext(), gso)
+
 
         //UID API SETUP
-        layoutApiIdSetup = view.findViewById(R.id.layoutApiIdSetup)
-        layoutProfileContent = view.findViewById(R.id.layoutProfileContent)
-        etApiId = view.findViewById(R.id.etApiId)
-        btnSaveApiId = view.findViewById(R.id.btnSaveApiId)
+        _layoutApiIdSetup = view.findViewById(R.id.layoutApiIdSetup)
+        _layoutProfileContent = view.findViewById(R.id.layoutProfileContent)
+        _etApiId = view.findViewById(R.id.etApiId)
+        _btnSaveApiId = view.findViewById(R.id.btnSaveApiId)
 
-        btnSaveApiId.setOnClickListener { saveApiId()}
+        _btnSaveApiId.setOnClickListener { saveApiId()}
 
         //PROFILE UI
-        imageProfile = view.findViewById(R.id.imageProfile)
-        nameProfile = view.findViewById(R.id.NameProfile)
-        uidProfile = view.findViewById(R.id.UidProfile)
-        rankTextProfile = view.findViewById(R.id.RankTextProfile)
-        scoreTextProfile = view.findViewById(R.id.ScoreTextProfile)
-        timeTextProfile = view.findViewById(R.id.TimeTextProfile)
-        matchesTextProfile = view.findViewById(R.id.MatchesTextProfile)
-        vanguardTextProfile = view.findViewById(R.id.VanguardTextProfile)
-        duelistTextProfile = view.findViewById(R.id.DuelistTextProfile)
-        strategistTextProfile = view.findViewById(R.id.StrategistTextProfile)
-        overallProfile = view.findViewById(R.id.OverallProfile)
-        kdaTextProfile = view.findViewById(R.id.KdaTextProfile)
-        kdTextProfile = view.findViewById(R.id.KdTextProfile)
-        mvpTextProfile = view.findViewById(R.id.MvpTextProfile)
-        btnEditProfile = view.findViewById(R.id.btnEditProfile)
-        btnSignOut = view.findViewById(R.id.btnSignOut)
+        _imageProfile = view.findViewById(R.id.imageProfile)
+        _nameProfile = view.findViewById(R.id.NameProfile)
+        _uidProfile = view.findViewById(R.id.UidProfile)
+        _rankTextProfile = view.findViewById(R.id.RankTextProfile)
+        _scoreTextProfile = view.findViewById(R.id.ScoreTextProfile)
+        _timeTextProfile = view.findViewById(R.id.TimeTextProfile)
+        _matchesTextProfile = view.findViewById(R.id.MatchesTextProfile)
+        _vanguardTextProfile = view.findViewById(R.id.VanguardTextProfile)
+        _duelistTextProfile = view.findViewById(R.id.DuelistTextProfile)
+        _strategistTextProfile = view.findViewById(R.id.StrategistTextProfile)
+        _overallProfile = view.findViewById(R.id.OverallProfile)
+        _kdaTextProfile = view.findViewById(R.id.KdaTextProfile)
+        _kdTextProfile = view.findViewById(R.id.KdTextProfile)
+        _mvpTextProfile = view.findViewById(R.id.MvpTextProfile)
+        _btnEditProfile = view.findViewById(R.id.btnEditProfile)
+        _btnSignOut = view.findViewById(R.id.btnSignOut)
+        _btnExitApp = view.findViewById(R.id.btnExitApp)
 
         //BOTONES PARA SING OUT Y EDITAR PERFIL
-        btnSignOut.setOnClickListener { SingOut() }
-        btnEditProfile.setOnClickListener {
+        _btnSignOut.setOnClickListener { SingOut() }
+        _btnEditProfile.setOnClickListener {
             parentFragmentManager.beginTransaction()
                 .replace(R.id.frameLayout, EditProfile())
                 .addToBackStack(null)
                 .commit()
         }
-
+        _btnExitApp.setOnClickListener{
+            requireActivity().finishAffinity()
+        }
 
         val activity = requireActivity() as AppCompatActivity
         activity.supportActionBar?.apply {
@@ -126,13 +141,15 @@ class Profile : Fragment() {
         loadUserAndToggleUi()
     }
 
-    private fun loadUserAndToggleUi(){
+    private fun loadUserAndToggleUi()
+    {
         /*
          * Obtengo el usuario actual desde FirebaseAuth
          * Si es null, significa que no hay sesion activa
          */
-        val user = auth.currentUser
-        if(user == null){
+        val user = _auth.currentUser
+        if(user == null)
+        {
             startActivity(Intent(requireContext(), LoginActivity::class.java))
             requireActivity().finish()
             Toast.makeText(requireContext(), "No user logged in", Toast.LENGTH_SHORT).show()
@@ -143,15 +160,15 @@ class Profile : Fragment() {
         val uid = user?.uid ?: ""
         val email = user?.email ?: ""
 
-
         //referencia a mi doc en firestore
-        val docRef = db.collection("users").document(uid)
+        val docRef = _dataBase.collection("users").document(uid)
 
         docRef.get()
             .addOnSuccessListener { doc ->
                 //si el documento no existe se crea
                 //se guarda email y apiid en el documento para poder llamarlos luego desde firestore
-                if(!doc.exists()){
+                if(!doc.exists())
+                {
                     val newUserData = hashMapOf(
                         "email" to email,
                         "apiId" to null
@@ -169,9 +186,12 @@ class Profile : Fragment() {
                 //si ya existe el registro de apiId se muestra el perfil
                 //si no existe se muestra la pantalla de setup de apiId
                 val apiId = doc.getLong("apiId")
-                if(apiId == null){
+                if(apiId == null)
+                {
                     showApiSetup()
-                }else{
+                }
+                else
+                {
                     showFullProfile()
                     loadPlayer(apiId.toString())
                 }
@@ -184,65 +204,70 @@ class Profile : Fragment() {
 
 
     //Firebase setup for the profile uid upload and creation of a firestore colection
-    private fun saveApiId(){
-        val user = auth.currentUser ?: run{
+    private fun saveApiId()
+    {
+        val user = _auth.currentUser ?: run {
             Toast.makeText(requireContext(), "No user logged in", Toast.LENGTH_SHORT).show()
             return
         }
 
-        val apidIdText = etApiId.text.toString()
-        if(apidIdText.isBlank()){
-            etApiId.error = "Your Rivals UID is required"
+        val apidIdText = _etApiId.text.toString()
+        if(apidIdText.isBlank())
+        {
+            _etApiId.error = "Your Rivals UID is required"
             return
         }
 
         val apiIdNumber = apidIdText.toLongOrNull()
-        if(apiIdNumber == null){
-            etApiId.error = "Your Rivals UID must be a number"
+        if(apiIdNumber == null)
+        {
+            _etApiId.error = "Your Rivals UID must be a number"
             return
         }
-
-        val uid = user.uid
-        val docRef = db.collection("users").document(uid)
+        
+        val uid = FirebaseAuth.getInstance().currentUser?.uid ?: return
+        val docRef = FirebaseFirestore.getInstance().collection("users").document(uid)
 
         docRef.update("apiId", apiIdNumber)
             .addOnSuccessListener {
                 Toast.makeText(requireContext(), "UID saved", Toast.LENGTH_SHORT).show()
                 showFullProfile()
             }
-            .addOnFailureListener {
-                Toast.makeText(requireContext(), "Error saving UID", Toast.LENGTH_SHORT).show()
+            .addOnFailureListener { e ->
+               Log.e("Profile", "Error saving UID", e)
+                Toast.makeText(requireContext(), "Error saving UID: ${e.message}", Toast.LENGTH_SHORT).show()
             }
     }
 
-
-    private fun showApiSetup() {
-        layoutApiIdSetup.visibility = View.VISIBLE
-        layoutProfileContent.visibility = View.GONE
+    private fun showApiSetup()
+    {
+        _layoutApiIdSetup.visibility = View.VISIBLE
+        _layoutProfileContent.visibility = View.GONE
     }
 
-    private fun showFullProfile() {
-        layoutApiIdSetup.visibility = View.GONE
-        layoutProfileContent.visibility = View.VISIBLE
+    private fun showFullProfile()
+    {
+        _layoutApiIdSetup.visibility = View.GONE
+        _layoutProfileContent.visibility = View.VISIBLE
     }
-
 
     //Fetching api
-
-    private fun loadPlayer(playerUid: String) {
+    private fun loadPlayer(playerUid: String)
+    {
         /*
          * Muestro la barra de progreso mientras se consulta
          * la información detallada del jugador
          */
         MarvelAPIInstance.apiService.getPlayerById(playerUid)
-            .enqueue(object : Callback<Player> {
-
+            .enqueue(object : Callback<Player>
+            {
                 override fun onResponse(
                     call: Call<Player>,
-                    response: Response<Player>)
+                    response: Response<Player>
+                )
                 {
-
-                    if (!response.isSuccessful) {
+                    if (!response.isSuccessful)
+                    {
                         Log.e("API", "Error: ${response.code()}")
                         return
                     }
@@ -255,19 +280,21 @@ class Profile : Fragment() {
                     bindPlayerData(player)
                 }
 
-                override fun onFailure(call: Call<Player>, t: Throwable) {
+                override fun onFailure(call: Call<Player>, t: Throwable)
+                {
                     Toast.makeText(requireContext(), "API error", Toast.LENGTH_SHORT).show()
                 }
             })
     }
 
-
-    private fun intToPercent(total: Float, value: Float): Float {
+    private fun intToPercent(total: Float, value: Float): Float
+    {
         // Convierto un valor absoluto a porcentaje,
         return if (total > 0) (value * 100) / total else 0f
     }
 
-    private fun bindPlayerData(player: Player) {
+    private fun bindPlayerData(player: Player)
+    {
         var timeVanguard =
             player.overall_stats.roles_played.vanguard?.total_time_played?.time_played ?: 0f
         var timeDuelist =
@@ -280,35 +307,40 @@ class Profile : Fragment() {
         timeDuelist = intToPercent(totalTime, timeDuelist)
         timeStrategist = intToPercent(totalTime, timeStrategist)
 
-        nameProfile.text = player.name
-        uidProfile.text = "UID: ${player.uid}"
-        rankTextProfile.text = player.player.rank.rank
-        scoreTextProfile.text = player.player.rank.score
-        timeTextProfile.text = player.overall_stats.total_play_time.playtime
-        matchesTextProfile.text = player.overall_stats.total_matches.toString()
+        _nameProfile.text = player.name
+        _uidProfile.text = "UID: ${player.uid}"
+        _rankTextProfile.text = player.player.rank.rank
+        _scoreTextProfile.text = player.player.rank.score
+        _timeTextProfile.text = player.overall_stats.total_play_time.playtime
+        _matchesTextProfile.text = player.overall_stats.total_matches.toString()
 
-        vanguardTextProfile.text = "Vanguard: ${"%.2f".format(timeVanguard)}%"
-        duelistTextProfile.text = "Duelist: ${"%.2f".format(timeDuelist)}%"
-        strategistTextProfile.text = "Strategist: ${"%.2f".format(timeStrategist)}%"
+        _vanguardTextProfile.text = "${getString(R.string.Vanguard)}: ${"%.2f".format(timeVanguard)}%"
+        _duelistTextProfile.text = "${getString(R.string.Duelist)}: ${"%.2f".format(timeDuelist)}%"
+        _strategistTextProfile.text = "${getString(R.string.Strategist)}: ${"%.2f".format(timeStrategist)}%"
 
-        kdaTextProfile.text = "KDA: ${"%.2f".format(player.overall_stats.overall_kda.kda)}"
-        kdTextProfile.text = "KD: ${"%.2f".format(player.overall_stats.overall_kd)}"
-        mvpTextProfile.text = "MVP: ${player.overall_stats.total_mvps.mvps}"
+        _kdaTextProfile.text = "${getString(R.string.KDA)}: ${"%.2f".format(player.overall_stats.overall_kda.kda)}"
+        _kdTextProfile.text = "${getString(R.string.KD)}: ${"%.2f".format(player.overall_stats.overall_kd)}"
+        _mvpTextProfile.text = "${getString(R.string.MVP)}: ${player.overall_stats.total_mvps.mvps}"
 
         Glide.with(requireContext())
             .load("https://marvelrivalsapi.com/rivals${player.player.icon.player_icon}")
             .placeholder(R.drawable.frame_1)
             .fitCenter()
-            .into(imageProfile)
+            .into(_imageProfile)
     }
 
 
     //Sign out
-    private fun SingOut(){
-        auth.signOut()
-        googleSingInClient.signOut()
+    private fun SingOut()
+    {
+        _auth.signOut()
 
-        startActivity(Intent(requireContext(), LoginActivity::class.java))
+        // Cierra sesion de Google
+        _googleSingInClient.signOut().addOnCompleteListener {
+            // Limpia la pila de actividades para evitar volver con una sesion vieja
+            val intent = Intent(requireContext(), LoginActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            startActivity(intent)
+        }
     }
-
 }

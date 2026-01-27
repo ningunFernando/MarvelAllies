@@ -10,42 +10,50 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 
-
 class PlayersAdapter(
-    private val players: List<PlayersItem>,
-    private val onItemClickListener: (PlayersItem) -> Unit
-): RecyclerView.Adapter<PlayersAdapter.PlayerViewHolder>() {
+    private val _players: List<PlayersItem>,
+    private val _onItemClickListener: (PlayersItem) -> Unit
+): RecyclerView.Adapter<PlayersAdapter.PlayerViewHolder>()
+{
+    //Se llama cada vez que el recycler necesita crear una nuevo item.
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
-    ): PlayersAdapter.PlayerViewHolder {
+    ): PlayersAdapter.PlayerViewHolder
+    {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.players_item, parent, false)
-
         return PlayerViewHolder(view)
     }
 
-    override fun onBindViewHolder(holder: PlayersAdapter.PlayerViewHolder, position: Int) {
-        val player = players[position]
-        holder.bind(player, onItemClickListener)
+    //Se llama para asignar los datos a cada vista
+    override fun onBindViewHolder(holder: PlayersAdapter.PlayerViewHolder, position: Int)
+    {
+        val player = _players[position]
+        holder.bind(player, _onItemClickListener)
     }
 
-    override fun getItemCount(): Int {
-        return players.size
+    //Devuelve el número total de ítems
+    override fun getItemCount(): Int
+    {
+        return _players.size
     }
 
-    class PlayerViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){
-        private val playerName: TextView = itemView.findViewById(R.id.PlayerName)
-        private val playerUID: TextView = itemView.findViewById(R.id.PlayerUID)
-        private val playerRank: TextView = itemView.findViewById(R.id.Rank)
-        private val playerScore: TextView = itemView.findViewById(R.id.Score)
-        private val playerImage: ImageView = itemView.findViewById(R.id.PlayerImage)
-        private val playerLayout: LinearLayout = itemView.findViewById(R.id.PlayerLayout)
+    class PlayerViewHolder(itemView: View): RecyclerView.ViewHolder(itemView)
+    {
+        private val _playerName: TextView = itemView.findViewById(R.id.PlayerName)
+        private val _playerUID: TextView = itemView.findViewById(R.id.PlayerUID)
+        private val _playerRank: TextView = itemView.findViewById(R.id.Rank)
+        private val _playerScore: TextView = itemView.findViewById(R.id.Score)
+        private val _playerImage: ImageView = itemView.findViewById(R.id.PlayerImage)
+        private val _playerLayout: LinearLayout = itemView.findViewById(R.id.PlayerLayout)
 
-        fun bind(player: PlayersItem, listener: (PlayersItem) -> Unit){
-            playerName.text = player.name
-            playerUID.text = player.query.toString()
-            playerRank.text = player.rank
-            playerScore.text = player.score.toString()
+        //bindea los datos de los jugadores
+        fun bind(player: PlayersItem, listener: (PlayersItem) -> Unit)
+        {
+            _playerName.text = player.name
+            _playerUID.text = player.query.toString()
+            _playerRank.text = player.rank
+            _playerScore.text = player.score.toString()
             Glide.with(itemView.context)
                 //Si carga toma la imagen de este URL
                 .load("https://marvelrivalsapi.com/rivals"+player.player_icon)
@@ -54,17 +62,12 @@ class PlayersAdapter(
                 //Acomoda la imagen en el centro del item
                 .fitCenter()
                 //En la imagen del item
-                .into(playerImage)
+                .into(_playerImage)
 
-            playerLayout.setOnClickListener {
+            _playerLayout.setOnClickListener {
                 // Llama al callback
                 listener(player)
             }
-
         }
-
-
     }
-
-
 }
