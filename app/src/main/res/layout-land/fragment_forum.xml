@@ -21,9 +21,8 @@
 
             <ImageView
                 android:id="@+id/NewsImage"
-                android:layout_width="wrap_content"
-                android:layout_height="100dp"
-                android:layout_gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
                 android:layout_margin="20dp"
                 android:scaleType="fitXY"
                 tools:src="@tools:sample/backgrounds/scenic" />
@@ -39,12 +38,27 @@
                 android:textColor="?attr/colorOnSurface"
                 android:textSize="20sp" />
 
+            <EditText
+                android:id="@+id/etComment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="Write a comment..."
+                android:inputType="textMultiLine"
+                android:paddingTop="15dp" />
+
+            <Button
+                android:id="@+id/btnSend"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Send" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/RecyclerCommentary"
+                android:layout_width="match_parent"
+                android:layout_height="345dp" />
         </LinearLayout>
     </ScrollView>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/RecyclerCommentary"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
 
 </LinearLayout>
