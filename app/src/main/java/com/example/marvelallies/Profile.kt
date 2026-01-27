@@ -207,16 +207,17 @@ class Profile : Fragment() {
             return
         }
 
-        val uid = user.uid
-        val docRef = db.collection("users").document(uid)
+        val uid = FirebaseAuth.getInstance().currentUser?.uid ?: return
+        val docRef = FirebaseFirestore.getInstance().collection("users").document(uid)
 
         docRef.update("apiId", apiIdNumber)
             .addOnSuccessListener {
                 Toast.makeText(requireContext(), "UID saved", Toast.LENGTH_SHORT).show()
                 showFullProfile()
             }
-            .addOnFailureListener {
-                Toast.makeText(requireContext(), "Error saving UID", Toast.LENGTH_SHORT).show()
+            .addOnFailureListener { e ->
+               Log.e("Profile", "Error saving UID", e)
+                Toast.makeText(requireContext(), "Error saving UID: ${e.message}", Toast.LENGTH_SHORT).show()
             }
     }
 
