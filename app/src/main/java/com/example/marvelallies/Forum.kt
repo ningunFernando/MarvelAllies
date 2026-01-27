@@ -1,6 +1,5 @@
 package com.example.marvelallies
 
-import MarvelAPI.MarvelAPIInstance
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -13,9 +12,6 @@ import androidx.appcompat.app.AppCompatActivity
 import android.view.MenuItem
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.LinearLayoutManager
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import android.util.Log
 import android.widget.Button
 import android.widget.EditText
@@ -27,7 +23,6 @@ import com.google.firebase.database.ValueEventListener
 import com.google.firebase.firestore.FirebaseFirestore
 import models.CommentaryAdapter
 import models.CommentaryItem
-import Player
 import RealtimeComment
 
 
@@ -46,9 +41,11 @@ class Forum : Fragment()
     private lateinit var _recyclerView: RecyclerView
 
     private val _auth = FirebaseAuth.getInstance()
-    private val _firestore = FirebaseFirestore.getInstance()
-    private val _rtdb = FirebaseDatabase.getInstance().reference
+    private val _rtdb = FirebaseDatabase
+        .getInstance("https://marvelallies-default-rtdb.europe-west1.firebasedatabase.app")
+        .reference
 
+    //listener activo para los comentarios en real time
     private var _commentsListener: ValueEventListener? = null
 
     override fun onCreate(savedInstanceState: Bundle?)
@@ -75,10 +72,10 @@ class Forum : Fragment()
         //Tomar elementos pasados
         val newImageUrl = arguments?.getString("new_image")
         val newDescription = arguments?.getString("new_description")
-
+        Log.d("FORUM", "Arguments = ${arguments?.keySet()}")
         //se toma el id del post para el comentario si hay uno
         val postId = arguments?.getString("post_id") ?: return view
-
+        Log.d("FORUM", "postId = $postId")
         /*
          * Inicializo los componentes visuales que mostrarán
          * la información textual y gráfica de la noticia
@@ -92,20 +89,6 @@ class Forum : Fragment()
          */
         _newText.text = newDescription ?: ""
 
-        /*
-         * Utilizo Glide para manejar la carga de imágenes remotas
-         * Esto permite una carga eficiente, manejo de caché
-         * y control de errores visuales
-         */
-        Glide.with(requireContext())
-            //Si carga toma la imagen de este URL
-            .load("https://marvelrivalsapi.com/rivals" + newImageUrl)
-            //Si no pone una de placeholder
-            .placeholder(R.drawable.frame_1)
-            //Acomoda la imagen en el centro del item
-            .fitCenter()
-            //En la imagen del item
-            .into(_imageNew)
 
         //Comentarios
         _recyclerView = view.findViewById(R.id.RecyclerCommentary)
@@ -127,6 +110,25 @@ class Forum : Fragment()
                 _etComment.setText("")
             }
         }
+
+        /*
+        * Utilizo Glide para manejar la carga de imágenes remotas
+        * Esto permite una carga eficiente, manejo de caché
+        * y control de errores visuales
+        */
+        if (!newImageUrl.isNullOrBlank())
+        {
+            Glide.with(requireContext())
+                .load("https://marvelrivalsapi.com/rivals" + newImageUrl)
+                .placeholder(R.drawable.frame_1)
+                .fitCenter()
+                .into(_imageNew)
+        }
+        else
+        {
+            _imageNew.setImageResource(R.drawable.frame_1)
+        }
+
         return view
     }
 
@@ -162,30 +164,47 @@ class Forum : Fragment()
         }
     }
 
+    /*
+    *En en esta funcion escucho cambios en los comentarios del post en tiempo real y
+    * actualiza el recycle view caundo se detecta un cambio
+    */
     private fun listenComments(postId: String)
     {
+        /*
+        * Se obtiene la referencia a la ruta donde se almacenan
+        * los comentarios del post actual dentro del Realtime Database.
+        */
         val ref = _rtdb.child("comments").child(postId)
+
+        Log.d("FORUM", "Listening path: comments/$postId")
 
         val listener = object : ValueEventListener
         {
             override fun onDataChange(snapshot: DataSnapshot)
             {
-                val list = mutableListOf<CommentaryItem>()
+                Log.d("FORUM", "onDataChange children=${snapshot.childrenCount}")
 
+                val temp = mutableListOf<Pair<Long, CommentaryItem>>()
+                /*
+                * Recorremos todos los hijos del snapshot, donde cada hijo
+                * representa un comentario almacenado en la base de datos.
+                */
                 for (child in snapshot.children)
                 {
                     val c = child.getValue(RealtimeComment::class.java) ?: continue
-                    list.add(
-                        CommentaryItem(
-                            name = if (c.authorName.isNotBlank()) c.authorName else "UID ${c.authorApiId}",
+                    temp.add(
+                        c.timestamp to CommentaryItem(
+                            name = formatUid(c.authorUid),
                             commentary = c.text,
-                            imageURL = c.authorIcon
+                            imageURL = ""
                         )
                     )
                 }
 
-                //nos da el comentario mas reciente hasta abajo de la lista
+                val list = temp.sortedBy { it.first }.map { it.second }
                 _commentaryAdapter.submitList(list)
+                _recyclerView.scrollToPosition(maxOf(list.size - 1, 0))
+
             }
 
             override fun onCancelled(error: DatabaseError)
@@ -193,12 +212,18 @@ class Forum : Fragment()
                 Log.e("RTDB", "listenComments cancelled: ${error.message}")
             }
         }
+
         _commentsListener = listener
-        ref.orderByChild("timestamp").addValueEventListener(listener)
+        ref.addValueEventListener(listener)
     }
 
+    /*
+     * Envía un nuevo comentario al Realtime Database asociado al post.
+     */
     private fun sendComment(postId: String, text: String)
     {
+        Log.d("FORUM", "Writing path: comments/$postId")
+
         val user = _auth.currentUser
         if (user == null)
         {
@@ -206,61 +231,30 @@ class Forum : Fragment()
             return
         }
 
-        _firestore.collection("users").document(user.uid)
-            .get()
-            .addOnSuccessListener { doc ->
-                val apiId = doc.getLong("apiId")
-                if (apiId == null || apiId == 0L)
-                {
-                    Log.e("FORUM", "apiId missing. User must set it in Profile.")
-                    return@addOnSuccessListener
-                }
+        val comment = RealtimeComment(
+            text = text,
+            authorUid = user.uid,
+            timestamp = System.currentTimeMillis()
+        )
 
-                fetchPlayerPreview(apiId)
-                { authorName, authorIcon ->
-                    val comment = RealtimeComment(
-                        text = text,
-                        authorUid = user.uid,
-                        authorApiId = apiId,
-                        authorName = authorName,
-                        authorIcon = authorIcon,
-                        timestamp = System.currentTimeMillis()
-                    )
-
-                    _rtdb.child("comments").child(postId)
-                        .push()
-                        .setValue(comment)
-                        .addOnFailureListener { e ->
-                            Log.e("RTDB", "Failed to send comment", e)
-                        }
-                }
+        _rtdb.child("comments").child(postId)
+            .push()
+            .setValue(comment)
+            .addOnSuccessListener {
+                Log.d("RTDB", "Comment saved Id=$postId uid=${user.uid}")
             }
             .addOnFailureListener { e ->
-                Log.e("FORUM", "Failed to read user apiId", e)
+                Log.e("RTDB", "Failed to send comment postId=$postId", e)
             }
+
     }
 
-    private fun fetchPlayerPreview(
-        apiId: Long,
-        onDone: (name: String, iconPath: String) -> Unit
-    )
+    /*
+    * Formatea el UID para que sea más legible en pantalla.
+    */
+    private fun formatUid(uid: String): String
     {
-        MarvelAPIInstance.apiService.getPlayerById(apiId.toString())
-            .enqueue(object : Callback<Player>
-            {
-                override fun onResponse(call: Call<Player>, response: Response<Player>)
-                {
-                    val player = response.body()
-                    val name = player?.name ?: "Unknown"
-                    val icon = player?.player?.icon?.player_icon ?: ""
-                    onDone(name, icon)
-                }
-
-                override fun onFailure(call: Call<Player>, t: Throwable)
-                {
-                    Log.e("API", "fetchPlayerPreview failed: ${t.message}", t)
-                    onDone("Unknown", "")
-                }
-            })
+        return if (uid.length > 8) "UID ${uid.take(6)}..." else "UID $uid"
     }
+
 }
