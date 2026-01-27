@@ -156,6 +156,8 @@ class PlayersProfile : Fragment()
                 {
                     _progressBar.visibility = View.GONE
                     Log.e("API", "Error: ${t.message}", t)
+                    _playerName.text = getString(R.string.APIError)
+                    hideEverything()
                 }
             })
     }
@@ -169,11 +171,11 @@ class PlayersProfile : Fragment()
         when (code)
         {
             403 -> {
-                _playerName.text = "This profile is private"
+                _playerName.text = getString(R.string.Private)
                 hideEverything()
             }
             429 -> {
-                _playerName.text = "Too many requests, try later"
+                _playerName.text = getString(R.string.Requests)
                 hideEverything()
             }
         }

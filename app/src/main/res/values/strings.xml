@@ -25,6 +25,9 @@
     <string name="Search">Search</string>
     <string name="Forum">Forum</string>
     <string name="ExitApp">Exit App</string>
+    <string name="Requests">Too many requests, try later</string>
+    <string name="Private">This profile is private</string>
+    <string name="APIError">There has been a problem accesing the API</string>
 
 
 </resources>
