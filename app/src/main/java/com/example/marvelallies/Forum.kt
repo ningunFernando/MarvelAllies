@@ -204,7 +204,6 @@ class Forum : Fragment()
                 val list = temp.sortedBy { it.first }.map { it.second }
                 _commentaryAdapter.submitList(list)
                 _recyclerView.scrollToPosition(maxOf(list.size - 1, 0))
-
             }
 
             override fun onCancelled(error: DatabaseError)
@@ -212,7 +211,6 @@ class Forum : Fragment()
                 Log.e("RTDB", "listenComments cancelled: ${error.message}")
             }
         }
-
         _commentsListener = listener
         ref.addValueEventListener(listener)
     }

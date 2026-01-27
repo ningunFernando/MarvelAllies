@@ -9,13 +9,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.marvelallies.R
 
-class CommentaryAdapter : RecyclerView.Adapter<CommentaryAdapter.CommentaryViewHolder>() {
+class CommentaryAdapter : RecyclerView.Adapter<CommentaryAdapter.CommentaryViewHolder>()
+{
+    private val _commentaries = mutableListOf<CommentaryItem>()
 
-    private val commentaries = mutableListOf<CommentaryItem>()
-
-    fun submitList(newList: List<CommentaryItem>) {
-        commentaries.clear()
-        commentaries.addAll(newList)
+    fun submitList(newList: List<CommentaryItem>)
+    {
+        _commentaries.clear()
+        _commentaries.addAll(newList)
         notifyDataSetChanged()
     }
 
@@ -23,38 +24,39 @@ class CommentaryAdapter : RecyclerView.Adapter<CommentaryAdapter.CommentaryViewH
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
-    ): CommentaryViewHolder {
+    ): CommentaryViewHolder
+    {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.commentary_item, parent, false)
         return CommentaryViewHolder(view)
     }
 
     //Se llama para asignar los datos a cada vista
-    override fun onBindViewHolder(holder: CommentaryViewHolder, position: Int) {
-        holder.bind(commentaries[position])
+    override fun onBindViewHolder(holder: CommentaryViewHolder, position: Int)
+    {
+        holder.bind(_commentaries[position])
     }
 
     //Devuelve el número total de ítems
-    override fun getItemCount(): Int {
-        return commentaries.size
+    override fun getItemCount(): Int
+    {
+        return _commentaries.size
     }
 
-    class CommentaryViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-
-        private val commentaryName: TextView = itemView.findViewById(R.id.PlayerName)
-        private val commentaryText: TextView = itemView.findViewById(R.id.PlayerCommentary)
-        private val playerImage: ImageView = itemView.findViewById(R.id.PlayerImage)
-
-
+    class CommentaryViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
+    {
+        private val _commentaryName: TextView = itemView.findViewById(R.id.PlayerName)
+        private val _commentaryText: TextView = itemView.findViewById(R.id.PlayerCommentary)
+        private val _playerImage: ImageView = itemView.findViewById(R.id.PlayerImage)
 
         //bindear el nombre y la description
-        fun bind(commentary: CommentaryItem) {
-            commentaryName.text = commentary.name
-            commentaryText.text = commentary.commentary
-
+        fun bind(commentary: CommentaryItem)
+        {
+            _commentaryName.text = commentary.name
+            _commentaryText.text = commentary.commentary
             if (commentary.imageURL.isBlank())
             {
                 // Si no hay imagen (ya no usamos API), usamos placeholder fijo
-                playerImage.setImageResource(R.drawable.frame_1)
+                _playerImage.setImageResource(R.drawable.frame_1)
             }
             else
             {
@@ -62,9 +64,8 @@ class CommentaryAdapter : RecyclerView.Adapter<CommentaryAdapter.CommentaryViewH
                     .load("https://marvelrivalsapi.com/rivals" + commentary.imageURL)
                     .placeholder(R.drawable.frame_1)
                     .fitCenter()
-                    .into(playerImage)
+                    .into(_playerImage)
             }
         }
     }
-
 }
