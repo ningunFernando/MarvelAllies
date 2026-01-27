@@ -51,16 +51,19 @@ class CommentaryAdapter : RecyclerView.Adapter<CommentaryAdapter.CommentaryViewH
             commentaryName.text = commentary.name
             commentaryText.text = commentary.commentary
 
-
-            Glide.with(itemView.context)
-                //Si carga toma la imagen de este URL
-                .load("https://marvelrivalsapi.com/rivals"+commentary.imageURL)
-                //Si no pone una de placeholder
-                .placeholder(R.drawable.frame_1)
-                //Acomoda la imagen en el centro del item
-                .fitCenter()
-                //En la imagen del item
-                .into(playerImage)
+            if (commentary.imageURL.isBlank())
+            {
+                // Si no hay imagen (ya no usamos API), usamos placeholder fijo
+                playerImage.setImageResource(R.drawable.frame_1)
+            }
+            else
+            {
+                Glide.with(itemView.context)
+                    .load("https://marvelrivalsapi.com/rivals" + commentary.imageURL)
+                    .placeholder(R.drawable.frame_1)
+                    .fitCenter()
+                    .into(playerImage)
+            }
         }
     }
 
