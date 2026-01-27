@@ -18,23 +18,23 @@ import android.widget.ProgressBar
 import Leaderboard
 import Player
 
-class Players : Fragment() {
-
+class Players : Fragment()
+{
     /*
      * RecyclerView encargado de mostrar el leaderboard
      * o el resultado de una búsqueda específica
      */
-    private lateinit var recyclerView: RecyclerView
+    private lateinit var _recyclerView: RecyclerView
 
     /*
      * Barra de progreso que indica el estado de carga
      * durante las peticiones a la API
      */
-    private lateinit var progressBar: ProgressBar
+    private lateinit var _progressBar: ProgressBar
 
-    override fun onCreate(savedInstanceState: Bundle?) {
+    override fun onCreate(savedInstanceState: Bundle?)
+    {
         super.onCreate(savedInstanceState)
-
         /*
          * Indico que este fragment define su propio menú,
          * necesario para habilitar el buscador en la Toolbar
@@ -46,32 +46,31 @@ class Players : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View {
-
+    ): View
+    {
         /*
          * Inflo el layout del fragment y preparo los componentes
          * que mostrarán la información de los jugadores
          */
         val view = inflater.inflate(R.layout.fragment_players, container, false)
 
-        recyclerView = view.findViewById(R.id.RecyclerPlayers)
-        progressBar = view.findViewById(R.id.progressBar)
+        _recyclerView = view.findViewById(R.id.RecyclerPlayers)
+        _progressBar = view.findViewById(R.id.progressBar)
 
         /*
          * Utilizo un LinearLayoutManager para presentar
          * los jugadores en una lista vertical
          */
-        recyclerView.layoutManager = LinearLayoutManager(requireContext())
+        _recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
          // Cargo el leaderboard completo al entrar al fragment
         loadLeaderboard()
-
         return view
     }
 
-    override fun onResume() {
+    override fun onResume()
+    {
         super.onResume()
-
         /*
          * Configuro la Toolbar para esta sección,
          * ocultando el botón de regreso al tratarse de una pantalla principal
@@ -85,7 +84,8 @@ class Players : Fragment() {
     }
 
     // Menu con buscador
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater)
+    {
         inflater.inflate(R.menu.top_bar_search_players, menu)
 
         val searchItem = menu.findItem(R.id.action_search)
@@ -97,26 +97,28 @@ class Players : Fragment() {
          * Configuro el buscador para ejecutar la búsqueda
          * únicamente cuando el usuario confirma la acción
          */
-        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String?): Boolean {
-
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener
+        {
+            override fun onQueryTextSubmit(query: String?): Boolean
+            {
                 /*
                  * Este método se ejecuta cuando el usuario confirma la búsqueda
                  * desde el teclado (por ejemplo, presionando Enter o el botón de búsqueda)
                  * Decido procesar la búsqueda únicamente en este punto para evitar
                  * realizar múltiples llamadas a la API mientras el usuario escribe
                  */
-                if (!query.isNullOrBlank()) {
+                if (!query.isNullOrBlank())
+                {
                     loadPlayer(query)
                 }
 
                  // Limpio el foco del SearchView para cerrar el teclado
                 searchView.clearFocus()
-
                 return true
             }
-            override fun onQueryTextChange(newText: String?): Boolean {
 
+            override fun onQueryTextChange(newText: String?): Boolean
+            {
                 /*
                  * decido no utilizarlo para evitar búsquedas en tiempo real,
                  * Aunque no se use lo pide la interfaz
@@ -128,25 +130,26 @@ class Players : Fragment() {
     }
 
     // Cargar leaderboard completo
-    private fun loadLeaderboard() {
-
+    private fun loadLeaderboard()
+    {
         /*
          * Muestro la barra de progreso antes de iniciar la llamada
          * para informar al usuario del estado de carga
          */
-        progressBar.visibility = View.VISIBLE
+        _progressBar.visibility = View.VISIBLE
 
         /*
          * Solicito el leaderboard paginado desde la API
          * El límite se establece para reducir la cantidad de peticiones
          */
         MarvelAPIInstance.apiService.getLeaderboard(page = 1, limit = 50)
-            .enqueue(object : Callback<Leaderboard> {
-
-                override fun onResponse(call: Call<Leaderboard>, response: Response<Leaderboard>) {
-                    progressBar.visibility = View.GONE
-
-                    if (!response.isSuccessful || response.body() == null) {
+            .enqueue(object : Callback<Leaderboard>
+            {
+                override fun onResponse(call: Call<Leaderboard>, response: Response<Leaderboard>)
+                {
+                    _progressBar.visibility = View.GONE
+                    if (!response.isSuccessful || response.body() == null)
+                    {
                         Log.e("API", "Error: ${response.code()}")
                         return
                     }
@@ -165,34 +168,38 @@ class Players : Fragment() {
                         )
                     }
 
-                    recyclerView.adapter = PlayersAdapter(playersItems) { player ->
+                    _recyclerView.adapter = PlayersAdapter(playersItems)
+                    { player ->
                         openPlayerProfile(player)
                     }
                 }
 
-                override fun onFailure(call: Call<Leaderboard>, t: Throwable) {
-                    progressBar.visibility = View.GONE
+                override fun onFailure(call: Call<Leaderboard>, t: Throwable)
+                {
+                    _progressBar.visibility = View.GONE
                     Log.e("API", "Error: ${t.message}", t)
                 }
             })
     }
 
     // Cargar jugador por UID
-    private fun loadPlayer(playerUid: String) {
-
+    private fun loadPlayer(playerUid: String)
+    {
         /*
          * Se realiza una búsqueda directa por UID
          * En caso de error, se vuelve a mostrar el leaderboard completo
          */
-        progressBar.visibility = View.VISIBLE
+        _progressBar.visibility = View.VISIBLE
 
         MarvelAPIInstance.apiService.getPlayerById(playerUid)
-            .enqueue(object : Callback<Player> {
+            .enqueue(object : Callback<Player>
+            {
+                override fun onResponse(call: Call<Player>, response: Response<Player>)
+                {
+                    _progressBar.visibility = View.GONE
 
-                override fun onResponse(call: Call<Player>, response: Response<Player>) {
-                    progressBar.visibility = View.GONE
-
-                    if (!response.isSuccessful || response.body() == null) {
+                    if (!response.isSuccessful || response.body() == null)
+                    {
                         Log.e("API", "Error: ${response.code()}")
                         loadLeaderboard() // fallback
                         return
@@ -216,20 +223,22 @@ class Players : Fragment() {
                         score = scoreData
                     )
 
-                    recyclerView.adapter = PlayersAdapter(listOf(playerItem)) { p ->
+                    _recyclerView.adapter = PlayersAdapter(listOf(playerItem))
+                    { p ->
                         openPlayerProfile(p)
                     }
                 }
 
-                override fun onFailure(call: Call<Player>, t: Throwable) {
-                    progressBar.visibility = View.GONE
+                override fun onFailure(call: Call<Player>, t: Throwable)
+                {
+                    _progressBar.visibility = View.GONE
                     Log.e("API", "Error: ${t.message}", t)
                 }
             })
     }
 
-    private fun openPlayerProfile(player: PlayersItem) {
-
+    private fun openPlayerProfile(player: PlayersItem)
+    {
         /*
          * Manejo la navegación hacia el fragment de perfil
          * enviando el UID del jugador seleccionado
