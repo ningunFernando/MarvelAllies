@@ -19,6 +19,9 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import android.widget.ProgressBar
+import com.google.firebase.analytics.FirebaseAnalytics
+
+
 
 
 class Characters : Fragment()
@@ -27,6 +30,11 @@ class Characters : Fragment()
     private lateinit var _characterViewPager: ViewPager2
     private lateinit var _charactersTabLayout: TabLayout
     private lateinit var _progressBar: ProgressBar
+    /*
+     * Instancia de Firebase Analytics para registrar cantidad de eventos
+     * relacionados con la selección de personajes dentro del carrusel.
+     */
+    private lateinit var analytics: FirebaseAnalytics
 
 
     override fun onCreate(savedInstanceState: Bundle?)
@@ -37,6 +45,10 @@ class Characters : Fragment()
          * Esto es necesario para poder mostrar el buscador personalizado
          */
         setHasOptionsMenu(true)
+
+        //inicializacion de la variable para llamar a las analiticas de firebase
+        //se usa requireContext() porque esto es un fragment y no una activity
+        analytics = FirebaseAnalytics.getInstance(requireContext())
     }
 
     override fun onCreateView(
@@ -178,6 +190,7 @@ class Characters : Fragment()
 
     private fun onCharacterClicked(character: CharactersItem)
     {
+        logCharacterSelectedEvent(character)
         /*
          * Manejo la navegación manualmente usando el FragmentManager
          * para poder controlar el back stack y pasar argumentos
@@ -315,5 +328,19 @@ class Characters : Fragment()
                     Log.e("API", "Error de conexión: ${t.message}")
                 }
             })
+    }
+/*
+ * Registra un evento personalizado cuando el usuario selecciona
+ * un personaje dentro del carrusel de la pantalla Characters.
+ */
+    private fun logCharacterSelectedEvent(character: CharactersItem)
+    {
+        val bundle = Bundle().apply {
+            putString("character_id", character.query)
+            putString("character_name", character.name)
+            putString("source", "character_banner")
+        }
+
+        analytics.logEvent("character_selected", bundle)
     }
 }
