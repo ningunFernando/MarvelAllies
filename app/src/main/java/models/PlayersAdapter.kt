@@ -15,6 +15,7 @@ class PlayersAdapter(
     private val players: List<PlayersItem>,
     private val onItemClickListener: (PlayersItem) -> Unit
 ): RecyclerView.Adapter<PlayersAdapter.PlayerViewHolder>() {
+    //Se llama cada vez que el recycler necesita crear una nuevo item.
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
@@ -24,10 +25,13 @@ class PlayersAdapter(
         return PlayerViewHolder(view)
     }
 
+    //Se llama para asignar los datos a cada vista
     override fun onBindViewHolder(holder: PlayersAdapter.PlayerViewHolder, position: Int) {
         val player = players[position]
         holder.bind(player, onItemClickListener)
     }
+
+    //Devuelve el número total de ítems
 
     override fun getItemCount(): Int {
         return players.size
@@ -41,6 +45,7 @@ class PlayersAdapter(
         private val playerImage: ImageView = itemView.findViewById(R.id.PlayerImage)
         private val playerLayout: LinearLayout = itemView.findViewById(R.id.PlayerLayout)
 
+        //bindea los datos de los jugadores
         fun bind(player: PlayersItem, listener: (PlayersItem) -> Unit){
             playerName.text = player.name
             playerUID.text = player.query.toString()

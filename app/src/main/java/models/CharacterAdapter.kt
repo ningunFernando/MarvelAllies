@@ -33,7 +33,7 @@ class CharacterAdapter(
     class GridViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val image: ImageView = itemView.findViewById(R.id.characterImage)
 
-
+        //bindea la imagen del character
         fun bind(character: CharactersItem, listener: (CharactersItem) -> Unit) {
 
             //Si un item no recibe ningun dato, hacemos que el texto y la imagen se hagan invisibles
@@ -43,7 +43,6 @@ class CharacterAdapter(
             }
 
             image.visibility = View.VISIBLE
-            //toma el nombre del personaje desde la API
 
             //usamos la libreria de Glide para tomar imagenes de un URL
             Glide.with(itemView.context)

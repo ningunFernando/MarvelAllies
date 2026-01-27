@@ -14,6 +14,8 @@ import com.bumptech.glide.Glide
 class NewsAdapter(private val news: List<NewsItem>,
                   private val onItemClickListener: (NewsItem) -> Unit
 ): RecyclerView.Adapter<NewsAdapter.NewsViewHolder>() {
+    //Se llama cada vez que el recycler necesita crear una nuevo item.
+
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
@@ -23,10 +25,13 @@ class NewsAdapter(private val news: List<NewsItem>,
         return NewsViewHolder(view)
     }
 
+    //Se llama para asignar los datos a cada vista
     override fun onBindViewHolder(holder: NewsAdapter.NewsViewHolder, position: Int) {
         val player = news[position]
         holder.bind(player, onItemClickListener)
     }
+
+    //Devuelve el número total de ítems
 
     override fun getItemCount(): Int {
         return news.size
@@ -37,6 +42,7 @@ class NewsAdapter(private val news: List<NewsItem>,
             private val newsImage: ImageView = itemView.findViewById(R.id.NewsImage)
             private val newsLayout: LinearLayout = itemView.findViewById(R.id.NewsLayout)
 
+        //bindear el nombre y a la imagen
         fun bind(new: NewsItem, listener: (NewsItem) -> Unit){
 
             newsTitle.text = new.title

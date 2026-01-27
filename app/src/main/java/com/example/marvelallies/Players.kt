@@ -168,6 +168,7 @@ class Players : Fragment()
                         )
                     }
 
+                    //La lista de los players se pasa al adapter
                     _recyclerView.adapter = PlayersAdapter(playersItems)
                     { player ->
                         openPlayerProfile(player)
