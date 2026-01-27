@@ -303,13 +303,13 @@ class Profile : Fragment()
         _timeTextProfile.text = player.overall_stats.total_play_time.playtime
         _matchesTextProfile.text = player.overall_stats.total_matches.toString()
 
-        _vanguardTextProfile.text = "Vanguard: ${"%.2f".format(timeVanguard)}%"
-        _duelistTextProfile.text = "Duelist: ${"%.2f".format(timeDuelist)}%"
-        _strategistTextProfile.text = "Strategist: ${"%.2f".format(timeStrategist)}%"
+        _vanguardTextProfile.text = "${getString(R.string.Vanguard)}: ${"%.2f".format(timeVanguard)}%"
+        _duelistTextProfile.text = "${getString(R.string.Duelist)}: ${"%.2f".format(timeDuelist)}%"
+        _strategistTextProfile.text = "${getString(R.string.Strategist)}: ${"%.2f".format(timeStrategist)}%"
 
-        _kdaTextProfile.text = "KDA: ${"%.2f".format(player.overall_stats.overall_kda.kda)}"
-        _kdTextProfile.text = "KD: ${"%.2f".format(player.overall_stats.overall_kd)}"
-        _mvpTextProfile.text = "MVP: ${player.overall_stats.total_mvps.mvps}"
+        _kdaTextProfile.text = "${getString(R.string.KDA)}: ${"%.2f".format(player.overall_stats.overall_kda.kda)}"
+        _kdTextProfile.text = "${getString(R.string.KD)}: ${"%.2f".format(player.overall_stats.overall_kd)}"
+        _mvpTextProfile.text = "${getString(R.string.MVP)}: ${player.overall_stats.total_mvps.mvps}"
 
         Glide.with(requireContext())
             .load("https://marvelrivalsapi.com/rivals${player.player.icon.player_icon}")
