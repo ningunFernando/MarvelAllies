@@ -10,7 +10,6 @@ import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
-import android.util.Log
 import com.google.firebase.analytics.FirebaseAnalytics
 
 
