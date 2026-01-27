@@ -10,36 +10,39 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 
-
-class NewsAdapter(private val news: List<NewsItem>,
-                  private val onItemClickListener: (NewsItem) -> Unit
-): RecyclerView.Adapter<NewsAdapter.NewsViewHolder>() {
+class NewsAdapter(private val _news: List<NewsItem>,
+                  private val _onItemClickListener: (NewsItem) -> Unit
+): RecyclerView.Adapter<NewsAdapter.NewsViewHolder>()
+{
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
-    ): NewsAdapter.NewsViewHolder {
+    ): NewsAdapter.NewsViewHolder
+    {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.news_item, parent, false)
-
         return NewsViewHolder(view)
     }
 
-    override fun onBindViewHolder(holder: NewsAdapter.NewsViewHolder, position: Int) {
-        val player = news[position]
-        holder.bind(player, onItemClickListener)
+    override fun onBindViewHolder(holder: NewsAdapter.NewsViewHolder, position: Int)
+    {
+        val player = _news[position]
+        holder.bind(player, _onItemClickListener)
     }
 
-    override fun getItemCount(): Int {
-        return news.size
+    override fun getItemCount(): Int
+    {
+        return _news.size
     }
 
-    class NewsViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){
-            private val newsTitle: TextView = itemView.findViewById(R.id.NewsTitle)
-            private val newsImage: ImageView = itemView.findViewById(R.id.NewsImage)
-            private val newsLayout: LinearLayout = itemView.findViewById(R.id.NewsLayout)
+    class NewsViewHolder(itemView: View): RecyclerView.ViewHolder(itemView)
+    {
+        private val _newsTitle: TextView = itemView.findViewById(R.id.NewsTitle)
+        private val _newsImage: ImageView = itemView.findViewById(R.id.NewsImage)
+        private val _newsLayout: LinearLayout = itemView.findViewById(R.id.NewsLayout)
 
-        fun bind(new: NewsItem, listener: (NewsItem) -> Unit){
-
-            newsTitle.text = new.title
+        fun bind(new: NewsItem, listener: (NewsItem) -> Unit)
+        {
+            _newsTitle.text = new.title
             Glide.with(itemView.context)
                 //Si carga toma la imagen de este URL
                 .load("https://marvelrivalsapi.com/rivals"+new.imageUrl)
@@ -48,16 +51,12 @@ class NewsAdapter(private val news: List<NewsItem>,
                 //Acomoda la imagen en el centro del item
                 .fitCenter()
                 //En la imagen del item
-                .into(newsImage)
+                .into(_newsImage)
 
-            newsLayout.setOnClickListener {
+            _newsLayout.setOnClickListener {
                 // Llama al callback
                 listener(new)
             }
-
         }
-
-
     }
-
 }

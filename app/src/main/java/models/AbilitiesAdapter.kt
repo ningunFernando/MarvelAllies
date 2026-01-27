@@ -37,14 +37,14 @@ class AbilitiesAdapter(
 
     class AbilityViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
     {
-        private val abilityName: TextView = itemView.findViewById(R.id.Name)
-        private val abilityDescription: TextView = itemView.findViewById(R.id.Description)
+        private val _abilityName: TextView = itemView.findViewById(R.id.Name)
+        private val _abilityDescription: TextView = itemView.findViewById(R.id.Description)
 
         //bindear el nombre y la description
         fun bind(ability: Abilities)
         {
-            abilityName.text = ability.name
-            abilityDescription.text = ability.description
+            _abilityName.text = ability.name
+            _abilityDescription.text = ability.description
         }
     }
 }
