@@ -14,6 +14,8 @@ class NewsAdapter(private val _news: List<NewsItem>,
                   private val _onItemClickListener: (NewsItem) -> Unit
 ): RecyclerView.Adapter<NewsAdapter.NewsViewHolder>()
 {
+    //Se llama cada vez que el recycler necesita crear una nuevo item.
+
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
@@ -23,12 +25,14 @@ class NewsAdapter(private val _news: List<NewsItem>,
         return NewsViewHolder(view)
     }
 
+    //Se llama para asignar los datos a cada vista
     override fun onBindViewHolder(holder: NewsAdapter.NewsViewHolder, position: Int)
     {
         val player = _news[position]
         holder.bind(player, _onItemClickListener)
     }
 
+    //Devuelve el número total de ítems
     override fun getItemCount(): Int
     {
         return _news.size
@@ -40,6 +44,7 @@ class NewsAdapter(private val _news: List<NewsItem>,
         private val _newsImage: ImageView = itemView.findViewById(R.id.NewsImage)
         private val _newsLayout: LinearLayout = itemView.findViewById(R.id.NewsLayout)
 
+        //bindea la foto y el titulo de la noticia
         fun bind(new: NewsItem, listener: (NewsItem) -> Unit)
         {
             _newsTitle.text = new.title

@@ -35,6 +35,7 @@ class CharacterAdapter(
     {
         private val _image: ImageView = itemView.findViewById(R.id.characterImage)
 
+        //bidea la imagen del character
         fun bind(character: CharactersItem, listener: (CharactersItem) -> Unit)
         {
             //Si un item no recibe ningun dato, hacemos que el texto y la imagen se hagan invisibles

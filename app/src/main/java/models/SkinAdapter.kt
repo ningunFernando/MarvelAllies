@@ -40,6 +40,7 @@ class SkinAdapter(
     {
         private val _skinImage: ImageView = itemView.findViewById(R.id.SkinImage)
 
+        //bindea todas las skins
         fun bind(skin: Skin) {
             //usar glide para meter la imagen de cada skin
             Glide.with(itemView.context)
