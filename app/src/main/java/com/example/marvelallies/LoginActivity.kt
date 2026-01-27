@@ -26,7 +26,7 @@ class LoginActivity : AppCompatActivity()
     override fun onStart()
     {
         super.onStart()
-        if(_auth.currentUser != null)
+        if (_auth.currentUser != null && GoogleSignIn.getLastSignedInAccount(this) != null)
         {
             goToMain()
         }

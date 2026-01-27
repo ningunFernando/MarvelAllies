@@ -73,7 +73,7 @@ class Forum : Fragment()
         val newImageUrl = arguments?.getString("new_image")
         val newDescription = arguments?.getString("new_description")
         Log.d("FORUM", "Arguments = ${arguments?.keySet()}")
-        //se toma el id del post para el comentario si hay uno
+        //se toma el id del post para el comentario, si hay uno
         val postId = arguments?.getString("post_id") ?: return view
         Log.d("FORUM", "postId = $postId")
         /*
