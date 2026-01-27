@@ -17,12 +17,14 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
+import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 
 
 class Profile : Fragment()
@@ -81,6 +83,15 @@ class Profile : Fragment()
         //FIREBASE VARIABLES
         _auth = FirebaseAuth.getInstance()
         _dataBase = FirebaseFirestore.getInstance()
+
+        //GOOGLE SESION
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken("341760355003-kqopo7bfp4aqqbg09s5ecmjjk0it3bti.apps.googleusercontent.com")
+            .requestEmail()
+            .build()
+
+        _googleSingInClient = GoogleSignIn.getClient(requireContext(), gso)
+
 
         //UID API SETUP
         _layoutApiIdSetup = view.findViewById(R.id.layoutApiIdSetup)
@@ -323,8 +334,13 @@ class Profile : Fragment()
     private fun SingOut()
     {
         _auth.signOut()
-        _googleSingInClient.signOut()
 
-        startActivity(Intent(requireContext(), LoginActivity::class.java))
+        // Cierra sesion de Google
+        _googleSingInClient.signOut().addOnCompleteListener {
+            // Limpia la pila de actividades para evitar volver con una sesion vieja
+            val intent = Intent(requireContext(), LoginActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            startActivity(intent)
+        }
     }
 }
