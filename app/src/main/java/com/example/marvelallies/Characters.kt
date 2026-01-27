@@ -329,7 +329,10 @@ class Characters : Fragment()
                 }
             })
     }
-
+/*
+ * Registra un evento personalizado cuando el usuario selecciona
+ * un personaje dentro del carrusel de la pantalla Characters.
+ */
     private fun logCharacterSelectedEvent(character: CharactersItem)
     {
         val bundle = Bundle().apply {
