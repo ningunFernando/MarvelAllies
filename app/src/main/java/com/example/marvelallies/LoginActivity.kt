@@ -34,7 +34,7 @@ class LoginActivity : AppCompatActivity()
         * se redirige directamente a la pantalla principal
         */
         super.onStart()
-        if (_auth.currentUser != null && GoogleSignIn.getLastSignedInAccount(this) != null)
+        if (_auth.currentUser != null)
         {
             goToMain()
         }
@@ -45,6 +45,8 @@ class LoginActivity : AppCompatActivity()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
+        //inicializamos firebase
+        _auth = FirebaseAuth.getInstance()
         /*
         Configuracion de google sign in solicitando el id token necesario
         para autenticar en firabase
@@ -66,8 +68,7 @@ class LoginActivity : AppCompatActivity()
             findViewById<SignInButton>(R.id.login_btnGoogle).setOnClickListener {SingInWithGoogle()}
         }
 
-        //inicializamos firebase
-        _auth = FirebaseAuth.getInstance()
+
 
         //views binding
         _emailField = findViewById(R.id.login_etEmail)
