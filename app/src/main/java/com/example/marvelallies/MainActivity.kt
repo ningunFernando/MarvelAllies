@@ -10,6 +10,10 @@ import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
+import android.util.Log
+import com.google.firebase.analytics.FirebaseAnalytics
+
+
 
 class MainActivity : AppCompatActivity()
 {
@@ -23,6 +27,21 @@ class MainActivity : AppCompatActivity()
      * por los fragments para mostrar títulos y acciones
      */
     private lateinit var _topBarview: Toolbar
+
+    /*
+    * inicializacion de la variable para llamar a las analiticas de firebase
+    * para registrar eventos personalizados y análisis de datos y comportamiento
+    * del usuario
+    */
+    private lateinit var analytics: FirebaseAnalytics
+
+    /*
+    *guarda el ultimo item seleccionado en la barra de navegacion
+    * para evitar registrar multiples eventos si el usuario toca mas de una seccion
+    */
+    private var lastNavItemId: Int? = null
+
+
 
     override fun onStart()
     {
@@ -38,10 +57,15 @@ class MainActivity : AppCompatActivity()
     {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        //inicializacion de una instancia de firebase para nuestras analiticas
+        analytics = FirebaseAnalytics.getInstance(this)
+
         /*
          * Inicializo la barra de navegación inferior y delego la lógica
          * de selección a un método separado para mejorar la legibilidad
          */
+
 
         _bottomNavBarView = findViewById(R.id.bottomNavigationView)
         _bottomNavBarView.setOnItemSelectedListener { item ->
@@ -63,6 +87,7 @@ class MainActivity : AppCompatActivity()
         {
             _bottomNavBarView.selectedItemId = R.id.news
         }
+
     }
 
     private fun LoadFragment(fragment: Fragment)
@@ -79,6 +104,16 @@ class MainActivity : AppCompatActivity()
 
     private fun handleNavigationItemSelected(itemId: Int): Boolean
     {
+        /*
+        * Se registra el evento de navegacion solo si el usuario cambio
+        * de seccion. Esto evita registrar eventos innecesarios registrados en
+        * las analiticas
+        */
+        if (lastNavItemId != itemId)
+        {
+            logNavSelectionEvent(itemId)
+            lastNavItemId = itemId
+        }
         /*
          * Centralizo la lógica de navegación para evitar duplicación
          * y facilitar el mantenimiento cuando se agreguen más secciones
@@ -139,5 +174,22 @@ class MainActivity : AppCompatActivity()
             }
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    private fun logNavSelectionEvent(itemId: Int){
+        val screen = when(itemId){
+            R.id.news -> "News"
+            R.id.characters -> "Characters"
+            R.id.players -> "Players"
+            R.id.profile -> "Profile"
+            else -> "Unknown"
+        }
+
+        val bundle = Bundle().apply {
+            putString("screen", screen)
+            putString("source", "bottom_nav")
+        }
+
+        analytics.logEvent("nav_selection", bundle)
     }
 }
